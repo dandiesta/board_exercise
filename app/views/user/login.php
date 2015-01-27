@@ -10,11 +10,11 @@
 			<form method="POST" action="" class="span5 offset3 well">
 			<legend>Please Sign In</legend>
 				<div>
-					<input type="text" name="username" class="span5" value="<?php eh(Param::get('username')) ?>" placeholder="Username">
+					<input type="text" name="username" class="span5" value="<?php enquote_string(Param::get('username')) ?>" placeholder="Username">
 				</div>
 						
 				<div class="col-lg-12">
-					<input type="password" name="password" class="span5" value="<?php eh(Param::get('password')) ?>" placeholder="Password">
+					<input type="password" name="password" class="span5" value="<?php enquote_string(Param::get('password')) ?>" placeholder="Password">
 				</div>
 				<br />
 				<input type="hidden" name="page_next" value="home">
@@ -24,6 +24,6 @@
 				</div>
 				
 				<div>
-				<center>Don't have an account yet? Click <a href="<?php eh(url('user/registration')) ?>">here</a>.</center>
+				<center>Don't have an account yet? Click <a href="<?php enquote_string(url('user/registration')) ?>">here</a>.</center>
 				</div>
 			</form>    

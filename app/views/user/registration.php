@@ -5,32 +5,32 @@
 		<?php if (!empty($register->validation_errors['fname']['length'])): ?>
 			<div>
 				<em>First name</em> must be between
-				<?php eh($register->validation['fname']['length'][1]) ?> and
-				<?php eh($register->validation['fname']['length'][2]) ?> characters in length.
+				<?php enquote_string($register->validation['fname']['length'][1]) ?> and
+				<?php enquote_string($register->validation['fname']['length'][2]) ?> characters in length.
 			</div>
 		<?php endif ?>
 		
 		<?php if (!empty($register->validation_errors['lname']['length'])): ?>
 			<div>
 				<em>Last name</em> must be between
-				<?php eh($register->validation['lname']['length'][1]) ?> and
-				<?php eh($register->validation['lname']['length'][2]) ?> characters in length.
+				<?php enquote_string($register->validation['lname']['length'][1]) ?> and
+				<?php enquote_string($register->validation['lname']['length'][2]) ?> characters in length.
 			</div>
 		<?php endif ?>
 
 		<?php if (!empty($register->validation_errors['password']['length'])): ?>
 			<div>
 				<em>Password</em> must be between
-				<?php eh($register->validation['password']['length'][1]) ?> and
-				<?php eh($register->validation['password']['length'][2]) ?> characters in length.
+				<?php enquote_string($register->validation['password']['length'][1]) ?> and
+				<?php enquote_string($register->validation['password']['length'][2]) ?> characters in length.
 			</div>
 		<?php endif ?>
 
 		<?php if (!empty($register->validation_errors['username']['length'])): ?>
 			<div>
 				<em>Username</em> must be between
-				<?php eh($register->validation['username']['length'][1]) ?> and
-				<?php eh($register->validation['username']['length'][2]) ?> characters in length.
+				<?php enquote_string($register->validation['username']['length'][1]) ?> and
+				<?php enquote_string($register->validation['username']['length'][2]) ?> characters in length.
 			</div>
 		<?php endif ?>
 
@@ -57,22 +57,22 @@
 			<form method="POST" action="">
 				<div class="col-lg-12">
 					<label>First Name</label>
-					<input type="text" name="fname" class="span5" value="<?php eh(Param::get('fname')) ?>">
+					<input type="text" name="fname" class="span5" value="<?php enquote_string(Param::get('fname')) ?>">
 				</div>
 				
 				<div class="col-lg-12">
 					<label>Last Name</label>
-					<input type="text" name="lname" class="span5" value="<?php eh(Param::get('lname')) ?>">
+					<input type="text" name="lname" class="span5" value="<?php enquote_string(Param::get('lname')) ?>">
 				</div>	
 
 				<div class="col-lg-12">
 					<label>Username</label>
-					<input type="text" name="username" class="span5" value="<?php eh(Param::get('username')) ?>">
+					<input type="text" name="username" class="span5" value="<?php enquote_string(Param::get('username')) ?>">
 				</div>
 						
 				<div class="col-lg-12">
 					<label>Password</label>
-					<input type="password" name="password" class="span5" value="<?php eh(Param::get('password')) ?>">
+					<input type="password" name="password" class="span5" value="<?php enquote_string(Param::get('password')) ?>">
 				</div>
 						
 				<div class="col-lg-12">
@@ -87,7 +87,7 @@
 				</div>
 
 				<div>
-				<center>Already have an account? Click <a href="<?php eh(url('user/login')) ?>">here</a>.</center>
+				<center>Already have an account? Click <a href="<?php enquote_string(url('user/login')) ?>">here</a>.</center>
 				</div>
 			</form>    
 		</div>

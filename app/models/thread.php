@@ -13,7 +13,7 @@
 		{
 			$threads = array();
 			$db = DB::conn();
-			$rows = $db->rows('SELECT * FROM thread ORDER BY created DESC');
+			$rows = $db->rows('SELECT t.id, t.title, t.created, u.username FROM thread t INNER JOIN user u ON t.user_id=u.id ORDER BY created DESC');
 			
 			foreach ($rows as $row) {
 				$threads[] = new Thread($row);
@@ -26,7 +26,7 @@
 		{
 			$threads = array();
 			$db = DB::conn();
-			$rows = $db->rows('SELECT * FROM thread WHERE user_id=? ORDER BY created DESC', array($_SESSION['userid']));
+			$rows = $db->rows('SELECT t.id, t.title, t.created, u.username FROM thread t INNER JOIN user u ON t.user_id=u.id WHERE user_id=? ORDER BY created DESC', array($_SESSION['userid']));
 
 			foreach ($rows as $row) {
 				$threads[] = new Thread($row);
@@ -98,6 +98,7 @@
 			$db->commit();
 		}
 
+		
 		
 	}
 ?>

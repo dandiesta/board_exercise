@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Forum <?php eh($title) ?></title>
+    <title>Forum</title>
     
     
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -31,7 +31,7 @@
     </div>
 
     <script>
-    console.log(<?php eh(round(microtime(true) - TIME_START, 3)) ?> + 'sec');
+    console.log(<?php enquote_string(round(microtime(true) - TIME_START, 3)) ?> + 'sec');
     </script>
 
   </body>

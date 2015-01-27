@@ -2,6 +2,6 @@
 	You have successfully registered.
 </p>
 
-<a href="<?php eh(url('user/login')) ?>">
+<a href="<?php enquote_string(url('user/login')) ?>">
 	<button class="btn btn-danger">Login here</button>
 </a>
