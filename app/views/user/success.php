@@ -3,5 +3,5 @@
 </p>
 
 <a href="<?php eh(url('user/login')) ?>">
-	&larr; Login Here
+	<button class="btn btn-danger">Login here</button>
 </a>

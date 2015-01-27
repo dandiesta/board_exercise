@@ -17,6 +17,14 @@ class Controller
 
     public function beforeFilter()
     {
+        /*if (!isset($_SESSION['userid'])) {
+            header(url('user/login'));
+
+        }*/
+
+        /*if (!isset($_SESSION['userid'])) {
+            redirect(url('login'));
+        }*/
     }
 
     public function afterFilter()

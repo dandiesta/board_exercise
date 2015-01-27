@@ -2,6 +2,7 @@
 
 class User extends AppModel
 {
+	public $login_verification = true;
 	public $validation = array(
 			'fname' => array(
 				'length' => array(
@@ -38,20 +39,35 @@ class User extends AppModel
 	{
 		if ($this->password == $this->confirm_password) return true;
 	}
+
 	public function username_checker()
 	{
 		$db = DB::conn();
-		$username_not_existing = $db->query('SELECT username FROM user WHERE username = ?', array($this->username));
+		$username_not_existing = $db->row('SELECT username FROM user WHERE username = ?', array($this->username));
 
-		if (!empty($username_not_existing)) return true;
+		if (empty($username_not_existing)) return true;
 	}
+
+	public function login()
+	{
+
+		$db = DB::conn();
+		$row = $db->row('SELECT id, fname FROM user WHERE username = ? AND password = ?', array($this->username, $this->password));
+
+		if (!$row) {
+			$this->login_verification =false;
+			throw new RecordNotFoundException('no record found');
+		}
+
+		return $row;
+	}
+
 	public function add()
 	{
 		$this->validate();
 		if ($this->hasError()){
 				throw new ValidationException('error in registration');
-			}
-
+		}
 		
 		$db = DB::conn();
 		$params = array (
@@ -73,6 +89,8 @@ class User extends AppModel
 	{
 
 	}
+
+	
 }
 
 ?>

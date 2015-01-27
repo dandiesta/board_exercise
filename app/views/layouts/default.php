@@ -2,9 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>DietCake <?php eh($title) ?></title>
-
+    <title>Forum <?php eh($title) ?></title>
+    
+    
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
       body {
         padding-top: 60px;
@@ -17,7 +19,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="/">DietCake Hello</a>
+          <a class="brand" href="/user/home">My Forum</a>
         </div>
       </div>
     </div>

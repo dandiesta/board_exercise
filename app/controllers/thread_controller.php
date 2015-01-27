@@ -9,6 +9,12 @@
             $this->set(get_defined_vars());
         }
 
+        public function my_thread()
+        {
+            $myThread = Thread::getMyThreads();
+            $this->set(get_defined_vars());
+        }
+
         public function view()
         {
             $thread = Thread::get(Param::get('thread_id'));
@@ -29,7 +35,6 @@
                 case 'write':
                     break;
                 case 'write_end':
-                    $comment->username = Param::get('username');
                     $comment->body = Param::get('body');
                     try {
                        $thread->write($comment);
@@ -58,7 +63,6 @@
                     break;
                 case 'create_end':
                     $thread->title = Param::get('title');
-                    $comment->username = Param::get('username');
                     $comment->body = Param::get('body');
 
                     try {
@@ -73,6 +77,7 @@
             }
 
             $this->set(get_defined_vars());
-            $this->render($page);        }
+            $this->render($page);        
+        }
     }
 ?>

@@ -27,3 +27,5 @@ spl_autoload_register(function($name) {
         }
     }
 });
+
+session_start();

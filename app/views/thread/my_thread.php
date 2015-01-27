@@ -17,9 +17,9 @@
 
 <!--<a class="btn btn-large btn-primary" href="<?php eh(url('thread/create')) ?>">Create</a>-->
 <form class="span8 well" method="post" action="<?php eh(url('')) ?>">
-	<h2>All threads</h2>
+	<h2>My threads</h2>
 	<ul>
-	<?php foreach ($threads as $v): ?>
+	<?php foreach ($myThread as $v): ?>
 	<li>
 		<a href="<?php eh(url('thread/view', array('thread_id' => $v->id)))?>">
 			<?php eh($v->title) ?>

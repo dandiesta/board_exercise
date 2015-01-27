@@ -7,3 +7,8 @@ function validate_between($check, $min, $max)
 
 	return $min <= $n && $n <= $max;
 }
+
+function redirect($url)
+{
+	header("Location: " . $url);
+}

@@ -1,4 +1,3 @@
-<h1>Registration</h1>
 <?php if ($register->hasError()): ?>
 	<div class="alert alert-block">
 		<h4 class="alert-heading">Registration failed!</h4>
@@ -46,43 +45,51 @@
 				<em>Username</em> already existing. Please choose another.
 			</div>
 		<?php endif ?>
-
 	</div>
 <?php endif ?>
-<form class="well" method="post" action="<?php eh(url('')) ?>">
-	<div class="container">				
+
+
+<div class="container">
+    <div class="row">
+		<div class="span5 offset3 well">
+			<legend>Register Here</legend>
+          	
+			<form method="POST" action="">
 				<div class="col-lg-12">
-					<div class="form-group col-lg-12">
-						<label>First Name</label>
-						<input type="text" name="fname" class="form-control" value="<?php eh(Param::get('fname')) ?>">
-					</div>
-					
-					<div class="form-group col-lg-12">
-						<label>Last Name</label>
-						<input type="text" name="lname" class="form-control" value="<?php eh(Param::get('lname')) ?>">
-					</div>	
-					<div class="form-group col-lg-12">
-						<label>Username</label>
-						<input type="text" name="username" class="form-control" value="<?php eh(Param::get('username')) ?>">
-					</div>
-					
-					<div class="form-group col-lg-12">
-						<label>Password</label>
-						<input type="password" name="password" class="form-control" value="<?php eh(Param::get('password')) ?>">
-					</div>
-					
-					<div class="form-group col-lg-12">
-						<label>Repeat Password</label>
-						<input type="password" name="repeat_password" class="form-control" >
-					</div>
-									
-							
+					<label>First Name</label>
+					<input type="text" name="fname" class="span5" value="<?php eh(Param::get('fname')) ?>">
+				</div>
+				
+				<div class="col-lg-12">
+					<label>Last Name</label>
+					<input type="text" name="lname" class="span5" value="<?php eh(Param::get('lname')) ?>">
+				</div>	
+
+				<div class="col-lg-12">
+					<label>Username</label>
+					<input type="text" name="username" class="span5" value="<?php eh(Param::get('username')) ?>">
+				</div>
+						
+				<div class="col-lg-12">
+					<label>Password</label>
+					<input type="password" name="password" class="span5" value="<?php eh(Param::get('password')) ?>">
+				</div>
+						
+				<div class="col-lg-12">
+					<label>Repeat Password</label>
+					<input type="password" name="repeat_password" class="span5" >
 				</div>
 				<br />
 				<input type="hidden" name="page_next" value="success">
-				<div class="form-horizontal col-md-6">				
-					<button type="submit" class="btn btn-primary">Register</button>
+
+				<div class="col-lg-12">				
+					<button type="submit" class="btn btn-danger btn-block">Register</button>
 				</div>
 
+				<div>
+				<center>Already have an account? Click <a href="<?php eh(url('user/login')) ?>">here</a>.</center>
+				</div>
+			</form>    
+		</div>
 	</div>
-</form>
+</div>
