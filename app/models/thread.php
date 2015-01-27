@@ -48,31 +48,7 @@
 			return new self($row);
 		}
 
-		public function getComments()
-		{
-			$comments = array();
-
-			$db= DB::conn();
-
-			$rows = $db->rows('SELECT u.username, c.body, c.created FROM comment c INNER JOIN user u ON c.user_id=u.id WHERE c.thread_id = ? ORDER BY c.created ASC', array($this->id));
-
-			foreach ($rows as $row) {
-				$comments[] = new Comment($row);
-			}
-			return $comments;
-		}
-
-		public function write(Comment $comment) //Will enable us to insert data into the comment table
-		{
-			if (!$comment->validate()) {
-				throw new ValidationException('invalid comment');
-			}
-
-			$db = DB::conn();
-			$db->query('INSERT INTO comment SET thread_id = ?, user_id = ?, body = ?, created = NOW()',
-				array($this->id, $_SESSION['userid'], $comment->body));
-		}
-
+		
 		public function create(Comment $comment)
 		{
 			$this->validate();
@@ -93,7 +69,9 @@
 			$this->id = $db->lastInsertId(); //returns the latest inserted id within the function
 
 			//write first comment at the same time
-			$this->write($comment);
+			$comments = new Comment;
+			$comments->write($comment, $this->id);
+			
 
 			$db->commit();
 		}

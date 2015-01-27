@@ -21,7 +21,7 @@
 	<ul class="nav">
 	<?php foreach ($threads as $v): ?>
 	<li class="span8 well">
-		<a href="<?php enquote_string(url('thread/view', array('thread_id' => $v->id)))?>">
+		<a href="<?php enquote_string(url('comment/view', array('thread_id' => $v->id)))?>">
 			<?php enquote_string($v->title); ?><br/>
       <small>Posted by: <?php enquote_string($v->username); ?></small>
 		</a>	
