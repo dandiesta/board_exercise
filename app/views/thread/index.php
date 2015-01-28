@@ -20,7 +20,7 @@
 	
 	<ul class="nav">
 	<?php foreach ($threads as $v): ?>
-	<li class="span8 well">
+	<li class="well">
 		<a href="<?php enquote_string(url('comment/view', array('thread_id' => $v->id)))?>">
 			<?php enquote_string($v->title); ?><br/>
       <small>Posted by: <?php enquote_string($v->username); ?></small>
@@ -29,3 +29,20 @@
 	<?php endforeach ?>
 </ul>
 </form>
+
+
+
+<?php if($pagination->current > 1): ?>
+<a href='?page=<?php echo $pagination->prev ?>'>Previous</a>
+<?php else: ?>
+Previous
+<?php endif ?>
+<?php foreach ($items as $item): ?>
+<a href="<?php echo $item['id'] ?>"><?php echo $item['id'] ?></a>&nbsp;
+<?php endforeach ?>
+<?php if(!$pagination->is_last_page): ?>
+<a href='?page=<?php echo $pagination->next ?>'>Next</a>
+<?php else: ?>
+Next
+<?php endif ?>
+

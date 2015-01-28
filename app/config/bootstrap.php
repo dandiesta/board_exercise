@@ -11,6 +11,7 @@ require_once HELPERS_DIR.'validation_helper.php';
 
 // vendor
 require_once VENDOR_DIR.'SimpleDBI/SimpleDBI.php';
+require_once VENDOR_DIR.'SimplePagination.php';
 
 // config
 require_once CONFIG_DIR.'log.php';
