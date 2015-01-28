@@ -63,36 +63,24 @@ class UserController extends AppController
 
 	public function logout()
 	{
-		$user = new User;
-		$page = Param::get('page_next', 'logout');
-
-		switch ($page) {
-			case 'logout':
-				break;
-			case 'login':
-				try {
-					session_destroy();
-					header("Location: user/login");
-				} catch (ValidationException $e) {
-					$page = 'logout';
-				}		
-				break;
-			default:
-				throw new NotFoundException("{$page} not found");
-				
-				break;
-		}
+		session_destroy();
+		redirect('login');
 		
 	}
 
 	public function home()
 	{
-		$home = new User;
-		
-		$user = $home->get_from_user();
-        $fname = $user['fname'];
-        
-        $this->set(get_defined_vars());
+		if (!isset($_SESSION['userid'])) {
+			redirect('login');
+		}
+		else {
+			$home = new User;
+			
+			$user = $home->get_from_user();
+	        $fname = $user['fname'];
+	        
+	        $this->set(get_defined_vars());
+    	}
 	}
 }
 

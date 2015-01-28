@@ -2,7 +2,7 @@
     class ThreadController extends AppController
     {
         CONST MAX_PAGINATION_COUNT =10; //max display ng pages initially
-        CONST MAX_ITEMS_PER_PAGE = 5; //max kung ilan ididisplay per page
+        CONST MAX_ITEMS_PER_PAGE = 6; //max kung ilan ididisplay per page
 
         public function index()
         {
@@ -11,11 +11,10 @@
 
             //$items = array();
             $current = Param::get('page');
-            $count = 1;
             $chunk_page = array_chunk($threads, self::MAX_ITEMS_PER_PAGE); //nahati hati na yung array into chunks
             $count_chunks = count($chunk_page); //kung ilang chunks meron
             
-            $pagination = new SimplePagination($current, $count);
+            $pagination = new SimplePagination($current);
             $display = $pagination->links($chunk_page, $current);
             $pagination->checkLastPage($count_chunks);
 
@@ -32,13 +31,12 @@
             $myThread = Thread::getMyThreads();
             
             $current = Param::get('page');
-            $count = 1;
             $chunk_page = array_chunk($myThread, self::MAX_ITEMS_PER_PAGE);
             $count_chunks = count($chunk_page);
             
-            $pagination = new SimplePagination($current, $count);
+            $pagination = new SimplePagination($current);
             $display = $pagination->links($chunk_page, $current);
-            $pagination->checkLastPage($chunk_page);
+            $pagination->checkLastPage($count_chunks);
 
             $this->set(get_defined_vars());
         }

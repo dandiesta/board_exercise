@@ -1,12 +1,13 @@
-<?php if (!$user->login_verification): ?>
-	<div class="alert alert-block">
-		<h4 class="alert-heading">Login failed!</h4>
-		
-			<div>
-				Incorrect username/password.
-			</div>
-	</div>
-<?php endif ?>
+<?php
+	if (!$user->login_verification): ?>
+		<div class="alert alert-block">
+			<h4 class="alert-heading">Login failed!</h4>
+			
+				<div>
+					Incorrect username/password.
+				</div>
+		</div>
+	<?php endif; ?>
 			<form method="POST" action="" class="span5 offset3 well">
 			<legend>Please Sign In</legend>
 				<div>
