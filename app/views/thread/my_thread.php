@@ -2,8 +2,8 @@
   <div class="container-fluid">
     <div>
       <ul class="nav navbar-nav">
-        <li><a href="<?php enquote_string(url('thread/index')) ?>">All Threads</a></li>
-        <li><a href="<?php enquote_string(url('thread/my_thread')) ?>">My Threads</a></li>
+        <li><a href="<?php enquote_string(url('thread/index?page=1')) ?>">All Threads</a></li>
+        <li><a href="<?php enquote_string(url('thread/my_thread?page=1')) ?>">My Threads</a></li>
         <li><a href="<?php enquote_string(url('thread/create')) ?>">Create New Thread</a></li>
         
       </ul>
@@ -16,34 +16,31 @@
 </nav>
 
 
-	<h2>My threads</h2>
+<h2>My threads</h2>
 <form method="post" action="<?php enquote_string(url('')) ?>">
-
- 
+  
   <ul class="nav">
-  <?php foreach ($myThread as $v): ?>
-  <li class="span11 well">
-    <a href="<?php enquote_string(url('comment/view', array('thread_id' => $v->id)))?>" class="span10">
-      <?php enquote_string($v->title); ?><br/>
-      <small>Posted by: <?php enquote_string($v->username); ?></small>
-    </a>
-    <button class="btn btn-danger pull-right" type="submit" >X</button>  
-  </li>
-  <?php endforeach ?>
+    <?php foreach ($display as $v): ?>
+      <li class="well">
+        <a href="<?php enquote_string(url('comment/view', array('thread_id' => $v['id'])))?>">
+          <?php enquote_string($v['title']); ?><br/>
+          <small>Posted by: <?php enquote_string($v['username']); ?></small>
+        </a>  
+      </li>
+    <?php endforeach ?>
 </ul>
 </form>
-
+</pre>
 <!--pagination-->
 <?php if($pagination->current > 1): ?>
 <a class="btn btn-danger" href='?page=<?php echo $pagination->prev ?>'>Previous</a>
 <?php endif ?>
 
 <?php for ($i=1; $i <= $count_chunks; $i++): ?>
-  <a class="btn btn-danger" href=""><?php echo $i; ?></a>&nbsp;
+  <a class="btn btn-danger" href="?page=<?php echo $i ?>"><?php echo $i; ?></a>&nbsp;
 <?php endfor ?>  
 
 
 <?php if(!$pagination->is_last_page): ?>
 <a class="btn btn-danger" href='?page=<?php echo $pagination->next ?>'>Next</a>
 <?php endif ?>
-

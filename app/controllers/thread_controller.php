@@ -12,16 +12,17 @@
             //$items = array();
             $current = Param::get('page');
             $count = 1;
-            $chunk_page = array_chunk($threads, 5); //nahati hati na yung array into chunks
+            $chunk_page = array_chunk($threads, self::MAX_ITEMS_PER_PAGE); //nahati hati na yung array into chunks
             $count_chunks = count($chunk_page); //kung ilang chunks meron
+            
             $pagination = new SimplePagination($current, $count);
             $display = $pagination->links($chunk_page, $current);
-            $pagination->checkLastPage($chunk_page);
-
-            
-            $this->set(get_defined_vars());
+            $pagination->checkLastPage($count_chunks);
 
             //Set all defined vars to its view (views/thread/index.php)
+            $this->set(get_defined_vars());
+
+            
             
         }
 
@@ -32,16 +33,12 @@
             
             $current = Param::get('page');
             $count = 1;
-            $chunk_page = array_chunk($myThread, 2); //nahati hati na yung array into chunks
-            $count_chunks = count($chunk_page); //kung ilang chunks meron
+            $chunk_page = array_chunk($myThread, self::MAX_ITEMS_PER_PAGE);
+            $count_chunks = count($chunk_page);
+            
             $pagination = new SimplePagination($current, $count);
+            $display = $pagination->links($chunk_page, $current);
             $pagination->checkLastPage($chunk_page);
-
-            #$current = Param::get('page'); //current page
-            #$count = count($myThread); //count kung ilan laman ng array
-            #$pagination = $count/$num_per_page; //kung ilan yung total pages sa baba
-            #$display = new SimplePagination;
-            #$display->links(MAX_ITEMS_PER_PAGE, $myThread, $pagination);
 
             $this->set(get_defined_vars());
         }

@@ -39,20 +39,20 @@ class SimplePagination
      * @param array &$items 取得できたアイテムの数から最終ページかどうか判断する。
      * @return void
      */
-    public function checkLastPage(array &$items)
+    public function checkLastPage($item)
     {
-        if (count($items) <= $this->count) {
+        #if (count($items) <= $this->count) {
+        #    $this->is_last_page = true;
+        #} else {
+        #    $this->is_last_page = false;
+        #    array_pop($items);
+        #}
+        if ($item <= $this->current) {
             $this->is_last_page = true;
         } else {
             $this->is_last_page = false;
-            array_pop($items);
         }
     }
-
-    #public function links($items_per_page, $contents, $pagination) //items per page 5
-    #{
-    #    $display = array_chunk($contents, $num_per_page); //
-    #}
 
     public function links($chunk_thread, $i)
     {

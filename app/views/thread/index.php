@@ -2,8 +2,8 @@
   <div class="container-fluid">
     <div>
       <ul class="nav navbar-nav">
-        <li><a href="<?php enquote_string(url('thread/index')) ?>">All Threads</a></li>
-        <li><a href="<?php enquote_string(url('thread/my_thread')) ?>">My Threads</a></li>
+        <li><a href="<?php enquote_string(url('thread/index?page=1')) ?>">All Threads</a></li>
+        <li><a href="<?php enquote_string(url('thread/my_thread?page=1')) ?>">My Threads</a></li>
         <li><a href="<?php enquote_string(url('thread/create')) ?>">Create New Thread</a></li>
         
       </ul>
@@ -19,20 +19,14 @@
 <form method="post" action="<?php enquote_string(url('')) ?>">
 	
 	<ul class="nav">
- <!--<li class="well">
-    <a href="<?php enquote_string(url('comment/view', array('thread_id' => $display['id'])))?>">
-      <?php enquote_string($display['title']); ?><br/>
-      <small>Posted by: <?php enquote_string($display['username']); ?></small>
-    </a>  
-  </li>-->
-  <?php foreach ($display as $v): ?>
-	<li class="well">
-		<a href="<?php enquote_string(url('comment/view', array('thread_id' => $v['id'])))?>">
-			<?php enquote_string($v['title']); ?><br/>
-      <small>Posted by: <?php enquote_string($v['username']); ?></small>
-		</a>	
-	</li>
-	<?php endforeach ?>
+    <?php foreach ($display as $v): ?>
+    	<li class="well">
+    		<a href="<?php enquote_string(url('comment/view', array('thread_id' => $v['id'])))?>">
+    			<?php enquote_string($v['title']); ?><br/>
+          <small>Posted by: <?php enquote_string($v['username']); ?></small>
+    		</a>	
+    	</li>
+  	<?php endforeach ?>
 </ul>
 </form>
 </pre>
