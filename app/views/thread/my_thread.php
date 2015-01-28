@@ -33,14 +33,15 @@
 </ul>
 </form>
 
+<!--pagination-->
 <?php if($pagination->current > 1): ?>
 <a class="btn btn-danger" href='?page=<?php echo $pagination->prev ?>'>Previous</a>
 <?php endif ?>
 
-<?php foreach ($items as $item): ?>
+<?php for ($i=1; $i <= $count_chunks; $i++): ?>
+  <a class="btn btn-danger" href=""><?php echo $i; ?></a>&nbsp;
+<?php endfor ?>  
 
-<a href="<?php echo $item['id'] ?>"><?php echo $item['id'] ?></a>&nbsp;
-<?php endforeach ?>
 
 <?php if(!$pagination->is_last_page): ?>
 <a class="btn btn-danger" href='?page=<?php echo $pagination->next ?>'>Next</a>

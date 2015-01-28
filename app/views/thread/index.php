@@ -19,30 +19,34 @@
 <form method="post" action="<?php enquote_string(url('')) ?>">
 	
 	<ul class="nav">
-	<?php foreach ($threads as $v): ?>
+ <!--<li class="well">
+    <a href="<?php enquote_string(url('comment/view', array('thread_id' => $display['id'])))?>">
+      <?php enquote_string($display['title']); ?><br/>
+      <small>Posted by: <?php enquote_string($display['username']); ?></small>
+    </a>  
+  </li>-->
+  <?php foreach ($display as $v): ?>
 	<li class="well">
-		<a href="<?php enquote_string(url('comment/view', array('thread_id' => $v->id)))?>">
-			<?php enquote_string($v->title); ?><br/>
-      <small>Posted by: <?php enquote_string($v->username); ?></small>
+		<a href="<?php enquote_string(url('comment/view', array('thread_id' => $v['id'])))?>">
+			<?php enquote_string($v['title']); ?><br/>
+      <small>Posted by: <?php enquote_string($v['username']); ?></small>
 		</a>	
 	</li>
 	<?php endforeach ?>
 </ul>
 </form>
-
-
-
+</pre>
+<!--pagination-->
 <?php if($pagination->current > 1): ?>
-<a href='?page=<?php echo $pagination->prev ?>'>Previous</a>
-<?php else: ?>
-Previous
+<a class="btn btn-danger" href='?page=<?php echo $pagination->prev ?>'>Previous</a>
 <?php endif ?>
-<?php foreach ($items as $item): ?>
-<a href="<?php echo $item['id'] ?>"><?php echo $item['id'] ?></a>&nbsp;
-<?php endforeach ?>
+
+<?php for ($i=1; $i <= $count_chunks; $i++): ?>
+  <a class="btn btn-danger" href="?page=<?php echo $i ?>"><?php echo $i; ?></a>&nbsp;
+<?php endfor ?>  
+
+
 <?php if(!$pagination->is_last_page): ?>
-<a href='?page=<?php echo $pagination->next ?>'>Next</a>
-<?php else: ?>
-Next
+<a class="btn btn-danger" href='?page=<?php echo $pagination->next ?>'>Next</a>
 <?php endif ?>
 

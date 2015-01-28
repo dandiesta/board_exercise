@@ -49,8 +49,28 @@ class SimplePagination
         }
     }
 
-    public function links($items_per_page, $contents, $pagination) //items per page 5
+    #public function links($items_per_page, $contents, $pagination) //items per page 5
+    #{
+    #    $display = array_chunk($contents, $num_per_page); //
+    #}
+
+    public function links($chunk_thread, $i)
     {
-        $display = array_chunk($contents, $num_per_page); //
+        $chunk = $chunk_thread[$i-1];
+
+        foreach ($chunk as $c)
+        {
+           $title = $c->title;
+           $id = $c->id;
+           $username = $c->username;
+
+            $individual[] = array(
+                'title' => $title,
+                'id' => $id, 
+                'username' => $username
+                );
+
+        }
+        return $individual;
     }
 }

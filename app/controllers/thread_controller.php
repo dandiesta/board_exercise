@@ -11,12 +11,18 @@
 
             //$items = array();
             $current = Param::get('page');
-            $count = 3;
+            $count = 1;
+            $chunk_page = array_chunk($threads, 5); //nahati hati na yung array into chunks
+            $count_chunks = count($chunk_page); //kung ilang chunks meron
             $pagination = new SimplePagination($current, $count);
-            $pagination->checkLastPage($threads);
+            $display = $pagination->links($chunk_page, $current);
+            $pagination->checkLastPage($chunk_page);
+
+            
+            $this->set(get_defined_vars());
 
             //Set all defined vars to its view (views/thread/index.php)
-            $this->set(get_defined_vars());
+            
         }
 
         public function my_thread()
@@ -25,10 +31,11 @@
             $myThread = Thread::getMyThreads();
             
             $current = Param::get('page');
-            $count = 3;
-            $chunk_page = array_chunk($myThread, 2);
+            $count = 1;
+            $chunk_page = array_chunk($myThread, 2); //nahati hati na yung array into chunks
+            $count_chunks = count($chunk_page); //kung ilang chunks meron
             $pagination = new SimplePagination($current, $count);
-            $pagination->checkLastPage($myThread);
+            $pagination->checkLastPage($chunk_page);
 
             #$current = Param::get('page'); //current page
             #$count = count($myThread); //count kung ilan laman ng array
