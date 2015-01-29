@@ -2,11 +2,17 @@
 
 class User extends AppModel
 {
+    const MIN_LENGTH = 1;
+    const MIN_LENGTH_PASSWORD = 8;
+    const MAX_LENGTH_NAME = 50;
+    const MAX_LENGTH_USERNAME = 16;
+    const MAX_LENGTH_PASSWORD = 20;
+
     public $login_verification = true;
     public $validation = array(
             'fname' => array(
                 'length' => array(
-                    'validate_between', 1, 50,
+                    'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_NAME,
                 ),
                 'confirmation' => array(
                     'name_checker'
@@ -15,7 +21,7 @@ class User extends AppModel
 
             'lname' => array(
                 'length' => array(
-                    'validate_between', 1, 50,
+                    'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_NAME,
                 ),
                 'confirmation' => array(
                     'name_checker'
@@ -24,7 +30,7 @@ class User extends AppModel
 
             'username' => array(
                 'length' => array(
-                    'validate_between', 1, 16,
+                    'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_USERNAME,
                 ),
                 'confirmation' => array(
                     'username_checker'
@@ -33,7 +39,7 @@ class User extends AppModel
 
             'password' => array(
                 'length' => array(
-                    'validate_between',8, 20,
+                    'validate_between', self::MIN_LENGTH_PASSWORD, self::MAX_LENGTH_PASSWORD,
                 ),
                 'confirmation' => array(
                     'password_checker'
