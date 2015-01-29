@@ -8,11 +8,17 @@ class User extends AppModel
                 'length' => array(
                     'validate_between', 1, 50,
                 ),
+                'confirmation' => array(
+                    'name_checker'
+                ),
             ),
 
             'lname' => array(
                 'length' => array(
                     'validate_between', 1, 50,
+                ),
+                'confirmation' => array(
+                    'name_checker'
                 ),
             ),
 
@@ -46,6 +52,11 @@ class User extends AppModel
         $is_username_existing = $db->row('SELECT username FROM user WHERE username = ?', array($this->username));
 
         if (!$is_username_existing) return true;
+    }
+
+    public function name_checker($name)
+    {
+        return ctype_alpha($name);
     }
 
     public function login()

@@ -9,12 +9,24 @@
                 <?php enquote_string($register->validation['fname']['length'][2]) ?> characters in length.
             </div>
         <?php endif ?>
+
+        <?php if (!empty($register->validation_errors['fname']['confirmation'])): ?>
+            <div>
+                <em>First name</em> should contain letters only.
+            </div>
+        <?php endif ?>
         
         <?php if (!empty($register->validation_errors['lname']['length'])): ?>
             <div>
                 <em>Last name</em> must be between
                 <?php enquote_string($register->validation['lname']['length'][1]) ?> and
                 <?php enquote_string($register->validation['lname']['length'][2]) ?> characters in length.
+            </div>
+        <?php endif ?>
+
+        <?php if (!empty($register->validation_errors['lname']['confirmation'])): ?>
+            <div>
+                <em>Last name</em> should contain letters only.
             </div>
         <?php endif ?>
 
