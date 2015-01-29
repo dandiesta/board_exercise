@@ -1,4 +1,5 @@
 <?php
+
 class Controller
 {
     public $name;           // コントローラ名
@@ -17,14 +18,6 @@ class Controller
 
     public function beforeFilter()
     {
-        /*if (!isset($_SESSION['userid'])) {
-            header(url('user/login'));
-
-        }*/
-
-        /*if (!isset($_SESSION['userid'])) {
-            redirect(url('login'));
-        }*/
     }
 
     public function afterFilter()
@@ -52,7 +45,6 @@ class Controller
 
         // アクションの実行
         $this->{$this->action}();
-
         $this->render();
     }
 

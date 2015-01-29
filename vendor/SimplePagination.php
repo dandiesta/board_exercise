@@ -14,7 +14,6 @@ class SimplePagination
     public $current;        // 現在のページ番号
     public $prev;           // ひとつ前のページ番号
     public $next;           // ひとつ次のページ番号
-    #public $count;          // 1ページに何件表示するか
     public $start_index;    // 何件目から表示するか（1オリジン）
     public $is_last_page;   // 最終ページかどうか
 
@@ -58,8 +57,7 @@ class SimplePagination
     {
         $chunk = $chunk_thread[$i-1];
 
-        foreach ($chunk as $c)
-        {
+        foreach ($chunk as $c) {
            $title = $c->title;
            $id = $c->id;
            $username = $c->username;
@@ -69,8 +67,8 @@ class SimplePagination
                 'id' => $id, 
                 'username' => $username
                 );
-
         }
+
         return $individual;
     }
 
@@ -78,8 +76,7 @@ class SimplePagination
     {
         $chunk = $chunk_comment[$i-1];
 
-        foreach ($chunk as $c)
-        { 
+        foreach ($chunk as $c) { 
             $body = $c->body;
             $created = $c->created;
             $username = $c->username;
@@ -89,8 +86,8 @@ class SimplePagination
                 'created' => $created, 
                 'username' => $username
                 );
-
         }
+
         return $individual;
     }
 }
