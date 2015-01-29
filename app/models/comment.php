@@ -28,7 +28,7 @@ class Comment extends AppModel
         return $comments;
     }
 
-    public function write(Comment $comment, $id)
+    public function write(Comment $comment, $thread_id, $user_id)
     {
         if (!$comment->validate()) {
             throw new ValidationException('Invalid Comment');
@@ -36,6 +36,6 @@ class Comment extends AppModel
 
         $db = DB::conn();
         $db->query('INSERT INTO comment SET thread_id = ?, user_id = ?, body = ?, created = NOW()',
-            array($id, $_SESSION['userid'], $comment->body));
+            array($thread_id, $user_id, $comment->body));
     }
 }

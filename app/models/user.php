@@ -74,7 +74,7 @@ class User extends AppModel
 
         if (!$row) {
             $this->login_verification =false;
-            throw new RecordNotFoundException('no record found');
+            throw new RecordNotFoundException('No Record Found');
         }
 
         return $row;
@@ -85,7 +85,7 @@ class User extends AppModel
         $this->validate();
 
         if ($this->hasError()) {
-                throw new ValidationException('error in registration');
+                throw new ValidationException('Error in Registration');
         }
         
         $db = DB::conn();

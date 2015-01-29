@@ -2,7 +2,7 @@
     <div class="alert alert-block">
         <h4 class="alert-heading">Registration failed!</h4>
 
-        <?php if (!empty($register->validation_errors['fname']['length'])): ?>
+        <?php if ($register->validation_errors['fname']['length']): ?>
             <div>
                 <em>First name</em> must be between
                 <?php enquote_string($register->validation['fname']['length'][1]) ?> and
@@ -10,13 +10,13 @@
             </div>
         <?php endif ?>
 
-        <?php if (!empty($register->validation_errors['fname']['confirmation'])): ?>
+        <?php if ($register->validation_errors['fname']['confirmation']): ?>
             <div>
                 <em>First name</em> should contain letters only.
             </div>
         <?php endif ?>
         
-        <?php if (!empty($register->validation_errors['lname']['length'])): ?>
+        <?php if ($register->validation_errors['lname']['length']): ?>
             <div>
                 <em>Last name</em> must be between
                 <?php enquote_string($register->validation['lname']['length'][1]) ?> and
@@ -24,13 +24,13 @@
             </div>
         <?php endif ?>
 
-        <?php if (!empty($register->validation_errors['lname']['confirmation'])): ?>
+        <?php if ($register->validation_errors['lname']['confirmation']): ?>
             <div>
                 <em>Last name</em> should contain letters only.
             </div>
         <?php endif ?>
 
-        <?php if (!empty($register->validation_errors['password']['length'])): ?>
+        <?php if ($register->validation_errors['password']['length']): ?>
             <div>
                 <em>Password</em> must be between
                 <?php enquote_string($register->validation['password']['length'][1]) ?> and
@@ -38,7 +38,7 @@
             </div>
         <?php endif ?>
 
-        <?php if (!empty($register->validation_errors['username']['length'])): ?>
+        <?php if ($register->validation_errors['username']['length']): ?>
             <div>
                 <em>Username</em> must be between
                 <?php enquote_string($register->validation['username']['length'][1]) ?> and
@@ -46,13 +46,13 @@
             </div>
         <?php endif ?>
 
-        <?php if (!empty($register->validation_errors['password']['confirmation'])): ?>
+        <?php if ($register->validation_errors['password']['confirmation']): ?>
             <div>
                 <em>Password</em> is not the same.
             </div>
         <?php endif ?>
 
-        <?php if (!empty($register->validation_errors['username']['confirmation'])): ?>
+        <?php if ($register->validation_errors['username']['confirmation']): ?>
             <div>
                 <em>Username</em> already existing. Please choose another.
             </div>

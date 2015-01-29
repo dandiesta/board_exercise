@@ -36,7 +36,7 @@ class CommentController extends AppController
                 $comment->body = Param::get('body');
 
                 try {
-                    $comment->write($comment, $thread->id);
+                    $comment->write($comment, $thread->id, $_SESSION['userid']);
                 } catch (ValidationException $e) {
                     $page = 'write';
                 }

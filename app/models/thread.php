@@ -28,7 +28,7 @@ class Thread extends AppModel
         return $threads;
     }
 
-    public static function getMyThreads()
+    public static function getMyThreads($user_id)
     {
         $threads = array();
         $db = DB::conn();
@@ -36,7 +36,7 @@ class Thread extends AppModel
             INNER JOIN user u ON t.user_id=u.id 
             WHERE user_id=? 
             ORDER BY created DESC', 
-            array($_SESSION['userid']));
+            array($user_id));
 
         foreach ($rows as $row) {
             $threads[] = new Thread($row);
@@ -57,7 +57,7 @@ class Thread extends AppModel
         return new self($row);
     }
 
-    public function create(Comment $comment)
+    public function create(Comment $comment, $user_id)
     {
         $this->validate();
         $comment->validate();
@@ -70,12 +70,12 @@ class Thread extends AppModel
         $db->begin();
 
         $db->query('INSERT INTO thread SET title = ?, user_id = ?, created = NOW()', 
-            array($this->title, $_SESSION['userid']));
+            array($this->title, $user_id));
 
         $this->id = $db->lastInsertId();
 
         $comments = new Comment;
-        $comments->write($comment, $this->id);
+        $comments->write($comment, $this->id, $_SESSION['userid']);
             
         $db->commit();
     }

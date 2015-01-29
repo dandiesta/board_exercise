@@ -22,17 +22,19 @@ class ThreadController extends AppController
 
     public function my_thread()
     {
-        $myThread = Thread::getMyThreads();
+        $myThread = Thread::getMyThreads($_SESSION['userid']);
+        
+        if ($myThread) {
+            $current = max(Param::get('page'), self::MIN_PAGE_NUMBER);
+            $chunk_page = array_chunk($myThread, self::MAX_ITEMS_PER_PAGE);
+            $count_chunks = count($chunk_page);
 
-        $current = max(Param::get('page'), self::MIN_PAGE_NUMBER);
-        $chunk_page = array_chunk($myThread, self::MAX_ITEMS_PER_PAGE);
-        $count_chunks = count($chunk_page);
+            $pagination = new SimplePagination($current);
+            $display = $pagination->threadLinks($chunk_page, $current);
+            $pagination->checkLastPage($count_chunks);
 
-        $pagination = new SimplePagination($current);
-        $display = $pagination->threadLinks($chunk_page, $current);
-        $pagination->checkLastPage($count_chunks);
-
-        $this->set(get_defined_vars());
+            $this->set(get_defined_vars());
+        }
     }
 
     public function create()
@@ -49,7 +51,7 @@ class ThreadController extends AppController
                 $comment->body = Param::get('body');
 
                 try {
-                    $thread->create($comment);
+                    $thread->create($comment, $_SESSION['userid']);
                 } catch (ValidationException $e) {
                     $page = 'create';
                 }

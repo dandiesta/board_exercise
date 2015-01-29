@@ -1,5 +1,9 @@
 <h2>My threads</h2>
-
+<?php if (empty($myThread)): ?>
+    <div class="alert alert-block">
+        <h4 class="alert-heading">You haven't posted any threads yet!</h4>
+    </div>
+<?php else: ?>
 <form method="post" action="<?php enquote_string(url('')) ?>">
     <ul class="nav">
         <?php foreach ($display as $v): ?>
@@ -24,4 +28,5 @@
 
 <?php if(!$pagination->is_last_page): ?>
     <a class="btn btn-danger" href='?page=<?php echo $pagination->next ?>'>Next</a>
+<?php endif ?>
 <?php endif ?>
