@@ -4,7 +4,7 @@
 	<ul class="nav">
     <?php foreach ($display as $v): ?>
     	<li class="well">
-    		<a href="<?php enquote_string(url('comment/view', array('thread_id' => $v['id'])))?>">
+    		<a href="<?php enquote_string(url('comment/view', array('thread_id'=>$v['id'])))?>">
     			<?php enquote_string($v['title']); ?><br/>
           <small>Posted by: <?php enquote_string($v['username']); ?></small>
     		</a>	
@@ -12,7 +12,7 @@
   	<?php endforeach ?>
 </ul>
 </form>
-</pre>
+
 <!--pagination-->
 <?php if($pagination->current > 1): ?>
 <a class="btn btn-danger" href='?page=<?php echo $pagination->prev ?>'>Previous</a>

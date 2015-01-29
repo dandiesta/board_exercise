@@ -54,7 +54,7 @@ class SimplePagination
         }
     }
 
-    public function links($chunk_thread, $i)
+    public function threadLinks($chunk_thread, $i)
     {
         $chunk = $chunk_thread[$i-1];
 
@@ -67,6 +67,26 @@ class SimplePagination
             $individual[] = array(
                 'title' => $title,
                 'id' => $id, 
+                'username' => $username
+                );
+
+        }
+        return $individual;
+    }
+
+    public function commentLinks($chunk_comment, $i)
+    {
+        $chunk = $chunk_comment[$i-1];
+
+        foreach ($chunk as $c)
+        { 
+            $body = $c->body;
+            $created = $c->created;
+            $username = $c->username;
+
+            $individual[] = array(
+                'body' => $body,
+                'created' => $created, 
                 'username' => $username
                 );
 

@@ -34,31 +34,36 @@ class UserController extends AppController
 
 	public function login()
 	{
-		$user = new User;
-		$page = Param::get('page_next', 'login');
-
-		switch ($page) {
-			case 'login':
-				break;
-			case 'home':
-				$user->username = Param::get('username');
-				$user->password = Param::get('password');
-			
-				try {
-					$user = $user->login();
-					$_SESSION['userid'] = $user['id'];
-              		$fname = $user['fname'];
-            	} catch (ValidationException $e) {                    
-            	   $page = 'login';
-            	}    
-				break;
-			default:
-                throw new NotFoundException("{$page} not found");
-                break;
+		if (isset($_SESSION['userid'])) {
+			redirect('/');
 		}
+		else {
+			$user = new User;
+			$page = Param::get('page_next', 'login');
 
-		$this->set(get_defined_vars());
-		$this->render($page);
+			switch ($page) {
+				case 'login':
+					break;
+				case 'home':
+					$user->username = Param::get('username');
+					$user->password = Param::get('password');
+				
+					try {
+						$user = $user->login();
+						$_SESSION['userid'] = $user['id'];
+	              		$fname = $user['fname'];
+	            	} catch (ValidationException $e) {                    
+	            	   $page = 'login';
+	            	}    
+					break;
+				default:
+	                throw new NotFoundException("{$page} not found");
+	                break;
+			}
+
+			$this->set(get_defined_vars());
+			$this->render($page);
+		}
 	}
 
 	public function logout()
@@ -71,7 +76,7 @@ class UserController extends AppController
 	public function home()
 	{
 		if (!isset($_SESSION['userid'])) {
-			redirect('login');
+			redirect('user/login');
 		}
 		else {
 			$home = new User;

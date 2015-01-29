@@ -2,6 +2,9 @@
 
 class CommentController extends AppController
 {
+    CONST MAX_ITEMS_PER_PAGE = 5;
+    CONST MIN_PAGE_NUMBER = 1;
+
 	public function view()
         {
             $thread = Thread::get(Param::get('thread_id'));
@@ -9,6 +12,14 @@ class CommentController extends AppController
             //getComment() as an array, and pass it to the view
             $comment = new Comment;
             $comments = $comment->getComments($thread->id);
+
+            $current = max(Param::get('page'), self::MIN_PAGE_NUMBER);
+            $chunk_page = array_chunk($comments, self::MAX_ITEMS_PER_PAGE);
+            $count_chunks = count($chunk_page); 
+            
+            $pagination = new SimplePagination($current);
+            $display = $pagination->commentLinks($chunk_page, $current);
+            $pagination->checkLastPage($count_chunks);
 
             $this->set(get_defined_vars());
         }

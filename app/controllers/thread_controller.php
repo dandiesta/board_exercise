@@ -1,21 +1,21 @@
 <?php
     class ThreadController extends AppController
     {
-        CONST MAX_PAGINATION_COUNT =10; //max display ng pages initially
+        #CONST MAX_PAGINATION_COUNT =10; //max display ng pages initially
         CONST MAX_ITEMS_PER_PAGE = 6; //max kung ilan ididisplay per page
+        CONST MIN_PAGE_NUMBER = 1;
 
         public function index()
         {
         	//Create an instance of Thread model, and call its static function getAll()
             $threads = Thread::getAll(); 
 
-            //$items = array();
-            $current = Param::get('page');
+            $current = max(Param::get('page'), self::MIN_PAGE_NUMBER);
             $chunk_page = array_chunk($threads, self::MAX_ITEMS_PER_PAGE); //nahati hati na yung array into chunks
             $count_chunks = count($chunk_page); //kung ilang chunks meron
             
             $pagination = new SimplePagination($current);
-            $display = $pagination->links($chunk_page, $current);
+            $display = $pagination->threadLinks($chunk_page, $current);
             $pagination->checkLastPage($count_chunks);
 
             //Set all defined vars to its view (views/thread/index.php)
@@ -30,12 +30,12 @@
             
             $myThread = Thread::getMyThreads();
             
-            $current = Param::get('page');
+            $current = max(Param::get('page'), self::MIN_PAGE_NUMBER);
             $chunk_page = array_chunk($myThread, self::MAX_ITEMS_PER_PAGE);
             $count_chunks = count($chunk_page);
             
             $pagination = new SimplePagination($current);
-            $display = $pagination->links($chunk_page, $current);
+            $display = $pagination->threadLinks($chunk_page, $current);
             $pagination->checkLastPage($count_chunks);
 
             $this->set(get_defined_vars());

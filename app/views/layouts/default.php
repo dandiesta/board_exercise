@@ -19,7 +19,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="/user/home">My Forum</a>
+          <a class="brand" href="/">My Forum</a>
         </div>
       </div>
     </div>
@@ -30,8 +30,8 @@
           <div class="container-fluid">
             <div>
               <ul class="nav navbar-nav">
-                <li><a href="<?php enquote_string(url('thread/index?page=1')) ?>">All Threads</a></li>
-                <li><a href="<?php enquote_string(url('thread/my_thread?page=1')) ?>">My Threads</a></li>
+                <li><a href="<?php enquote_string(url('thread/index')) ?>">All Threads</a></li>
+                <li><a href="<?php enquote_string(url('thread/my_thread')) ?>">My Threads</a></li>
                 <li><a href="<?php enquote_string(url('thread/create')) ?>">Create New Thread</a></li>
                 
               </ul>
