@@ -25,7 +25,8 @@ class CommentController extends AppController
 
     public function write()
     {
-        $thread = Thread::get(Param::get('thread_id'));
+        $thread_id = Param::get('thread_id');
+        $thread = Thread::get($thread_id);
         $comment = new Comment();
         $page = Param::get('page_next', 'write');
 
@@ -37,6 +38,7 @@ class CommentController extends AppController
 
                 try {
                     $comment->write($comment, $thread->id, $_SESSION['userid']);
+                    $thread->updateLatestThread($thread_id);
                 } catch (ValidationException $e) {
                     $page = 'write';
                 }

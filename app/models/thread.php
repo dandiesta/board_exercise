@@ -19,7 +19,7 @@ class Thread extends AppModel
         $db = DB::conn();
         $rows = $db->rows('SELECT t.id, t.title, t.created, u.username FROM thread t 
             INNER JOIN user u ON t.user_id=u.id 
-            ORDER BY created DESC');
+            ORDER BY t.latest DESC');
             
         foreach ($rows as $row) {
             $threads[] = new Thread($row);
@@ -57,6 +57,15 @@ class Thread extends AppModel
         return new self($row);
     }
 
+    public function getLatest()
+    {
+        $db= DB::conn();
+        $row = $db->row('SELECT latest FROM thread ORDER BY latest DESC');
+
+        return $row['latest'];
+
+    }
+
     public function create(Comment $comment, $user_id)
     {
         $this->validate();
@@ -69,14 +78,23 @@ class Thread extends AppModel
         $db = DB::conn();
         $db->begin();
 
-        $db->query('INSERT INTO thread SET title = ?, user_id = ?, created = NOW()', 
-            array($this->title, $user_id));
+        $db->query('INSERT INTO thread SET title = ?, user_id = ?, created = NOW(), latest=?',
+            array($this->title, $user_id, $this->getLatest()+1));
 
         $this->id = $db->lastInsertId();
 
         $comments = new Comment;
         $comments->write($comment, $this->id, $_SESSION['userid']);
             
+        $db->commit();
+    }
+
+    public function updateLatestThread($thread_id)
+    {
+        //get value of latest then add 1 
+        $db = DB::conn();
+        $update = $db->query('UPDATE thread SET latest=? WHERE id=?', array(($this->getLatest() + 1), $thread_id));
+
         $db->commit();
     }
 }
