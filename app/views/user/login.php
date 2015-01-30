@@ -9,18 +9,20 @@
 
 <form method="POST" action="" class="span5 offset3 well">
     <legend>Please Sign In</legend>
-
-    <div>
-        <input type="text" name="username" class="span5" value="<?php enquote_string(Param::get('username')) ?>" 
+    <center>
+    <div class="input-prepend">
+        <span class="add-on"><i class="icon-user"> </i></span>
+        <input type="text" name="username" class="span4" value="<?php enquote_string(Param::get('username')) ?>" 
         placeholder="Username">
     </div>
 
-    <div class="col-lg-12">
-        <input type="password" name="password" class="span5" value="<?php enquote_string(Param::get('password')) ?>" 
+    <div class="input-prepend">
+        <span class="add-on"><i class="icon-lock"> </i></span>
+        <input type="password" name="password" class="span4" value="<?php enquote_string(Param::get('password')) ?>" 
         placeholder="Password">
     </div>
 
-    <br />
+    </center>
 
     <input type="hidden" name="page_next" value="home">
 

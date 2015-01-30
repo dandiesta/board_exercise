@@ -2,29 +2,29 @@
     <div class="alert alert-block">
         <h4 class="alert-heading">Registration failed!</h4>
 
-        <?php if ($register->validation_errors['fname']['length']): ?>
+        <?php if ($register->validation_errors['firstname']['length']): ?>
             <div>
                 <em>First name</em> must be between
-                <?php enquote_string($register->validation['fname']['length'][1]) ?> and
-                <?php enquote_string($register->validation['fname']['length'][2]) ?> characters in length.
+                <?php enquote_string($register->validation['firstname']['length'][1]) ?> and
+                <?php enquote_string($register->validation['firstname']['length'][2]) ?> characters in length.
             </div>
         <?php endif ?>
 
-        <?php if ($register->validation_errors['fname']['confirmation']): ?>
+        <?php if ($register->validation_errors['firstname']['confirmation']): ?>
             <div>
                 <em>First name</em> should contain letters only.
             </div>
         <?php endif ?>
         
-        <?php if ($register->validation_errors['lname']['length']): ?>
+        <?php if ($register->validation_errors['lastname']['length']): ?>
             <div>
                 <em>Last name</em> must be between
-                <?php enquote_string($register->validation['lname']['length'][1]) ?> and
-                <?php enquote_string($register->validation['lname']['length'][2]) ?> characters in length.
+                <?php enquote_string($register->validation['lastname']['length'][1]) ?> and
+                <?php enquote_string($register->validation['lastname']['length'][2]) ?> characters in length.
             </div>
         <?php endif ?>
 
-        <?php if ($register->validation_errors['lname']['confirmation']): ?>
+        <?php if ($register->validation_errors['lastname']['confirmation']): ?>
             <div>
                 <em>Last name</em> should contain letters only.
             </div>
@@ -69,12 +69,12 @@
             <form method="POST" action="">
                 <div class="col-lg-12">
                     <label>First Name</label>
-                    <input type="text" name="fname" class="span5" value="<?php enquote_string(Param::get('fname')) ?>">
+                    <input type="text" name="firstname" class="span5" value="<?php enquote_string(Param::get('firstname')) ?>">
                 </div>
 
                 <div class="col-lg-12">
                     <label>Last Name</label>
-                    <input type="text" name="lname" class="span5" value="<?php enquote_string(Param::get('lname')) ?>">
+                    <input type="text" name="lastname" class="span5" value="<?php enquote_string(Param::get('lastname')) ?>">
                 </div>
 
                 <div class="col-lg-12">

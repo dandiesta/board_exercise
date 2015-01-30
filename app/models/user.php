@@ -69,7 +69,7 @@ class User extends AppModel
     {
 
         $db = DB::conn();
-        $row = $db->row('SELECT id, fname FROM user WHERE username = ? AND password = ?', 
+        $row = $db->row('SELECT id, firstname FROM user WHERE username = ? AND password = ?', 
             array($this->username, $this->password));
 
         if (!$row) {
@@ -90,13 +90,26 @@ class User extends AppModel
         
         $db = DB::conn();
         $params = array (
-            'fname' => $this->fname, 
-            'lname' => $this->lname, 
-            'username' => $this->username, 
-            'password' => $this->password
+            'firstname' => ucwords($this->firstname), 
+            'lastname'  => ucwords($this->lastname), 
+            'username'  => $this->username, 
+            'password'  => $this->password
         );
 
         $db->insert('user', $params);
+    }
+
+    public function get_from_user()
+    {
+        $db= DB::conn();
+        $row = $db->row('SELECT * FROM user WHERE id=?', array($_SESSION['userid']));
+        
+        if (!$row) {
+            $this->login_verification =false;
+            throw new RecordNotFoundException('no record found');
+        }
+
+        return $row;
     }
 
     public function edit()

@@ -11,8 +11,8 @@ class UserController extends AppController
             case 'registration':
                 break;
             case 'success':
-                $register->fname = Param::get('fname');
-                $register->lname = Param::get('lname');
+                $register->firstname = Param::get('firstname');
+                $register->lastname = Param::get('lastname');
                 $register->username = Param::get('username');
                 $register->password = Param::get('password');
                 $register->confirm_password = Param::get('repeat_password');
@@ -50,7 +50,7 @@ class UserController extends AppController
                     try {
                         $user = $user->login();
                         $_SESSION['userid'] = $user['id'];
-                        $fname = $user['fname'];
+                        $fname = $user['firstname'];
                     } catch (ValidationException $e) {
                         $page = 'login';
                     }
@@ -79,7 +79,7 @@ class UserController extends AppController
             $home = new User();
                 
             $user = $home->get_from_user();
-            $fname = $user['fname'];
+            $fname = $user['firstname'];
                 
             $this->set(get_defined_vars());
         }

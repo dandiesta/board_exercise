@@ -2,7 +2,7 @@
 
 class CommentController extends AppController
 {
-    const MAX_ITEMS_PER_PAGE = 5;
+    const MAX_ITEMS_PER_PAGE = 4;
     const MIN_PAGE_NUMBER = 1;
 
     public function view()

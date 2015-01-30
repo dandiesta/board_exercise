@@ -57,7 +57,7 @@ class Thread extends AppModel
         return new self($row);
     }
 
-    public function getLatest()
+    public function getLatestThread()
     {
         $db= DB::conn();
         $row = $db->row('SELECT latest FROM thread ORDER BY latest DESC');
@@ -75,26 +75,38 @@ class Thread extends AppModel
             throw new ValidationException('Invalid Thread or Comment');
         }
 
-        $db = DB::conn();
-        $db->begin();
+        try {
+            $db = DB::conn();
+            $db->begin();
 
-        $db->query('INSERT INTO thread SET title = ?, user_id = ?, created = NOW(), latest=?',
-            array($this->title, $user_id, $this->getLatest()+1));
+            $params = array(
+                'title'   => $this->title,
+                'user_id' => $user_id,
+                'latest'  => $this->getLatestThread()+1 
+            );
 
-        $this->id = $db->lastInsertId();
+            $db->insert('thread', $params);
+            $this->id = $db->lastInsertId();
 
-        $comments = new Comment;
-        $comments->write($comment, $this->id, $_SESSION['userid']);
-            
-        $db->commit();
+            $comments = new Comment;
+            $comments->write($comment, $this->id, $_SESSION['userid']);
+                
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
     }
 
     public function updateLatestThread($thread_id)
     {
-        //get value of latest then add 1 
-        $db = DB::conn();
-        $update = $db->query('UPDATE thread SET latest=? WHERE id=?', array(($this->getLatest() + 1), $thread_id));
-
-        $db->commit();
+        //get value of latest then add 1 so that it will be on top
+        try {
+            $db = DB::conn();
+            #$update = $db->query('UPDATE thread SET latest=? WHERE id=?', array(($this->getLatestThread() + 1), $thread_id));
+            $update = $db->update('thread', array('latest' => $this->getLatestThread() + 1), array('id' => $thread_id));
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
     }
 }

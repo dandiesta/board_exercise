@@ -35,7 +35,7 @@ class Comment extends AppModel
         }
 
         $db = DB::conn();
-        $db->query('INSERT INTO comment SET thread_id = ?, user_id = ?, body = ?, created = NOW()',
+        $db->query('INSERT INTO comment SET thread_id = ?, user_id = ?, body = ?',
             array($thread_id, $user_id, $comment->body));
     }
 }
