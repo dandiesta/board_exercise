@@ -15,7 +15,7 @@ class UserController extends AppController
                 $register->lastname = Param::get('lastname');
                 $register->username = Param::get('username');
                 $register->password = Param::get('password');
-                $register->confirm_password = Param::get('repeat_password');
+                $register->confirm_password = Param::get('confirm_password');
                 
                 try {
                       $register->add();
@@ -82,6 +82,50 @@ class UserController extends AppController
             $fname = $user['firstname'];
                 
             $this->set(get_defined_vars());
+        }
+    }
+
+    public function profile()
+    {
+        if (!isset($_SESSION['userid'])) {
+            redirect('login');
+        } else {
+            $user = new User();
+            $profile = $user->get_from_user();
+            $regdate = $user->member_since();
+
+            $firstname = $profile['firstname'];
+            $lastname = $profile['lastname'];
+            $username = $profile['username'];
+            $member_since = $regdate;
+            $display = 'style="display:none;';
+
+            $this->set(get_defined_vars());
+
+            $page = Param::get('page_next', 'profile');
+
+            switch ($page) {
+                case 'profile':
+                    break;
+                case 'success_update':
+                    $user->firstname = Param::get('firstname');
+                    $user->lastname = Param::get('lastname');
+                    $user->username = Param::get('username');
+                    
+                    try {
+                        $display = ' ';
+                        $user->edit();
+                    } catch (ValidationException $e) {
+                       $page = 'profile';
+                    }    
+                    break;
+                default:
+                    throw new NotFoundException("{$page} not found");
+                    break;
+            }
+
+            $this->set(get_defined_vars());
+            $this->render($page);
         }
     }
 }

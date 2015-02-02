@@ -114,11 +114,42 @@ class User extends AppModel
 
     public function edit()
     {
+        $db = DB::conn();
+        $params = array(
+            'firstname' => ucwords($this->firstname), 
+            'lastname'  => ucwords($this->lastname), 
+            'username' => $this->username
+        );
 
+        $update = $db->update('user', $params, array('id' => $_SESSION['userid']));
     }
 
-    public function view()
+    public function member_since()
     {
+        $db = DB::conn();
 
+        $row = $db->row('SELECT unix_timestamp(now()) - unix_timestamp(regdate) AS member_since FROM user WHERE id=?', 
+            array($_SESSION['userid']));
+
+        $regdate = $row['member_since'];
+
+        if ($regdate < 60) {
+            return "$regdate seconds";
+        } elseif (60 <= ($regdate < 3600)) {
+            $minute = floor($regdate/60);
+            return "$minute minutes";
+        } elseif (3600 <= ($regdate < 86400)) {
+            $hour = floor($regdate/3600);
+            return "$hour hours";
+        } elseif (86400 <= ($regdate < 2592000)) {
+            $day = floor($regdate/86400);
+            return "$day days";
+        } elseif (2592000 <= ($regdate < 31104000)) {
+            $month = floor($regdate/2592000);
+            return "$month months";
+        } else {
+            $year = floor($regdate/31104000);
+            return "$year years";
+        }
     }
 }

@@ -36,7 +36,7 @@
                 
               </ul>
               <ul class="nav navbar-nav pull-right">
-                <li><a href="#">My Profile</a></li>
+                <li><a href="<?php enquote_string(url('user/profile')) ?>">My Profile</a></li>
                 <li><a href="<?php enquote_string(url('user/logout')) ?>">Logout</a></li>
               </ul>
             </div>

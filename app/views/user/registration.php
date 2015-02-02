@@ -90,7 +90,7 @@
 
                 <div class="col-lg-12">
                     <label>Repeat Password</label>
-                    <input type="password" name="repeat_password" class="span5" >
+                    <input type="password" name="confirm_password" class="span5" >
                 </div>
 
                 <br />
