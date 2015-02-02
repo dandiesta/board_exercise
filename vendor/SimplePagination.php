@@ -61,12 +61,14 @@ class SimplePagination
            $title = $c->title;
            $id = $c->id;
            $username = $c->username;
+           $created = $c->created;
 
             $individual[] = array(
                 'title' => $title,
                 'id' => $id, 
-                'username' => $username
-                );
+                'username' => $username,
+                'created' => $created
+            );
         }
 
         return $individual;

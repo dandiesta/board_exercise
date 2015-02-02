@@ -4,11 +4,12 @@
 
 <?php foreach ($display as $k => $v): ?>
     <div class="well">
-        <div style="font-size:23px;"><?php echo readable_text($v['body']) ?></div>
-        <div><small><?php enquote_string($v['created']) ?></small></div>
+        <div style="font-size:20px;"><?php echo readable_text($v['body']) ?></div>
+        
         <div class="meta">
             by: <?php enquote_string($v['username']) ?>
         </div>
+        <div style="color:#FF9999;"><small><?php getElapsedTime($v['created']) ?> ago</small></div>
     </div>
 <?php endforeach ?>
 

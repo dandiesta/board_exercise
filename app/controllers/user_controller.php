@@ -98,7 +98,6 @@ class UserController extends AppController
             $lastname = $profile['lastname'];
             $username = $profile['username'];
             $member_since = $regdate;
-            $display = 'style="display:none;';
 
             $this->set(get_defined_vars());
 
@@ -113,7 +112,6 @@ class UserController extends AppController
                     $user->username = Param::get('username');
                     
                     try {
-                        $display = ' ';
                         $user->edit();
                     } catch (ValidationException $e) {
                        $page = 'profile';

@@ -2,7 +2,7 @@
 
 class ThreadController extends AppController
 {
-    const MAX_ITEMS_PER_PAGE = 6;
+    const MAX_ITEMS_PER_PAGE = 5;
     const MIN_PAGE_NUMBER = 1;
 
     public function index()
@@ -21,7 +21,7 @@ class ThreadController extends AppController
             $pagination->checkLastPage($count_chunks);
 
             $this->set(get_defined_vars());
-        }  
+        } 
     }
 
     public function my_thread()

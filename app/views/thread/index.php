@@ -6,7 +6,10 @@
             <li class="well">
                 <a href="<?php enquote_string(url('comment/view', array('thread_id'=>$v['id'])))?>">
                     <?php enquote_string($v['title']); ?><br/>
-              <small>Posted by: <?php enquote_string($v['username']); ?></small>
+                    <small>
+                        Posted by: <?php enquote_string($v['username']);?> <br />
+                        <div style="color:#66CCFF"><?php getElapsedTime($v['created']); ?> ago</div>
+                    </small>
                 </a>    
             </li>
           <?php endforeach ?>
