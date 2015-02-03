@@ -60,13 +60,13 @@ class Thread extends AppModel
     public function getLatestThread()
     {
         $db= DB::conn();
+
         $row = $db->row('SELECT latest FROM thread ORDER BY latest DESC');
 
         return $row['latest'];
-
     }
 
-    public function create(Comment $comment, $user_id)
+    public function create(Comment $comment)
     {
         $this->validate();
         $comment->validate();
@@ -81,7 +81,7 @@ class Thread extends AppModel
 
             $params = array(
                 'title'   => $this->title,
-                'user_id' => $user_id,
+                'user_id' => $_SESSION['userid'],
                 'latest'  => $this->getLatestThread()+1 
             );
 
@@ -89,7 +89,7 @@ class Thread extends AppModel
             $this->id = $db->lastInsertId();
 
             $comments = new Comment;
-            $comments->write($comment, $this->id, $_SESSION['userid']);
+            $comments->write($comment, $this->id);
                 
             $db->commit();
         } catch (Exception $e) {
@@ -99,11 +99,12 @@ class Thread extends AppModel
 
     public function updateLatestThread($thread_id)
     {
-        //get value of latest then add 1 so that it will be on top
+        //get value of column latest then add 1 so that it will be on top
         try {
             $db = DB::conn();
-            #$update = $db->query('UPDATE thread SET latest=? WHERE id=?', array(($this->getLatestThread() + 1), $thread_id));
+            
             $update = $db->update('thread', array('latest' => $this->getLatestThread() + 1), array('id' => $thread_id));
+
             $db->commit();
         } catch (Exception $e) {
             $db->rollback();
@@ -112,11 +113,18 @@ class Thread extends AppModel
 
     public function editTitle($thread_id)
     {
-        try {
-        $db = DB::conn();
+        $this->validate();
 
-        $row = $db->update('thread', array('title' => $this->title), array('id' => $thread_id));
-        $db->commit();
+        if ($this->hasError()) {
+            throw new ValidationException('Invalid Title');
+        }
+
+        try {
+            $db = DB::conn();
+
+            $update = $db->update('thread', array('title' => $this->title), array('id' => $thread_id));
+
+            $db->commit();
         } catch (Exception $e) {
             $db->rollback();
         }

@@ -1,5 +1,11 @@
 <?php
 
+    const MAX_SECONDS = 60;
+    const MAX_SECONDS_PER_MINUTE = 3600;
+    const MAX_SECONDS_PER_HOUR = 86400;
+    const MAX_SECONDS_PER_DAY = 2592000;
+    const MAX_SECONDS_PER_MONTH = 31104000;
+
 function getElapsedTime($created)
 {
 	$started = strtotime($created);
@@ -7,22 +13,23 @@ function getElapsedTime($created)
 
 	$time_elapsed = $now - $started;
 	
-	if ($time_elapsed < 60) {
-            echo " $time_elapsed seconds";
-        } elseif (60 <= ($time_elapsed < 3600)) {
-            $minute = floor($time_elapsed/60);
-            echo " $minute minutes";
-        } elseif (3600 <= ($time_elapsed < 86400)) {
-            $hour = floor($time_elapsed/3600);
-            echo " $hour hours";
-        } elseif (86400 <= ($time_elapsed < 2592000)) {
-            $day = floor($time_elapsed/86400);
-            echo " $day days";
-        } elseif (2592000 <= ($time_elapsed < 31104000)) {
-            $month = floor($time_elapsed/2592000);
-            echo " $month months";
-        } else {
-            $year = floor($time_elapsed/31104000);
-            echo " $year years";
-        }
+	if ($time_elapsed < MAX_SECONDS) {
+        $time_label = ($time_elapsed == 1) ? "second" : "seconds";
+    } elseif (MAX_SECONDS <= ($time_elapsed < MAX_SECONDS_PER_MINUTE)) {
+        $time_elapsed = floor($time_elapsed/MAX_SECONDS);
+        $time_label = ($time_elapsed == 1) ? "minute" : "minutes";
+    } elseif (MAX_SECONDS_PER_MINUTE <= ($time_elapsed < MAX_SECONDS_PER_HOUR)) {
+        $time_elapsed = floor($time_elapsed/MAX_SECONDS_PER_MINUTE);
+        $time_label = ($time_elapsed == 1) ? "hour" : "hours";
+    } elseif (MAX_SECONDS_PER_HOUR <= ($time_elapsed < MAX_SECONDS_PER_DAY)) {
+        $time_elapsed = floor($time_elapsed/MAX_SECONDS_PER_HOUR);
+        $time_label = ($time_elapsed == 1) ? "day" : "days";
+    } elseif (MAX_SECONDS_PER_DAY <= ($time_elapsed < MAX_SECONDS_PER_MONTH)) {
+        $time_elapsed = floor($time_elapsed/MAX_SECONDS_PER_DAY);
+        $time_label = ($time_elapsed == 1) ? "month" : "months";
+    } else {
+        $time_elapsed = floor($time_elapsed/MAX_SECONDS_PER_MONTH);
+        $time_label = ($time_elapsed == 1) ? "year" : "years";
+    }
+   echo "{$time_elapsed} {$time_label}";
 }

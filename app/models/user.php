@@ -2,50 +2,58 @@
 
 class User extends AppModel
 {
+    //for validation
     const MIN_LENGTH = 1;
     const MIN_LENGTH_PASSWORD = 8;
     const MAX_LENGTH_NAME = 50;
     const MAX_LENGTH_USERNAME = 16;
     const MAX_LENGTH_PASSWORD = 20;
+    //for computation of date
+    const MAX_SECONDS = 60;
+    const MAX_SECONDS_PER_MINUTE = 3600;
+    const MAX_SECONDS_PER_HOUR = 86400;
+    const MAX_SECONDS_PER_DAY = 2592000;
+    const MAX_SECONDS_PER_MONTH = 31104000;
+        
 
     public $login_verification = true;
     public $validation = array(
-            'fname' => array(
-                'length' => array(
-                    'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_NAME,
-                ),
-                'confirmation' => array(
-                    'name_checker'
-                ),
+        'fname' => array(
+            'length' => array(
+                'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_NAME,
             ),
+            'confirmation' => array(
+                'name_checker'
+            ),
+        ),
+ 
+        'lname' => array(
+            'length' => array(
+                'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_NAME,
+            ),
+            'confirmation' => array(
+                'name_checker'
+            ),
+        ),
 
-            'lname' => array(
-                'length' => array(
-                    'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_NAME,
-                ),
-                'confirmation' => array(
-                    'name_checker'
-                ),
+        'username' => array(
+            'length' => array(
+                'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_USERNAME,
             ),
+            'confirmation' => array(
+                'username_checker'
+            ),
+        ),
 
-            'username' => array(
-                'length' => array(
-                    'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_USERNAME,
-                ),
-                'confirmation' => array(
-                    'username_checker'
-                ),
+        'password' => array(
+            'length' => array(
+                'validate_between', self::MIN_LENGTH_PASSWORD, self::MAX_LENGTH_PASSWORD,
             ),
-
-            'password' => array(
-                'length' => array(
-                    'validate_between', self::MIN_LENGTH_PASSWORD, self::MAX_LENGTH_PASSWORD,
-                ),
-                'confirmation' => array(
-                    'password_checker'
-                ),
+            'confirmation' => array(
+                'password_checker'
             ),
-        );
+        ),
+    );
 
     public function password_checker()
     {
@@ -67,7 +75,6 @@ class User extends AppModel
 
     public function login()
     {
-
         $db = DB::conn();
         $row = $db->row('SELECT id, firstname FROM user WHERE username = ? AND password = ?', 
             array($this->username, $this->password));
@@ -133,23 +140,24 @@ class User extends AppModel
 
         $regdate = $row['member_since'];
 
-        if ($regdate < 60) {
-            return "$regdate seconds";
-        } elseif (60 <= ($regdate < 3600)) {
-            $minute = floor($regdate/60);
-            return "$minute minutes";
-        } elseif (3600 <= ($regdate < 86400)) {
-            $hour = floor($regdate/3600);
-            return "$hour hours";
-        } elseif (86400 <= ($regdate < 2592000)) {
-            $day = floor($regdate/86400);
-            return "$day days";
-        } elseif (2592000 <= ($regdate < 31104000)) {
-            $month = floor($regdate/2592000);
-            return "$month months";
+        if ($regdate < self::MAX_SECONDS) {
+            $time_label = ($regdate == 1) ? "second" : "seconds";
+        } elseif (self::MAX_SECONDS <= ($regdate < self::MAX_SECONDS_PER_MINUTE)) {
+            $regdate = floor($regdate/self::MAX_SECONDS);
+            $time_label = ($regdate == 1) ? "minute" : "minutes";
+        } elseif (self::MAX_SECONDS_PER_MINUTE <= ($regdate < self::MAX_SECONDS_PER_HOUR)) {
+            $regdate = floor($regdate/self::MAX_SECONDS_PER_MINUTE);
+            $time_label = ($regdate == 1) ? "hour" : "hours";
+        } elseif (self::MAX_SECONDS_PER_HOUR <= ($regdate < self::MAX_SECONDS_PER_DAY)) {
+            $regdate = floor($regdate/self::MAX_SECONDS_PER_HOUR);
+            $time_label = ($regdate == 1) ? "day" : "days";
+        } elseif (self::MAX_SECONDS_PER_DAY <= ($regdate < self::MAX_SECONDS_PER_MONTH)) {
+            $regdate = floor($regdate/self::MAX_SECONDS_PER_DAY);
+            $time_label = ($regdate == 1) ? "month" : "months";
         } else {
-            $year = floor($regdate/31104000);
-            return "$year years";
+            $regdate = floor($regdate/self::MAX_SECONDS_PER_MONTH);
+            $time_label = ($regdate == 1) ? "year" : "years";
         }
+        return "{$regdate} {$time_label}";
     }
 }

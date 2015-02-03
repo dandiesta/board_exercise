@@ -14,16 +14,13 @@ class SimplePagination
     public $current;        // 現在のページ番号
     public $prev;           // ひとつ前のページ番号
     public $next;           // ひとつ次のページ番号
-    public $start_index;    // 何件目から表示するか（1オリジン）
     public $is_last_page;   // 最終ページかどうか
 
     public function __construct($current)
     {
         $this->current = $current;
-        #$this->count = $count;
         $this->prev = max($current - 1, 0);
         $this->next = $current + 1;
-        #$this->start_index = ($current - 1) * $count + 1;
     }
 
     /**
@@ -40,12 +37,6 @@ class SimplePagination
      */
     public function checkLastPage($item)
     {
-        #if (count($items) <= $this->count) {
-        #    $this->is_last_page = true;
-        #} else {
-        #    $this->is_last_page = false;
-        #    array_pop($items);
-        #}
         if ($item <= $this->current) {
             $this->is_last_page = true;
         } else {
@@ -65,11 +56,11 @@ class SimplePagination
            $created = $c->created;
 
             $individual[] = array(
-                'title' => $title,
-                'id' => $id, 
-                'user_id' => $user_id,
+                'title'    => $title,
+                'id'       => $id, 
+                'user_id'  => $user_id,
                 'username' => $username,
-                'created' => $created
+                'created'  => $created
             );
         }
 
@@ -80,16 +71,20 @@ class SimplePagination
     {
         $chunk = $chunk_comment[$i-1];
 
-        foreach ($chunk as $c) { 
+        foreach ($chunk as $c) {
+            $id = $c->id; 
             $body = $c->body;
             $created = $c->created;
             $username = $c->username;
+            $user_id = $c->user_id;
 
             $individual[] = array(
-                'body' => $body,
-                'created' => $created, 
-                'username' => $username
-                );
+                'body'     => $body,
+                'created'  => $created, 
+                'username' => $username,
+                'user_id'  => $user_id,
+                'id'       => $id
+            );
         }
 
         return $individual;

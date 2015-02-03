@@ -4,7 +4,7 @@
     <div class="alert alert-block">
         <h4 class="alert-heading">Validation error!</h4>
 
-        <?php if (!empty($thread->validation_errors['title']['length'])): ?>
+        <?php if (($thread->validation_errors['title']['length'])): ?>
             <div>
                 <em>Title</em> must be between
                 <?php enquote_string($thread->validation['title']['length'][1]) ?> and
@@ -22,5 +22,5 @@
     
     <br />
     <input type="hidden" name="page_next" value="create_end">
-    <button type="submit" class="btn btn-danger    ">Submit</button>
+    <button type="submit" class="btn btn-danger">Submit</button>
 </form>

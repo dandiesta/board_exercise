@@ -10,7 +10,6 @@
                         <small>
                             Posted by: <?php enquote_string($v['username']);?>
                             <div style="color:#66CCFF"><?php getElapsedTime($v['created']); ?> ago</div>
-                            <input type="hidden" name="user_id" value="<?php enquote_string($v['user_id']);?>">
                         </small>
                     </a>
                 </div>

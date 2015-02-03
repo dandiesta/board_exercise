@@ -73,25 +73,19 @@ class UserController extends AppController
 
     public function home()
     {
-        if (!isset($_SESSION['userid'])) {
-            redirect('user/login');
-        } else {
-            $home = new User();
+        $home = new User();
                 
-            $user = $home->get_from_user();
-            $fname = $user['firstname'];
+        $user = $home->get_from_user();
+        $fname = $user['firstname'];
                 
-            $this->set(get_defined_vars());
-        }
+        $this->set(get_defined_vars());
+        
     }
 
     public function profile()
     {
-        if (!isset($_SESSION['userid'])) {
-            redirect('login');
-        } else {
-            $user = new User();
-            $page = Param::get('page_next', 'profile');
+        $user = new User();
+        $page = Param::get('page_next', 'profile');
 
             $profile = $user->get_from_user();
             $regdate = $user->member_since();
@@ -122,6 +116,6 @@ class UserController extends AppController
 
             $this->set(get_defined_vars());
             $this->render($page);
-        }
+        
     }
 }

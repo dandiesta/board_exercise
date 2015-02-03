@@ -9,8 +9,8 @@ class CommentController extends AppController
     {
         $thread = Thread::get(Param::get('thread_id'));
         $comment = new Comment();
-        
-        $comments = $comment->getComments($thread->id);
+        $_SESSION['thread_id'] = $thread->id;
+        $comments = $comment->getComments($_SESSION['thread_id']);
         
         $current = max(Param::get('page'), self::MIN_PAGE_NUMBER);
         $chunk_page = array_chunk($comments, self::MAX_ITEMS_PER_PAGE);
@@ -50,5 +50,38 @@ class CommentController extends AppController
 
         $this->set(get_defined_vars());
         $this->render($page);
+    }
+
+    public function edit()
+    {
+        $thread = Thread::get($_SESSION['thread_id']);
+        $comment = new Comment();
+        $comment_id = Param::get('comment_id');
+        $body = Comment::get($comment_id);
+        $title = $thread->title;
+        $page = Param::get('page_next', 'edit');
+
+
+        switch ($page) {
+        case 'edit':
+            break;
+        case 'edit_end':
+           $comment->body = Param::get('body');
+
+            try {
+                $comment->edit($comment_id);
+                redirect("/comment/view?thread_id={$_SESSION['thread_id']}");
+            } catch (ValidationException $e) {
+                $page = 'edit';
+            }
+            break;
+        default:
+            throw new NotFoundException("{$page} not found");
+            break;
+        }
+
+        $this->set(get_defined_vars());
+        $this->render($page);
+
     }
 }
