@@ -20,8 +20,12 @@
 <?php endif ?>
 
 <?php for ($i=1; $i <= $count_chunks; $i++): ?>
-    <a class="btn btn-danger" href="?page=<?php echo $i ?>&thread_id=<?php enquote_string($thread->id)?>">
-        <?php echo $i; ?></a>&nbsp;
+    <?php if ($pagination->current == $i):?>
+        <a class="btn btn-default disabled" href="?page=<?php echo $i ?>"><?php echo $i; ?></a>      
+    <?php else:?>
+        <a class="btn btn-danger" href="?page=<?php echo $i ?>&thread_id=<?php enquote_string($thread->id)?>">
+            <?php echo $i; ?></a>&nbsp;
+    <?php endif ?>
 <?php endfor ?>  
 
 <?php if(!$pagination->is_last_page): ?>

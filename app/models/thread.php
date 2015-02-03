@@ -17,7 +17,7 @@ class Thread extends AppModel
     {
         $threads = array();
         $db = DB::conn();
-        $rows = $db->rows('SELECT t.id, t.title, t.created, u.username FROM thread t 
+        $rows = $db->rows('SELECT t.id, t.title, t.created, u.username, t.user_id FROM thread t 
             INNER JOIN user u ON t.user_id=u.id 
             ORDER BY t.latest DESC');
             
@@ -28,15 +28,15 @@ class Thread extends AppModel
         return $threads;
     }
 
-    public static function getMyThreads($user_id)
+    public static function getMyThreads()
     {
         $threads = array();
         $db = DB::conn();
-        $rows = $db->rows('SELECT t.id, t.title, t.created, u.username FROM thread t 
+        $rows = $db->rows('SELECT t.id, t.title, t.created, u.username, t.user_id FROM thread t 
             INNER JOIN user u ON t.user_id=u.id 
             WHERE user_id=? 
             ORDER BY created DESC', 
-            array($user_id));
+            array($_SESSION['userid']));
 
         foreach ($rows as $row) {
             $threads[] = new Thread($row);
@@ -105,6 +105,18 @@ class Thread extends AppModel
             #$update = $db->query('UPDATE thread SET latest=? WHERE id=?', array(($this->getLatestThread() + 1), $thread_id));
             $update = $db->update('thread', array('latest' => $this->getLatestThread() + 1), array('id' => $thread_id));
             $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+
+    public function editTitle($thread_id)
+    {
+        try {
+        $db = DB::conn();
+
+        $row = $db->update('thread', array('title' => $this->title), array('id' => $thread_id));
+        $db->commit();
         } catch (Exception $e) {
             $db->rollback();
         }

@@ -29,7 +29,7 @@ class ThreadController extends AppController
         if (!isset($_SESSION['userid'])) {
             redirect('/user/login');
         } else {
-            $myThread = Thread::getMyThreads($_SESSION['userid']);
+            $myThread = Thread::getMyThreads();
             
             if ($myThread) {
                 $current = max(Param::get('page'), self::MIN_PAGE_NUMBER);
@@ -74,6 +74,39 @@ class ThreadController extends AppController
 
             $this->set(get_defined_vars());
             $this->render($page);
+        }
+    }
+
+    public function edit()
+    {
+        if (!isset($_SESSION['userid'])) {
+            redirect('/user/login');
+        } else {
+            $threads = new Thread();
+            $thread_id = Param::get('thread_id');
+            $thread = Thread::get($thread_id);
+            $page = Param::get('page_next', 'edit');
+            $title = $thread->title;
+
+            switch ($page) {
+                case 'edit':
+                    break;
+                case 'edit_end':
+                    $threads->title = Param::get('title');
+
+                    try {
+                        $threads->editTitle($thread_id);
+                    } catch (ValidationException $e) {
+                        $page = 'edit';
+                    }
+                    break;
+                default:
+                    throw new NotFoundException("{$page} not found");
+                    break;
+            }
+            $this->set(get_defined_vars());
+            $this->render($page);
+
         }
     }
 }

@@ -91,6 +91,8 @@ class UserController extends AppController
             redirect('login');
         } else {
             $user = new User();
+            $page = Param::get('page_next', 'profile');
+
             $profile = $user->get_from_user();
             $regdate = $user->member_since();
 
@@ -98,10 +100,6 @@ class UserController extends AppController
             $lastname = $profile['lastname'];
             $username = $profile['username'];
             $member_since = $regdate;
-
-            $this->set(get_defined_vars());
-
-            $page = Param::get('page_next', 'profile');
 
             switch ($page) {
                 case 'profile':

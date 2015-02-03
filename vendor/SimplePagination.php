@@ -60,12 +60,14 @@ class SimplePagination
         foreach ($chunk as $c) {
            $title = $c->title;
            $id = $c->id;
+           $user_id = $c->user_id;
            $username = $c->username;
            $created = $c->created;
 
             $individual[] = array(
                 'title' => $title,
                 'id' => $id, 
+                'user_id' => $user_id,
                 'username' => $username,
                 'created' => $created
             );
