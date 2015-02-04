@@ -1,0 +1,52 @@
+<h1><?php enquote_string($thread->title) ?></h1>
+
+<hr />
+<?php foreach ($display as $v): ?>
+    <div class="well span11">
+        <div class="span10">
+            <div style="font-size:20px;"><?php echo readable_text($v['body']) ?></div>
+            
+            <div class="meta">
+                by: <?php enquote_string($v['username']) ?>
+            </div>
+
+            <div style="color:#FF9999;"><small><?php getElapsedTime($v['created']) ?> ago</small></div>
+        </div>
+        <?php if ($_SESSION['userid'] == $v['user_id']):?>
+            <a href="<?php enquote_string(url('comment/edit', array('comment_id'=>$v['id'])))?>"><i class="icon-pencil"></i></a> &nbsp;
+            <a href="<?php enquote_string(url('comment/delete', array('comment_id'=>$v['id'])))?>"><i class="icon-trash"></i></a>
+        <?php endif ?>
+    </div>
+<?php endforeach ?>
+
+<!--pagination-->
+<form class="span12">
+<?php if($pagination->current_page > 1): ?>
+    <a class="btn btn-danger" href='?page=<?php echo $pagination->prev ?>&thread_id=<?php enquote_string($thread->id)?>'>
+        Previous</a>
+<?php endif ?>
+
+<?php for ($i=1; $i <= $count_chunks; $i++): ?>
+    <?php if ($pagination->current_page == $i):?>
+        <a class="btn btn-default disabled" href="?page=<?php echo $i ?>"><?php echo $i; ?></a>      
+    <?php else:?>
+        <a class="btn btn-danger" href="?page=<?php echo $i ?>&thread_id=<?php enquote_string($thread->id)?>">
+            <?php echo $i; ?></a>&nbsp;
+    <?php endif ?>
+<?php endfor ?>  
+
+<?php if(!$pagination->is_last_page): ?>
+    <a class="btn btn-danger" href='?page=<?php echo $pagination->next ?>&thread_id=<?php enquote_string($thread->id)?>'>
+        Next</a>
+<?php endif ?>
+</form>
+<hr />
+
+<form class="well span11" method="post" action="<?php enquote_string(url('comment/write')) ?>">
+    <label>COMMENT</label>
+    <textarea name="body" class="span11"><?php enquote_string(Param::get('body'))?></textarea>
+    <br />
+    <input type="hidden" name="thread_id" value="<?php enquote_string($thread->id) ?>">
+    <input type="hidden" name="page_next" value="write_end">
+    <button type="submit" class="btn btn-danger"> Submit</button>
+</form>

@@ -1,89 +1,134 @@
 <?php
-	class Thread extends AppModel
-	{
-		public $validation = array(
-			'title' => array(
-				'length' => array(
-					'validate_between', 1,30,
-				),
-			),
-		);
 
-		public static function getAll()
-		{
-			$threads = array();
-			$db = DB::conn();
-			$rows = $db->rows('SELECT * FROM thread');
-			
-			foreach ($rows as $row) {
-				$threads[] = new Thread($row);
-			}
-		
-			return $threads;
-		}
+class Thread extends AppModel
+{
+    const MIN_LENGTH = 1;
+    const MAX_LENGTH = 50;
 
-		public static function get($id)
-		{
-			$db = DB::conn();
+    public $validation = array(
+        'title' => array(
+            'length' => array(
+                'validate_between', self::MIN_LENGTH, self::MAX_LENGTH,
+            ),
+        ),
+    );
 
-			$row = $db->row('SELECT * FROM thread WHERE id = ?', array($id));
+    public static function getAll()
+    {
+        $threads = array();
+        $db = DB::conn();
+        $rows = $db->rows('SELECT t.id, t.title, t.created, u.username, t.user_id FROM thread t 
+            INNER JOIN user u ON t.user_id=u.id 
+            ORDER BY t.latest DESC');
+            
+        foreach ($rows as $row) {
+            $threads[] = new Thread($row);
+        }
+    
+        return $threads;
+    }
 
-			if (!$row) {
-				throw new RecordNotFoundException('no record found');
-			}
+    public static function getUser()
+    {
+        $threads = array();
+        $db = DB::conn();
+        $rows = $db->rows('SELECT t.id, t.title, t.created, u.username, t.user_id FROM thread t 
+            INNER JOIN user u ON t.user_id=u.id 
+            WHERE user_id=? 
+            ORDER BY created DESC', 
+            array($_SESSION['userid']));
 
-			return new self($row);
-		}
+        foreach ($rows as $row) {
+            $threads[] = new Thread($row);
+        }
 
-		public function getComments()
-		{
-			$comments = array();
+        return $threads;
+    }
 
-			$db= DB::conn();
+    public static function get($id)
+    {
+        $db = DB::conn();
+        $row = $db->row('SELECT * FROM thread WHERE id = ?', array($id));
+        
+        if (!$row) {
+            throw new RecordNotFoundException('No Record Found');
+        }
 
-			$rows = $db->rows('SELECT * FROM comment WHERE thread_id = ? ORDER BY created ASC', array($this->id));
+        return new self($row);
+    }
 
-			foreach ($rows as $row) {
-				$comments[] = new Comment($row);
-			}
-			return $comments;
-		}
+    public function getLatestThread()
+    {
+        $db= DB::conn();
 
-		public function write(Comment $comment) //Will enable us to insert data into the comment table
-		{
-			if (!$comment->validate()) {
-				throw new ValidationException('invalid comment');
-			}
+        $row = $db->row('SELECT latest FROM thread ORDER BY latest DESC');
 
-			$db = DB::conn();
-			$db->query('INSERT INTO comment SET thread_id = ?, username = ?, body = ?, created = NOW()',
-				array($this->id, $comment->username, $comment->body)
-			);
-		}
+        return $row['latest'];
+    }
 
-		public function create(Comment $comment)
-		{
-			$this->validate();
-			$comment->validate();
-			if ($this->hasError() || $comment->hasError()){
-				throw new ValidationException('invalid thread or comment');
-			}
-			$db = DB::conn();
-			$db->begin();
+    public function create(Comment $comment)
+    {
+        $this->validate();
+        $comment->validate();
 
-			//$params = array(
-			//	'title' => $this->title,
-			//);
-			//$db->insert('thread', $params);
-			//or
-			$db->query('INSERT INTO thread SET title = ?, created = NOW()', array($this->title));
+        if ($this->hasError() || $comment->hasError()){
+            throw new ValidationException('Invalid Thread or Comment');
+        }
 
-			$this->id = $db->lastInsertId(); //returns the latest inserted id within the function
+        try {
+            $db = DB::conn();
+            $db->begin();
 
-			//write first comment at the same time
-			$this->write($comment);
+            $params = array(
+                'title'   => $this->title,
+                'user_id' => $_SESSION['userid'],
+                'latest'  => $this->getLatestThread()+1 
+            );
 
-			$db->commit();
-		}
-	}
-?>
+            $db->insert('thread', $params);
+            $this->id = $db->lastInsertId();
+
+            $comment = new Comment;
+            $comment->write($comment, $this->id);
+                
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+
+    public function updateLatestThread($thread_id)
+    {
+        //get value of column latest then add 1 so that it will be on top
+        try {
+            $db = DB::conn();
+            $db->begin();
+
+            $update = $db->update('thread', array('latest' => $this->getLatestThread() + 1), array('id' => $thread_id));
+
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+
+    public function editTitle($thread_id)
+    {
+        $this->validate();
+
+        if ($this->hasError()) {
+            throw new ValidationException('Invalid Title');
+        }
+
+        try {
+            $db = DB::conn();
+            $db->begin();
+            
+            $update = $db->update('thread', array('title' => $this->title), array('id' => $thread_id));
+
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+}

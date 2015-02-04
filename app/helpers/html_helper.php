@@ -1,6 +1,6 @@
 <?php
 
-function eh($string)
+function enquote_string($string)
 {
     if (!isset($string)) return;
     echo htmlspecialchars($string, ENT_QUOTES);
@@ -8,7 +8,7 @@ function eh($string)
 
 function readable_text($s)
 {
-	$s = htmlspecialchars($s, ENT_QUOTES);
-	$s = nl2br($s);
-	return $s;
+    $s = htmlspecialchars($s, ENT_QUOTES);
+    $s = nl2br($s);
+    return $s;
 }
