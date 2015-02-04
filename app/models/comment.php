@@ -58,7 +58,8 @@ class Comment extends AppModel
 
         try {
             $db = DB::conn();
-
+            $db->begin();
+            
             $update = $db->update('comment', array('body' => $this->body), array('id' => $comment_id));
 
             $db->commit();

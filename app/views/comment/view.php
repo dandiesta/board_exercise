@@ -21,13 +21,13 @@
 
 <!--pagination-->
 <form class="span12">
-<?php if($pagination->current > 1): ?>
+<?php if($pagination->current_page > 1): ?>
     <a class="btn btn-danger" href='?page=<?php echo $pagination->prev ?>&thread_id=<?php enquote_string($thread->id)?>'>
         Previous</a>
 <?php endif ?>
 
 <?php for ($i=1; $i <= $count_chunks; $i++): ?>
-    <?php if ($pagination->current == $i):?>
+    <?php if ($pagination->current_page == $i):?>
         <a class="btn btn-default disabled" href="?page=<?php echo $i ?>"><?php echo $i; ?></a>      
     <?php else:?>
         <a class="btn btn-danger" href="?page=<?php echo $i ?>&thread_id=<?php enquote_string($thread->id)?>">

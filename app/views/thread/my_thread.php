@@ -1,5 +1,5 @@
 <h2>My threads</h2>
-<?php if (empty($myThread)): ?>
+<?php if (empty($my_thread)): ?>
     <div class="alert alert-block">
         <h4 class="alert-heading">You haven't posted any threads yet!</h4>
     </div>
@@ -25,12 +25,12 @@
 </form>
 
 <!--pagination-->
-<?php if($pagination->current > 1): ?>
+<?php if($pagination->current_page > 1): ?>
     <a class="btn btn-danger" href='?page=<?php echo $pagination->prev ?>'>Previous</a>
 <?php endif ?>
 
 <?php for ($i=1; $i <= $count_chunks; $i++):
-    if ($pagination->current == $i):?>
+    if ($pagination->current_page == $i):?>
         <a class="btn btn-default disabled" href="?page=<?php echo $i ?>"><?php echo $i; ?></a>      
     <?php else:?>
         <a class="btn btn-danger" href="?page=<?php echo $i ?>"><?php echo $i; ?></a>&nbsp;

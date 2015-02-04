@@ -9,12 +9,12 @@ class ThreadController extends AppController
     {
         $threads = Thread::getAll();
 
-        $current = max(Param::get('page'), self::MIN_PAGE_NUMBER);
+        $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
         $chunk_page = array_chunk($threads, self::MAX_ITEMS_PER_PAGE);
         $count_chunks = count($chunk_page);
                 
-        $pagination = new SimplePagination($current);
-        $display = $pagination->threadLinks($chunk_page, $current);
+        $pagination = new SimplePagination($current_page);
+        $display = $pagination->threadLinks($chunk_page, $current_page);
         $pagination->checkLastPage($count_chunks);
 
         $this->set(get_defined_vars());
@@ -22,15 +22,15 @@ class ThreadController extends AppController
 
     public function my_thread()
     {
-        $myThread = Thread::getMyThreads();
+        $my_thread = Thread::getUser();
             
-        if ($myThread) {
-            $current = max(Param::get('page'), self::MIN_PAGE_NUMBER);
-            $chunk_page = array_chunk($myThread, self::MAX_ITEMS_PER_PAGE);
+        if ($my_thread) {
+            $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
+            $chunk_page = array_chunk($my_thread, self::MAX_ITEMS_PER_PAGE);
             $count_chunks = count($chunk_page);
 
-            $pagination = new SimplePagination($current);
-            $display = $pagination->threadLinks($chunk_page, $current);
+            $pagination = new SimplePagination($current_page);
+            $display = $pagination->threadLinks($chunk_page, $current_page);
             $pagination->checkLastPage($count_chunks);
 
             $this->set(get_defined_vars());
@@ -51,7 +51,7 @@ class ThreadController extends AppController
             $comment->body = Param::get('body');
 
             try {
-                $thread->create($comment, $_SESSION['userid']);
+                $thread->create($comment);
             } catch (ValidationException $e) {
                 $page = 'create';
             }
@@ -70,6 +70,7 @@ class ThreadController extends AppController
         $threads = new Thread();
         $thread_id = Param::get('thread_id');
         $thread = Thread::get($thread_id);
+
         $page = Param::get('page_next', 'edit');
         $title = $thread->title;
 
@@ -81,6 +82,7 @@ class ThreadController extends AppController
 
             try {
                 $threads->editTitle($thread_id);
+                redirect("/comment/view?thread_id={$thread_id}");
             } catch (ValidationException $e) {
                 $page = 'edit';
             }

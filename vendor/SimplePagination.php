@@ -11,16 +11,16 @@
  */
 class SimplePagination
 {
-    public $current;        // 現在のページ番号
+    public $current_page;        // 現在のページ番号
     public $prev;           // ひとつ前のページ番号
     public $next;           // ひとつ次のページ番号
     public $is_last_page;   // 最終ページかどうか
 
-    public function __construct($current)
+    public function __construct($current_page)
     {
-        $this->current = $current;
-        $this->prev = max($current - 1, 0);
-        $this->next = $current + 1;
+        $this->current_page = $current_page;
+        $this->prev = max($current_page - 1, 0);
+        $this->next = $current_page + 1;
     }
 
     /**
@@ -37,25 +37,21 @@ class SimplePagination
      */
     public function checkLastPage($item)
     {
-        if ($item <= $this->current) {
-            $this->is_last_page = true;
-        } else {
-            $this->is_last_page = false;
-        }
+        $this->is_last_page = ($item <= $this->current_page) ? true : false;
     }
 
     public function threadLinks($chunk_thread, $i)
     {
-        $chunk = $chunk_thread[$i-1];
+        $chunks = $chunk_thread[$i-1];
 
-        foreach ($chunk as $c) {
-           $title = $c->title;
-           $id = $c->id;
-           $user_id = $c->user_id;
-           $username = $c->username;
-           $created = $c->created;
+        foreach ($chunks as $chunk) {
+            $title = $chunk->title;
+            $id = $chunk->id;
+            $user_id = $chunk->user_id;
+            $username = $chunk->username;
+            $created = $chunk->created;
 
-            $individual[] = array(
+            $per_chunk[] = array(
                 'title'    => $title,
                 'id'       => $id, 
                 'user_id'  => $user_id,
@@ -64,29 +60,29 @@ class SimplePagination
             );
         }
 
-        return $individual;
+        return $per_chunk;
     }
 
     public function commentLinks($chunk_comment, $i)
     {
-        $chunk = $chunk_comment[$i-1];
+        $chunks = $chunk_comment[$i-1];
 
-        foreach ($chunk as $c) {
-            $id = $c->id; 
-            $body = $c->body;
-            $created = $c->created;
-            $username = $c->username;
-            $user_id = $c->user_id;
+        foreach ($chunks as $chunk) {
+            $id = $chunk->id; 
+            $body = $chunk->body;
+            $created = $chunk->created;
+            $username = $chunk->username;
+            $user_id = $chunk->user_id;
 
-            $individual[] = array(
+            $per_chunk[] = array(
+                'id'       => $id,
                 'body'     => $body,
                 'created'  => $created, 
                 'username' => $username,
-                'user_id'  => $user_id,
-                'id'       => $id
+                'user_id'  => $user_id
             );
         }
 
-        return $individual;
+        return $per_chunk;
     }
 }

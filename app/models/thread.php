@@ -28,7 +28,7 @@ class Thread extends AppModel
         return $threads;
     }
 
-    public static function getMyThreads()
+    public static function getUser()
     {
         $threads = array();
         $db = DB::conn();
@@ -88,8 +88,8 @@ class Thread extends AppModel
             $db->insert('thread', $params);
             $this->id = $db->lastInsertId();
 
-            $comments = new Comment;
-            $comments->write($comment, $this->id);
+            $comment = new Comment;
+            $comment->write($comment, $this->id);
                 
             $db->commit();
         } catch (Exception $e) {
@@ -102,7 +102,8 @@ class Thread extends AppModel
         //get value of column latest then add 1 so that it will be on top
         try {
             $db = DB::conn();
-            
+            $db->begin();
+
             $update = $db->update('thread', array('latest' => $this->getLatestThread() + 1), array('id' => $thread_id));
 
             $db->commit();
@@ -121,7 +122,8 @@ class Thread extends AppModel
 
         try {
             $db = DB::conn();
-
+            $db->begin();
+            
             $update = $db->update('thread', array('title' => $this->title), array('id' => $thread_id));
 
             $db->commit();

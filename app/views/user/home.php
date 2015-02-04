@@ -1,1 +1,1 @@
-<h2><?php echo "Welcome, ". $fname . "!";  ?></h2>
+<h2><?php echo "Welcome, ". $firstname . "!";  ?></h2>
