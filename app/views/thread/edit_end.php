@@ -1,7 +1,7 @@
-<h2><?php enquote_string($thread->title) ?></h2>
+<h2><?php enquote_string($threads->title) ?></h2>
 
 <p class="alert alert-success">
-    You have successfully created a thread.
+    You have successfully edited the title of this thread.
 </p>
 
 <a href="<?php enquote_string(url('comment/view', array('thread_id' => $thread->id))) ?>">

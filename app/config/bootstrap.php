@@ -8,9 +8,11 @@ require_once APP_DIR.'app_exception.php';
 // helpers
 require_once HELPERS_DIR.'html_helper.php';
 require_once HELPERS_DIR.'validation_helper.php';
+require_once HELPERS_DIR.'time_helper.php';
 
 // vendor
 require_once VENDOR_DIR.'SimpleDBI/SimpleDBI.php';
+require_once VENDOR_DIR.'SimplePagination.php';
 
 // config
 require_once CONFIG_DIR.'log.php';
@@ -27,3 +29,5 @@ spl_autoload_register(function($name) {
         }
     }
 });
+
+session_start();

@@ -1,4 +1,5 @@
 <?php
+
 class Controller
 {
     public $name;           // コントローラ名
@@ -44,7 +45,6 @@ class Controller
 
         // アクションの実行
         $this->{$this->action}();
-
         $this->render();
     }
 
