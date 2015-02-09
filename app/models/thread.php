@@ -49,7 +49,7 @@ class Thread extends AppModel
     {
         $this->validate();
         $comment->validate();
-        $current_time = date("Y-m-d h:i:s");
+        $current_time = date("Y-m-d H:i:s");
 
         if ($this->hasError() || $comment->hasError()){
             throw new ValidationException('Invalid Thread or Comment');

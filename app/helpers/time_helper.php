@@ -10,9 +10,8 @@ function getElapsedTime($created)
 {
 	$started = strtotime($created);
 	$now = time();
+    $time_elapsed = $now - $started;
 
-	$time_elapsed = $now - $started;
-	
 	if ($time_elapsed < MAX_SECONDS) {
         $time_label = ($time_elapsed == 1) ? "second" : "seconds";
     } elseif (MAX_SECONDS <= ($time_elapsed < MAX_SECONDS_PER_MINUTE)) {

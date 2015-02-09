@@ -9,16 +9,19 @@ class CommentController extends AppController
     {
         $thread = Thread::get(Param::get('thread_id'));
         $comment = new Comment();
+        
         $_SESSION['thread_id'] = $thread->id;
         $comments = $comment->getComments($_SESSION['thread_id']);
         
-        $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
-        $chunk_page = array_chunk($comments, self::MAX_ITEMS_PER_PAGE);
-        $count_chunks = count($chunk_page); 
+        if ($comments) {
+            $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
+            $chunk_page = array_chunk($comments, self::MAX_ITEMS_PER_PAGE);
+            $count_chunks = count($chunk_page); 
 
-        $pagination = new SimplePagination($current_page);
-        $display = $pagination->commentLinks($chunk_page, $current_page);
-        $pagination->checkLastPage($count_chunks);
+            $pagination = new SimplePagination($current_page);
+            $display = $pagination->commentLinks($chunk_page, $current_page);
+            $pagination->checkLastPage($count_chunks);
+        }
 
         $this->set(get_defined_vars());
     }
