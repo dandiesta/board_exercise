@@ -1,5 +1,4 @@
 <h1><?php enquote_string($thread->title) ?></h1>
-
 <hr />
 <?php foreach ($display as $v): ?>
     <div class="well span11">
