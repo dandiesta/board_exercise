@@ -101,9 +101,13 @@ class ThreadController extends AppController
     public function delete()
     {
         $threads = new Thread();
+        $comments = new Comment();
+
         $thread_id = Param::get('thread_id');
 
         $threads->delete($thread_id);
+        $comments->deleteThread($thread_id);
+        
         redirect('/thread/index');
 
         $this->set(get_defined_vars());

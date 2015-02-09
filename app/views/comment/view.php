@@ -8,11 +8,14 @@
             
             <div class="meta">
                 by: <?php enquote_string($v['username']) ?>
-                <?php if (($_SESSION['userid'] == $v['user_id']) || ($_SESSION['usertype'] == 'admin')):?>
+                <?php if ($_SESSION['userid'] == $v['user_id']):?>
                     <a href="<?php enquote_string(url('comment/edit', array('comment_id'=>$v['id'])))?>">
                         <i class="icon-pencil"></i></a> &nbsp;
-                    <a href="<?php enquote_string(url('comment/delete', array('comment_id'=>$v['id'])))?>">
-                        <i class="icon-trash"></i></a>
+                <?php endif ?>
+                <?php if (($_SESSION['userid'] == $v['user_id']) || ($_SESSION['usertype'] == 'admin')):?>
+                    <a href="<?php enquote_string(url('comment/delete', array('comment_id'=>$v['id'])))?>" 
+                        onclick="return confirm('Are you sure you want to delete this thread?')">
+                            <i class="icon-trash"></i></a>
                 <?php endif ?>
             </div>
 

@@ -75,4 +75,32 @@ class Comment extends AppModel
             $db->rollback();
         }
     }
+
+    public function deleteThread($thread_id)
+    {
+        try {
+            $db = DB::conn();
+            $db->begin();
+
+            $delete = $db->query('DELETE FROM comment WHERE thread_id = ?', array($thread_id));
+
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+
+    public function deleteComment($comment_id)
+    {
+        try {
+            $db = DB::conn();
+            $db->begin();
+
+            $delete = $db->query('DELETE FROM comment WHERE id = ?', array($comment_id));
+
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
 }

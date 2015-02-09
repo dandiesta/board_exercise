@@ -80,12 +80,13 @@ class Thread extends AppModel
 
     public function updateLastModifiedThread($thread_id)
     {
-        //get value of column latest then add 1 so that it will be on top
+        $current_time = date("Y-m-d h:i:s");
+
         try {
             $db = DB::conn();
             $db->begin();
 
-            $update = $db->query('UPDATE thread SET last_modified=now() WHERE id= ?', array($thread_id));
+            $update = $db->query('UPDATE thread SET last_modified=? WHERE id= ?', array($current_time, $thread_id));
 
             $db->commit();
         } catch (Exception $e) {
