@@ -19,7 +19,7 @@ class ThreadController extends AppController
             $pagination->checkLastPage($count_chunks);
 
             $this->set(get_defined_vars());
-        }   
+        }
     }
 
     public function my_thread()

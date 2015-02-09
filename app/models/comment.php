@@ -103,4 +103,21 @@ class Comment extends AppModel
             $db->rollback();
         }
     }
+
+    public function getTopThreads()
+    {
+        $db = DB::conn();
+
+        $rows = $db->rows('SELECT t.id, t.user_id, t.title, u.username, t.created, t.last_modified, u.usertype, 
+            COUNT(c.id) AS thread_count FROM comment c 
+            INNER JOIN thread t ON c.thread_id=t.id 
+            INNER JOIN user u ON t.user_id=u.id 
+            GROUP BY t.id ORDER BY COUNT(c.id) DESC');
+
+        foreach ($rows as $row) {
+            $threads[] = new Thread($row);
+        }
+
+        return $threads;
+    }
 }

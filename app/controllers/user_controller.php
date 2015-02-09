@@ -2,6 +2,9 @@
 
 class UserController extends AppController
 {
+    const MAX_ITEMS_PER_PAGE = 5;
+    const MIN_PAGE_NUMBER = 1;
+
     public function registration()
     {
         $register = new User();
@@ -74,10 +77,22 @@ class UserController extends AppController
     }
 
     public function home()
-    {                
+    {
         $user = User::get();
+        $comments = new Comment();
+        $threads = $comments->getTopThreads();
         $firstname = $user['firstname'];
-                
+
+        if ($threads) {
+            $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
+            $chunk_page = array_chunk($threads, self::MAX_ITEMS_PER_PAGE);
+            $count_chunks = count($chunk_page);
+                    
+            $pagination = new SimplePagination($current_page);
+            $display = $pagination->topThreadLinks($chunk_page, $current_page);
+            $pagination->checkLastPage($count_chunks);
+        }
+
         $this->set(get_defined_vars());
     }
 

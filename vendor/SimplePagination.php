@@ -65,6 +65,33 @@ class SimplePagination
         return $per_chunk;
     }
 
+    public function topThreadLinks($chunk_thread, $i)
+    {
+        $chunks = $chunk_thread[$i-1];
+
+        foreach ($chunks as $chunk) {
+            $title = $chunk->title;
+            $id = $chunk->id;
+            $user_id = $chunk->user_id;
+            $username = $chunk->username;
+            $created = $chunk->created;
+            $usertype = $chunk->usertype;
+            $thread_count = $chunk->thread_count;
+
+            $per_chunk[] = array(
+                'title'    => $title,
+                'id'       => $id, 
+                'user_id'  => $user_id,
+                'username' => $username,
+                'created'  => $created,
+                'usertype' => $usertype,
+                'thread_count' => $thread_count
+            );
+        }
+
+        return $per_chunk;
+    }
+
     public function commentLinks($chunk_comment, $i)
     {
         $chunks = $chunk_comment[$i-1];
