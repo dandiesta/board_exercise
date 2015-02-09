@@ -13,35 +13,23 @@ class Thread extends AppModel
         ),
     );
 
-    public static function getAll()
+    public static function getAll($user_id = null)
     {
         $threads = array();
         $db = DB::conn();
-        $rows = $db->rows('SELECT t.id, t.title, t.created, u.username, t.user_id FROM thread t 
-            INNER JOIN user u ON t.user_id=u.id 
-            ORDER BY t.latest DESC');
+
+        if ($user_id == null) {
+            $rows = $db->rows('SELECT t.id, t.title, t.created, u.username, t.user_id, u.usertype FROM thread t 
+                INNER JOIN user u ON t.user_id=u.id ORDER BY t.last_modified DESC');
+        } else {
+            $rows = $db->rows('SELECT t.id, t.title, t.created, u.username, t.user_id, u.usertype FROM thread t 
+                INNER JOIN user u ON t.user_id=u.id WHERE u.id = ? ORDER BY t.last_modified DESC', array($user_id));
+        }
             
         foreach ($rows as $row) {
             $threads[] = new Thread($row);
         }
     
-        return $threads;
-    }
-
-    public static function getUser()
-    {
-        $threads = array();
-        $db = DB::conn();
-        $rows = $db->rows('SELECT t.id, t.title, t.created, u.username, t.user_id FROM thread t 
-            INNER JOIN user u ON t.user_id=u.id 
-            WHERE user_id=? 
-            ORDER BY created DESC', 
-            array($_SESSION['userid']));
-
-        foreach ($rows as $row) {
-            $threads[] = new Thread($row);
-        }
-
         return $threads;
     }
 
@@ -57,19 +45,11 @@ class Thread extends AppModel
         return new self($row);
     }
 
-    public function getLatestThread()
-    {
-        $db= DB::conn();
-
-        $row = $db->row('SELECT latest FROM thread ORDER BY latest DESC');
-
-        return $row['latest'];
-    }
-
     public function create(Comment $comment)
     {
         $this->validate();
         $comment->validate();
+        $current_time = date("Y-m-d h:i:s");
 
         if ($this->hasError() || $comment->hasError()){
             throw new ValidationException('Invalid Thread or Comment');
@@ -80,16 +60,17 @@ class Thread extends AppModel
             $db->begin();
 
             $params = array(
-                'title'   => $this->title,
+                'title' => $this->title,
                 'user_id' => $_SESSION['userid'],
-                'latest'  => $this->getLatestThread()+1 
+                'created' => $current_time,
+                'last_modified' => $current_time,
             );
-
-            $db->insert('thread', $params);
+            
+            $insert = $db->insert('thread', $params);
             $this->id = $db->lastInsertId();
 
-            $comment = new Comment;
-            $comment->write($comment, $this->id);
+            $comments = new Comment;
+            $comments->write($comment, $this->id);
                 
             $db->commit();
         } catch (Exception $e) {
@@ -97,14 +78,14 @@ class Thread extends AppModel
         }
     }
 
-    public function updateLatestThread($thread_id)
+    public function updateLastModifiedThread($thread_id)
     {
         //get value of column latest then add 1 so that it will be on top
         try {
             $db = DB::conn();
             $db->begin();
 
-            $update = $db->update('thread', array('latest' => $this->getLatestThread() + 1), array('id' => $thread_id));
+            $update = $db->query('UPDATE thread SET last_modified=now() WHERE id= ?', array($thread_id));
 
             $db->commit();
         } catch (Exception $e) {
@@ -125,6 +106,20 @@ class Thread extends AppModel
             $db->begin();
             
             $update = $db->update('thread', array('title' => $this->title), array('id' => $thread_id));
+
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+
+    public function delete($thread_id)
+    {
+        try {
+            $db = DB::conn();
+            $db->begin();
+
+            $delete = $db->query('DELETE FROM thread WHERE id = ?', array($thread_id));
 
             $db->commit();
         } catch (Exception $e) {

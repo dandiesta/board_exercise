@@ -6,8 +6,9 @@ class User extends AppModel
     const MIN_LENGTH = 1;
     const MIN_LENGTH_PASSWORD = 8;
     const MAX_LENGTH_NAME = 50;
-    const MAX_LENGTH_USERNAME = 16;
+    const MAX_LENGTH_USERNAME = 20;
     const MAX_LENGTH_PASSWORD = 20;
+    const MAX_LENGTH_EMAIL = 254;
     //for computation of date
     const MAX_SECONDS = 60;
     const MAX_SECONDS_PER_MINUTE = 3600;
@@ -18,7 +19,7 @@ class User extends AppModel
 
     public $login_verification = true;
     public $validation = array(
-        'fname' => array(
+        'firstname' => array(
             'length' => array(
                 'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_NAME,
             ),
@@ -27,7 +28,7 @@ class User extends AppModel
             ),
         ),
  
-        'lname' => array(
+        'lastname' => array(
             'length' => array(
                 'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_NAME,
             ),
@@ -53,6 +54,15 @@ class User extends AppModel
                 'passwordChecker'
             ),
         ),
+
+        'email' => array(
+            'length' => array(
+                'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_EMAIL,
+            ),
+            'confirmation' => array(
+                'emailChecker'
+            ),
+        ),
     );
 
     public static function get()
@@ -68,6 +78,11 @@ class User extends AppModel
         return $row;
     }
 
+    public function nameChecker($name)
+    {
+        return ctype_alpha($name);
+    }
+
     public function passwordChecker()
     {
         return ($this->password == $this->confirm_password);
@@ -81,16 +96,21 @@ class User extends AppModel
         return (!$is_username_existing); //return true
     }
 
-    public function nameChecker($name)
+    public function emailChecker()
     {
-        return ctype_alpha($name);
+        $db = DB::conn();
+        $is_email_existing = $db->row('SELECT email FROM user WHERE email = ?', array($this->email));
+
+        return (!$is_email_existing); //return true
     }
 
     public function login()
     {
         $db = DB::conn();
-        $row = $db->row('SELECT id, firstname FROM user WHERE username = ? AND password = ?', 
-            array($this->username, $this->password));
+        $row = $db->row('SELECT id, firstname, usertype FROM user 
+            WHERE username = :username AND password = :password AND status = "active" || 
+            email = :username AND password = :password AND status = "active"', 
+            array('username' => $this->username, 'password' => $this->password));
 
         if (!$row) {
             $this->login_verification =false;
@@ -113,7 +133,10 @@ class User extends AppModel
             'firstname' => ucwords($this->firstname), 
             'lastname'  => ucwords($this->lastname), 
             'username'  => $this->username, 
-            'password'  => $this->password
+            'password'  => $this->password,
+            'email'     => $this->email,
+            'usertype'  => 'user',
+            'status'    => 'active'
         );
 
         $db->insert('user', $params);
@@ -135,9 +158,9 @@ class User extends AppModel
     {
         $db = DB::conn();
 
-        $row = $db->row('SELECT unix_timestamp(now()) - unix_timestamp(regdate) AS member_since 
-            FROM user WHERE id=?', 
-            array($_SESSION['userid']));
+        $row = $db->row('SELECT unix_timestamp(now()) - unix_timestamp(registration_date) AS member_since 
+            FROM user WHERE id= :id', 
+            array('id' => $_SESSION['userid']));
 
         $registration_date = $row['member_since'];
 

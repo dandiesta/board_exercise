@@ -9,20 +9,22 @@ class ThreadController extends AppController
     {
         $threads = Thread::getAll();
 
-        $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
-        $chunk_page = array_chunk($threads, self::MAX_ITEMS_PER_PAGE);
-        $count_chunks = count($chunk_page);
-                
-        $pagination = new SimplePagination($current_page);
-        $display = $pagination->threadLinks($chunk_page, $current_page);
-        $pagination->checkLastPage($count_chunks);
+        if ($threads) {
+            $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
+            $chunk_page = array_chunk($threads, self::MAX_ITEMS_PER_PAGE);
+            $count_chunks = count($chunk_page);
+                    
+            $pagination = new SimplePagination($current_page);
+            $display = $pagination->threadLinks($chunk_page, $current_page);
+            $pagination->checkLastPage($count_chunks);
 
-        $this->set(get_defined_vars());
+            $this->set(get_defined_vars());
+        }   
     }
 
     public function my_thread()
     {
-        $my_thread = Thread::getUser();
+        $my_thread = Thread::getAll($_SESSION['userid']);
             
         if ($my_thread) {
             $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
@@ -91,6 +93,18 @@ class ThreadController extends AppController
             throw new NotFoundException("{$page} not found");
             break;
         }
+
+        $this->set(get_defined_vars());
+        $this->render($page);
+    }
+
+    public function delete()
+    {
+        $threads = new Thread();
+        $thread_id = Param::get('thread_id');
+
+        $threads->delete($thread_id);
+        redirect('/thread/index');
 
         $this->set(get_defined_vars());
         $this->render($page);

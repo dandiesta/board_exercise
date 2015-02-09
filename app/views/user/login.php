@@ -13,7 +13,7 @@
     <div class="input-prepend">
         <span class="add-on"><i class="icon-user"> </i></span>
         <input type="text" name="username" class="span4" value="<?php enquote_string(Param::get('username')) ?>" 
-        placeholder="Username">
+        placeholder="Username or Email">
     </div>
 
     <div class="input-prepend">

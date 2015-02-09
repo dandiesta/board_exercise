@@ -16,6 +16,7 @@ class UserController extends AppController
             $register->username = Param::get('username');
             $register->password = Param::get('password');
             $register->confirm_password = Param::get('confirm_password');
+            $register->email = Param::get('email');
                 
             try {
                 $register->add();
@@ -50,6 +51,7 @@ class UserController extends AppController
                 try {
                     $user = $user->login();
                     $_SESSION['userid'] = $user['id'];
+                    $_SESSION['usertype'] = $user['usertype'];  
                     $firstname = $user['firstname'];
                 } catch (ValidationException $e) {
                     $page = 'login';
@@ -88,6 +90,7 @@ class UserController extends AppController
         $firstname = $profile['firstname'];
         $lastname = $profile['lastname'];
         $username = $profile['username'];
+        $email = $profile['email'];
         $member_since = $user->memberSince();
 
         switch ($page) {
@@ -97,6 +100,7 @@ class UserController extends AppController
             $user->firstname = Param::get('firstname');
             $user->lastname = Param::get('lastname');
             $user->username = Param::get('username');
+            $user->email = Param::get('email');
                     
             try {
                 $user->edit();

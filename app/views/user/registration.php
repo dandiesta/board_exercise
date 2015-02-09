@@ -57,6 +57,12 @@
                 <em>Username</em> already existing. Please choose another.
             </div>
         <?php endif ?>
+
+        <?php if ($register->validation_errors['email']['confirmation']): ?>
+            <div>
+                <em>Email</em> already existing. Please choose another.
+            </div>
+        <?php endif ?>
     </div>
 <?php endif ?>
 
@@ -80,6 +86,11 @@
                 <div class="col-lg-12">
                     <label>Username</label>
                     <input type="text" name="username" class="span5" value="<?php enquote_string(Param::get('username')) ?>">
+                </div>
+
+                <div class="col-lg-12">
+                    <label>Email</label>
+                    <input type="email" name="email" class="span5" value="<?php enquote_string(Param::get('email')) ?>">
                 </div>
 
                 <div class="col-lg-12">

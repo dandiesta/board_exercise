@@ -38,7 +38,7 @@ class CommentController extends AppController
 
             try {
                 $comment->write($comment, $thread->id, $_SESSION['userid']);
-                $thread->updateLatestThread($thread_id);
+                $thread->updateLastModifiedThread($thread_id);
             } catch (ValidationException $e) {
                 $page = 'write';
             }

@@ -50,13 +50,15 @@ class SimplePagination
             $user_id = $chunk->user_id;
             $username = $chunk->username;
             $created = $chunk->created;
+            $usertype = $chunk->usertype;
 
             $per_chunk[] = array(
                 'title'    => $title,
                 'id'       => $id, 
                 'user_id'  => $user_id,
                 'username' => $username,
-                'created'  => $created
+                'created'  => $created,
+                'usertype' => $usertype
             );
         }
 
@@ -73,13 +75,15 @@ class SimplePagination
             $created = $chunk->created;
             $username = $chunk->username;
             $user_id = $chunk->user_id;
+            //$usertype = $chunk->usertype;
 
             $per_chunk[] = array(
                 'id'       => $id,
+                'user_id'  => $user_id,
                 'body'     => $body,
                 'created'  => $created, 
-                'username' => $username,
-                'user_id'  => $user_id
+                'username' => $username
+              //  'usertype' => $usertype
             );
         }
 

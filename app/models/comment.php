@@ -43,9 +43,17 @@ class Comment extends AppModel
             throw new ValidationException('Invalid Comment');
         }
 
+        $current_time = date("Y-m-d h:i:s");
         $db = DB::conn();
-        $db->query('INSERT INTO comment SET thread_id = ?, user_id = ?, body = ?',
-            array($thread_id, $_SESSION['userid'], $comment->body));
+
+        $params = array(
+            'thread_id' => $thread_id,
+            'user_id' => $_SESSION['userid'],
+            'body' => $comment->body,
+            'created' => $current_time
+        );
+
+        $db->insert('comment', $params);
     }
 
     public function edit($comment_id)

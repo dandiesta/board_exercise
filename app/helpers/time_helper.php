@@ -1,10 +1,10 @@
 <?php
 
-    const MAX_SECONDS = 60;
-    const MAX_SECONDS_PER_MINUTE = 3600;
-    const MAX_SECONDS_PER_HOUR = 86400;
-    const MAX_SECONDS_PER_DAY = 2592000;
-    const MAX_SECONDS_PER_MONTH = 31104000;
+const MAX_SECONDS = 60;
+const MAX_SECONDS_PER_MINUTE = 3600;
+const MAX_SECONDS_PER_HOUR = 86400;
+const MAX_SECONDS_PER_DAY = 2592000;
+const MAX_SECONDS_PER_MONTH = 31104000;
 
 function getElapsedTime($created)
 {

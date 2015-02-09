@@ -7,6 +7,8 @@
     <input class="span6" type="text" value="<?php echo $lastname ?>" name="lastname" required>
     <label>Username</label>
     <input class="span6" type="text" value="<?php echo $username ?>" name="username" required>
+    <label>Email</label>
+    <input class="span6" type="email" value="<?php echo $email ?>" name="email" required>
     <label>Member since</label>
     <input class="span6" type="text" value="<?php echo $member_since ?> ago" name="member_since" disabled>
     <br/>
