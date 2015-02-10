@@ -107,10 +107,8 @@ class ThreadController extends AppController
 
         $threads->delete($thread_id);
         $comments->deleteThread($thread_id);
-    
-        //$this->set(get_defined_vars());
+
         redirect('/thread/index');
-        //$this->render($page);
     }
 
     public function liked()

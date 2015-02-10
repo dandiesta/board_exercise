@@ -7,13 +7,29 @@ class CommentController extends AppController
 
     public function view()
     {
+
+//$comment_id = Param::get('comment_id');
         $thread = Thread::get(Param::get('thread_id'));
         $comment = new Comment();
         
+
+
         $_SESSION['thread_id'] = $thread->id;
         $comments = $comment->getComments($_SESSION['thread_id']);
         
-        if ($comments) {
+//$likes = $comment->countLikes();
+//$comments_with_likes = array($comments, $likes);
+        // if ($comments) {
+        //     $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
+        //     $chunk_page = array_chunk($comments, self::MAX_ITEMS_PER_PAGE);
+        //     $count_chunks = count($chunk_page); 
+
+        //     $pagination = new SimplePagination($current_page);
+        //     $display = $pagination->commentLinks($chunk_page, $current_page);
+        //     $pagination->checkLastPage($count_chunks);
+        // }
+
+if ($comments) {
             $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
             $chunk_page = array_chunk($comments, self::MAX_ITEMS_PER_PAGE);
             $count_chunks = count($chunk_page); 
@@ -34,21 +50,21 @@ class CommentController extends AppController
         $page = Param::get('page_next', 'write');
 
         switch ($page) {
-        case 'write':
-            break;
-        case 'write_end':
-            $comment->body = Param::get('body');
+            case 'write':
+                break;
+            case 'write_end':
+                $comment->body = Param::get('body');
 
-            try {
-                $comment->write($comment, $thread->id, $_SESSION['userid']);
-                $thread->updateLastModifiedThread($thread_id);
-            } catch (ValidationException $e) {
-                $page = 'write';
-            }
-            break;
-        default:
-            throw new NotFoundException("{$page} is not found");
-            break;
+                try {
+                    $comment->write($comment, $thread->id, $_SESSION['userid']);
+                    $thread->updateLastModifiedThread($thread_id);
+                } catch (ValidationException $e) {
+                    $page = 'write';
+                }
+                break;
+            default:
+                throw new NotFoundException("{$page} is not found");
+                break;
         }
 
         $this->set(get_defined_vars());
@@ -100,6 +116,38 @@ class CommentController extends AppController
         redirect("/comment/view?thread_id={$_SESSION['thread_id']}");
 
         $this->set(get_defined_vars());
-        $this->render($page);
+        //$this->render($page);
+    }
+
+    public function liked()
+    {
+        $comment = new Comment();
+
+        $comment_id = Param::get('comment_id');
+        $like_checker = $comment->likeChecker($comment_id);
+
+        if (!$like_checker) {
+            $comment->deleteExisting($comment_id);
+            $comment->addLike($comment_id);
+        }
+
+        $this->set(get_defined_vars());
+        redirect("/comment/view?thread_id={$_SESSION['thread_id']}");
+    }
+
+    public function disliked()
+    {
+        $comment = new Comment();
+
+        $comment_id = Param::get('comment_id');
+        $dislike_checker = $comment->dislikeChecker($comment_id);
+
+        if (!$dislike_checker) {
+            $comment->deleteExisting($comment_id);
+            $comment->addDislike($comment_id);
+        }
+
+        $this->set(get_defined_vars());
+        redirect("/comment/view?thread_id={$_SESSION['thread_id']}");
     }
 }

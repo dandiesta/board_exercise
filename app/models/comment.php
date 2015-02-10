@@ -121,4 +121,102 @@ class Comment extends AppModel
 
         return $threads;
     }
+
+    public function countLikes()
+    {
+        $db = DB::conn();
+        $rows = $db->rows('SELECT comment_id, count(id) AS likes FROM like_monitor GROUP BY comment_id');
+
+        // if (!$rows) {
+        //     return 0;
+        // } else {
+        //     foreach ($rows as $row) {
+        //         $count[] = new Comment($row);
+        //     }
+
+        //     return $count;
+        // }
+
+        if (!$rows) {
+            return 0;
+        } else {
+            return $rows;
+        }
+    }
+
+    public function likeChecker($comment_id)
+    {
+        $db = DB::conn();
+
+        $row = $db->row('SELECT id FROM like_monitor WHERE comment_id = ? AND user_id = ? AND liked = 1', 
+            array($comment_id, $_SESSION['userid']));
+
+        return $row;
+    }
+
+    public function dislikeChecker($comment_id)
+    {
+        $db = DB::conn();
+
+        $row = $db->row('SELECT id FROM like_monitor WHERE comment_id = ? AND user_id = ? AND disliked = 1', 
+            array($comment_id, $_SESSION['userid']));
+
+        return $row;
+    }
+
+    public function addLike($comment_id)
+    {
+
+        $db = DB::conn();
+        try {
+            $db->begin();
+
+            $params = array(
+                'comment_id' => $comment_id,
+                'user_id' => $_SESSION['userid'],
+                'liked' => 1,
+                'disliked' => 0
+            );
+
+            $insert = $db->insert('like_monitor', $params);
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+
+    public function addDislike($comment_id)
+    {
+
+        $db = DB::conn();
+        try {
+            $db->begin();
+
+            $params = array(
+                'comment_id' => $comment_id,
+                'user_id' => $_SESSION['userid'],
+                'liked' => 0,
+                'disliked' => 1
+            );
+
+            $insert = $db->insert('like_monitor', $params);
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+
+    public function deleteExisting($comment_id)
+    {
+        $db = DB::conn();
+        try {
+            $db->begin();
+
+            $delete = $db->query('DELETE FROM like_monitor WHERE comment_id = ? AND user_id = ?',
+                array($comment_id, $_SESSION['userid']));
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
 }
