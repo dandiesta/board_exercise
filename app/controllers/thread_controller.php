@@ -77,21 +77,21 @@ class ThreadController extends AppController
         $title = $thread->title;
 
         switch ($page) {
-        case 'edit':
-            break;
-        case 'edit_end':
-            $threads->title = Param::get('title');
+            case 'edit':
+                break;
+            case 'edit_end':
+                $threads->title = Param::get('title');
 
-            try {
-                $threads->editTitle($thread_id);
-                redirect("/comment/view?thread_id={$thread_id}");
-            } catch (ValidationException $e) {
-                $page = 'edit';
-            }
-            break;
-        default:
-            throw new NotFoundException("{$page} not found");
-            break;
+                try {
+                    $threads->editTitle($thread_id);
+                    redirect("/comment/view?thread_id={$thread_id}");
+                } catch (ValidationException $e) {
+                    $page = 'edit';
+                }
+                break;
+            default:
+                throw new NotFoundException("{$page} not found");
+                break;
         }
 
         $this->set(get_defined_vars());
@@ -107,10 +107,14 @@ class ThreadController extends AppController
 
         $threads->delete($thread_id);
         $comments->deleteThread($thread_id);
-        
+    
+        //$this->set(get_defined_vars());
         redirect('/thread/index');
+        //$this->render($page);
+    }
 
-        $this->set(get_defined_vars());
-        $this->render($page);
+    public function liked()
+    {
+        
     }
 }

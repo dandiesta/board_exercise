@@ -43,6 +43,10 @@
           </div>
         </nav>
       <?php endif ?>
+      <!-- <div class="alert alert-danger">
+        <h4 class="alert-heading">ANNOUNCEMENT:
+         No flooding of threads and comments please! -Admin</h4>
+      </div> -->
 
       <?php echo $_content_ ?>
     </div>

@@ -65,10 +65,27 @@ class User extends AppModel
         ),
     );
 
-    public static function get()
+    public static function getAll()
     {
         $db= DB::conn();
-        $row = $db->row('SELECT * FROM user WHERE id=?', array($_SESSION['userid']));
+        $rows = $db->rows('SELECT * FROM user WHERE usertype != "admin"');
+        
+        if (!$rows) {
+            $this->login_verification =false;
+            throw new RecordNotFoundException('no record found');
+        }
+
+        return $rows;   
+    }
+
+    public static function get($user_id = null)
+    {
+        $db= DB::conn();
+        if ($user_id == null) {
+            $row = $db->row('SELECT * FROM user WHERE id=?', array($_SESSION['userid']));
+        } else {
+            $row = $db->row('SELECT * FROM user WHERE id=?', array($user_id));
+        }
         
         if (!$row) {
             $this->login_verification =false;
@@ -123,6 +140,7 @@ class User extends AppModel
     public function add()
     {
         $this->validate();
+        $current_time = date("Y-m-d H:i:s");
 
         if ($this->hasError()) {
                 throw new ValidationException('Error in Registration');
@@ -136,7 +154,8 @@ class User extends AppModel
             'password'  => $this->password,
             'email'     => $this->email,
             'usertype'  => 'user',
-            'status'    => 'active'
+            'status'    => 'active',
+            'registration_date' => $current_time
         );
 
         $db->insert('user', $params);
@@ -183,5 +202,25 @@ class User extends AppModel
             $time_label = ($registration_date == 1) ? "year" : "years";
         }
         return "{$registration_date} {$time_label}";
+    }
+
+    public function editStatus()
+    {
+        $db = DB::conn();
+        try {
+            $db->begin();
+
+            if ($this->current_status == 'active') {    
+                //$update = $db->update('user', array('status' => 'banned'), array('id' => $this->user_id));
+                $update = $db->query('UPDATE user SET status= "banned" WHERE id=:id', array('id' => $this->user_id));
+            } else {//elseif ($thiscurrent_status == 'banned') {
+                //$update = $db->update('user', array('status' => 'active'), array('id' => $this->user_id));
+                $update = $db->query('UPDATE user SET status= "active" WHERE id=:id', array('id' => $this->user_id));
+            }
+
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
     }
 }

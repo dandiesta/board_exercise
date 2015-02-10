@@ -48,14 +48,14 @@ class UserController extends AppController
             case 'login':
                 break;
             case 'home':
-                $user->username = Param::get('username');
-                $user->password = Param::get('password');
+                 $user->username = Param::get('username');
+                 $user->password = Param::get('password');
                     
                 try {
-                    $user = $user->login();
-                    $_SESSION['userid'] = $user['id'];
-                    $_SESSION['usertype'] = $user['usertype'];  
-                    $firstname = $user['firstname'];
+                     $user = $user->login();
+                     $_SESSION['userid'] = $user['id'];
+                     $_SESSION['usertype'] = $user['usertype'];
+                     redirect('/user/home');
                 } catch (ValidationException $e) {
                     $page = 'login';
                 }
@@ -130,5 +130,33 @@ class UserController extends AppController
 
         $this->set(get_defined_vars());
         $this->render($page);
+    }
+
+    public function status()
+    {
+        $user = User::getAll();        
+
+        $this->set(get_defined_vars());
+    }
+
+    public function edit_status()
+    {
+        $users = new User();
+        $user_id = Param::get('user_id');
+        $users->user_id = $user_id;
+        $user = User::get($user_id);
+        $users->current_status = $user['status'];
+        
+//$page = Param::get('page_next', 'edit');
+
+        
+        
+
+        $update = $users->editStatus();
+
+        
+        $this->set(get_defined_vars());
+        redirect('/user/status');
+        //$this->render($page);
     }
 }

@@ -21,7 +21,6 @@
                             onclick="return confirm('Are you sure you want to delete this thread?')">
                                 <i class="icon-trash"></i></a>
                     <?php endif ?>
-                    <?php echo $v['created'] ?>
                 </div>
 
                 <div style="color:#FF9999;"><small><?php getElapsedTime($v['created']) ?> ago</small></div>
@@ -40,7 +39,7 @@
 
     <?php for ($i=1; $i <= $count_chunks; $i++): ?>
         <?php if ($pagination->current_page == $i):?>
-            <a class="btn btn-default disabled" href="?page=<?php echo $i ?>"><?php echo $i; ?></a>      
+            <a class="btn btn-default disabled"><?php echo $i; ?></a>      
         <?php else:?>
             <a class="btn btn-danger" href="?page=<?php echo $i ?>&thread_id=<?php enquote_string($thread->id)?>">
                 <?php echo $i; ?></a>&nbsp;

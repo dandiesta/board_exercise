@@ -107,7 +107,8 @@ class Comment extends AppModel
     public function getTopThreads()
     {
         $db = DB::conn();
-
+        $threads = array();
+        
         $rows = $db->rows('SELECT t.id, t.user_id, t.title, u.username, t.created, t.last_modified, u.usertype, 
             COUNT(c.id) AS thread_count FROM comment c 
             INNER JOIN thread t ON c.thread_id=t.id 

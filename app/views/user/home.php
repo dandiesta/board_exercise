@@ -1,7 +1,10 @@
 <h2><?php echo "Welcome, ". $firstname . "!";  ?></h2>
+<?php if ($_SESSION['usertype'] == 'admin'): ?>
+	<a class="btn btn-danger" href ="<?php enquote_string(url('user/status')) ?>">Edit User Status</a>
+<?php endif ?>
 <hr />
 <h3>
-	Talk of the town
+	Want to know the talk of the town?
 	<small>Ordered by comment counts</small>
 </h3>
 
@@ -20,7 +23,6 @@
                                 <strong><?php enquote_string($v['title']); ?></strong><br/>
                             </a>
                             <small>
-                                <!-- Posted by: <?php enquote_string($v['username']);?>&nbsp; -->
                                 <?php echo $v['thread_count'] ?> comments
                                 <?php if ($_SESSION['userid'] == $v['user_id']):?>
                                     <a href="<?php enquote_string(url('thread/edit', array('thread_id'=>$v['id'])))?>">

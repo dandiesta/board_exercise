@@ -80,7 +80,7 @@ class Thread extends AppModel
 
     public function updateLastModifiedThread($thread_id)
     {
-        $current_time = date("Y-m-d h:i:s");
+        $current_time = date("Y-m-d H:i:s");
 
         try {
             $db = DB::conn();
