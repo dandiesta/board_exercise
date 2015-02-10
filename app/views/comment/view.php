@@ -1,67 +1,4 @@
 <h1><?php enquote_string($thread->title) ?></h1>
-<!-- <pre><?php print_r($comments_with_likes) ?></pre> -->
-<!-- <pre><?php print_r($comments) ?></pre>
-<pre><?php print_r($likes)?></pre> -->
-<!-- <pre>
-    <?php
-
-    // foreach ($likes as $like) {
-    //     array
-    // }
-    // print_r($comments);
-    // print_r(array_merge($likes, $comments));
-//         $chunks = $comments;
-
-    //     foreach ($chunks as $chunk) {
-    //         $id = $chunk->id; 
-    //         $body = $chunk->body;
-    //         $created = $chunk->created;
-    //         $username = $chunk->username;
-    //         $user_id = $chunk->user_id;
-
-    //         $per_chunk[] = array(
-    //             'id'       => $id,
-    //             'user_id'  => $user_id,
-    //             'body'     => $body,
-    //             'created'  => $created, 
-    //             'username' => $username,
-    //         );
-    //     } return $per_chunk;
-    foreach ($likes as $like)
-    {
-        print_r($like);
-    }
-        // $merged = array_merge($per_chunk, $likes);
-        // print_r($per_chunk);
-    foreach ($comments as $chunk) {
-        $id = $chunk->id; 
-            $body = $chunk->body;
-            $created = $chunk->created;
-            $username = $chunk->username;
-            $user_id = $chunk->user_id;
-
-            $per_chunk[] = array(
-                'id'       => $id,
-                'user_id'  => $user_id,
-                'body'     => $body,
-                'created'  => $created, 
-                'username' => $username,
-            );
-            print_r($per_chunk);
-    }
-    foreach ($per_chunk as $c) {
-        print_r($c);
-    }
-    if ($c['id'] = $like['comment_id'])
-    {
-        $c['likes'] = $like['likes'];
-    } print_r($c);
-// $merged = array_merge_recursive($per_chunk, $likes);
-//         print_r($merged);
-
-    ?>
-</pre> -->
-
 <hr />
 <?php if (empty($comments)): ?>
     <div class="alert alert-block">
@@ -89,7 +26,7 @@
             </div>
             <a href="<?php enquote_string(url('comment/liked', array('comment_id'=>$v['id'])))?>"><i class="icon-thumbs-up"></i></a> &nbsp;
             <a href="<?php enquote_string(url('comment/disliked', array('comment_id'=>$v['id'])))?>"><i class="icon-thumbs-down"></i></a><br />
-            0 &nbsp;&nbsp;&nbsp;0
+            <?php echo $v['liked'] ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $v['disliked'] ?>
         </div>
     <?php endforeach ?>
 

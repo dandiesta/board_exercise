@@ -36,8 +36,6 @@
                                 <div style="color:#66CCFF"><?php getElapsedTime($v['created']); ?> ago</div>
                             </small>
                         </div>
-                        <a href="<?php enquote_string(url(''))?>"><i class="icon-thumbs-up"></i></a> &nbsp;
-                        <a href="#"><i class="icon-thumbs-down"></i></a>
                     </div>
                 </li>
               <?php endforeach ?>

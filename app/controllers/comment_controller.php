@@ -11,13 +11,11 @@ class CommentController extends AppController
 //$comment_id = Param::get('comment_id');
         $thread = Thread::get(Param::get('thread_id'));
         $comment = new Comment();
-        
-
 
         $_SESSION['thread_id'] = $thread->id;
         $comments = $comment->getComments($_SESSION['thread_id']);
         
-//$likes = $comment->countLikes();
+//$likes = $comment->countLikes(96);
 //$comments_with_likes = array($comments, $likes);
         // if ($comments) {
         //     $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
@@ -124,13 +122,27 @@ if ($comments) {
         $comment = new Comment();
 
         $comment_id = Param::get('comment_id');
-        $like_checker = $comment->likeChecker($comment_id);
+        $like_checker = $comment->likeChecker($comment_id); //only matches like but not dislike
+        $dislike_checker = $comment->dislikeChecker($comment_id);
+
+        // if (!$like_checker) {
+        //     $comment->deleteExisting($comment_id); //existing id that has a dislike
+        //     $comment->addLike($comment_id);
+        //     $comment->updateLikedCount($comment_id);
+        // }
 
         if (!$like_checker) {
-            $comment->deleteExisting($comment_id);
-            $comment->addLike($comment_id);
+            if (!$dislike_checker) {
+                $comment->addLike($comment_id);
+                $comment->updateLikedCount($comment_id);
+            } else {
+                $comment->subtractDislikedCount($comment_id);
+                $comment->deleteExisting($comment_id);
+                
+                $comment->addLike($comment_id);
+                $comment->updateLikedCount($comment_id);
+            }
         }
-
         $this->set(get_defined_vars());
         redirect("/comment/view?thread_id={$_SESSION['thread_id']}");
     }
@@ -140,11 +152,25 @@ if ($comments) {
         $comment = new Comment();
 
         $comment_id = Param::get('comment_id');
+        $like_checker = $comment->likeChecker($comment_id);
         $dislike_checker = $comment->dislikeChecker($comment_id);
 
+        // if (!$dislike_checker) {
+        //     $comment->deleteExisting($comment_id);//existing id that has a like
+        //     $comment->addDislike($comment_id);
+        // }
+
         if (!$dislike_checker) {
-            $comment->deleteExisting($comment_id);
-            $comment->addDislike($comment_id);
+            if (!$like_checker) {
+                $comment->addDislike($comment_id);
+                $comment->updateDislikedCount($comment_id);
+            } else {
+                $comment->subtractLikedCount($comment_id);
+                $comment->deleteExisting($comment_id);
+                
+                $comment->addDislike($comment_id);
+                $comment->updateDislikedCount($comment_id);
+            }
         }
 
         $this->set(get_defined_vars());

@@ -27,7 +27,7 @@ class Comment extends AppModel
         $comments = array();
         $db= DB::conn();
 
-        $rows = $db->rows('SELECT c.id, u.username, c.user_id, c.body, c.created FROM comment c 
+        $rows = $db->rows('SELECT c.id, u.username, c.user_id, c.body, c.created, c.liked, c.disliked FROM comment c 
             INNER JOIN user u ON c.user_id=u.id WHERE c.thread_id = ? ORDER BY c.created DESC', array($id));
 
         foreach ($rows as $row) {
@@ -122,26 +122,19 @@ class Comment extends AppModel
         return $threads;
     }
 
-    public function countLikes()
+    public function countLikes($comment_id)
     {
         $db = DB::conn();
-        $rows = $db->rows('SELECT comment_id, count(id) AS likes FROM like_monitor GROUP BY comment_id');
+        $count = $db->value('SELECT liked FROM comment WHERE id = ?', array($comment_id));
 
-        // if (!$rows) {
-        //     return 0;
-        // } else {
-        //     foreach ($rows as $row) {
-        //         $count[] = new Comment($row);
-        //     }
+        return $count;
+    }
+    public function countDislikes($comment_id)
+    {
+        $db = DB::conn();
+        $count = $db->value('SELECT disliked FROM comment WHERE id = ?', array($comment_id));
 
-        //     return $count;
-        // }
-
-        if (!$rows) {
-            return 0;
-        } else {
-            return $rows;
-        }
+        return $count;
     }
 
     public function likeChecker($comment_id)
@@ -209,11 +202,81 @@ class Comment extends AppModel
     public function deleteExisting($comment_id)
     {
         $db = DB::conn();
+
         try {
             $db->begin();
 
             $delete = $db->query('DELETE FROM like_monitor WHERE comment_id = ? AND user_id = ?',
                 array($comment_id, $_SESSION['userid']));
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+
+    public function updateLikedCount($comment_id)
+    {
+        $comment = new Comment();
+        $likes_count = $comment->countLikes();
+
+        $db = DB::conn();
+        
+        try {
+            $db->begin();
+
+            //$update = $db->update('comment', array('liked' => $likes_count + 1), array('id' => $comment_id));
+            $update = $db->query('UPDATE comment SET liked = liked + 1 WHERE id = ?', array($comment_id));
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+
+    public function updateDislikedCount($comment_id)
+    {
+        $comment = new Comment();
+        $dislikes_count = $comment->countDislikes();
+
+        $db = DB::conn();
+        
+        try {
+            $db->begin();
+
+            $update = $db->query('UPDATE comment SET disliked = disliked + 1 WHERE id = ?', array($comment_id));
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+
+    public function subtractLikedCount($comment_id)
+    {
+        $comment = new Comment();
+        $likes_count = $comment->countLikes();
+
+        $db = DB::conn();
+        
+        try {
+            $db->begin();
+        
+            $update = $db->query('UPDATE comment SET liked = liked - 1 WHERE id = ?', array($comment_id));
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+
+    public function subtractDislikedCount($comment_id)
+    {
+        $comment = new Comment();
+        $dislikes_count = $comment->countDislikes();
+
+        $db = DB::conn();
+        
+        try {
+            $db->begin();
+        
+            $update = $db->query('UPDATE comment SET disliked = disliked - 1 WHERE id = ?', array($comment_id));
             $db->commit();
         } catch (Exception $e) {
             $db->rollback();

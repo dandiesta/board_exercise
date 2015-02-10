@@ -127,6 +127,8 @@ class SimplePagination
             $created = $chunk->created;
             $username = $chunk->username;
             $user_id = $chunk->user_id;
+            $liked = $chunk->liked;
+            $disliked = $chunk->disliked;
             //$usertype = $chunk->usertype;
 
             $per_chunk[] = array(
@@ -134,8 +136,9 @@ class SimplePagination
                 'user_id'  => $user_id,
                 'body'     => $body,
                 'created'  => $created, 
-                'username' => $username
-              //  'usertype' => $usertype
+                'username' => $username,
+                'liked'    => $liked,
+                'disliked' => $disliked
             );
         }
 
