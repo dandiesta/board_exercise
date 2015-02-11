@@ -91,32 +91,7 @@ class SimplePagination
 
         return $per_chunk;
     }
-
-    // public function commentLinks($chunk_comment, $i)
-    // {
-    //     $chunks = $chunk_comment[$i-1];
-
-    //     foreach ($chunks as $chunk) {
-    //         $id = $chunk->id; 
-    //         $body = $chunk->body;
-    //         $created = $chunk->created;
-    //         $username = $chunk->username;
-    //         $user_id = $chunk->user_id;
-    //         //$usertype = $chunk->usertype;
-
-    //         $per_chunk[] = array(
-    //             'id'       => $id,
-    //             'user_id'  => $user_id,
-    //             'body'     => $body,
-    //             'created'  => $created, 
-    //             'username' => $username
-    //           //  'usertype' => $usertype
-    //         );
-    //     }
-
-    //     return $per_chunk;
-    // }
-
+    
     public function commentLinks($chunk_comment, $i)
     {
         $chunks = $chunk_comment[$i-1];

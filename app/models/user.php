@@ -53,6 +53,9 @@ class User extends AppModel
             'confirmation' => array(
                 'passwordChecker'
             ),
+            'password_change' => array(
+                'isPasswordMatched'
+            ),
         ),
 
         'email' => array(
@@ -108,7 +111,7 @@ class User extends AppModel
     public function usernameChecker()
     {
         $db = DB::conn();
-        $is_username_existing = $db->row('SELECT username FROM user WHERE username = ?', array($this->username));
+        $is_username_existing = $db->row('SELECT username FROM user WHERE BINARY username = ?', array($this->username));
 
         return (!$is_username_existing); //return true
     }
@@ -116,17 +119,25 @@ class User extends AppModel
     public function emailChecker()
     {
         $db = DB::conn();
-        $is_email_existing = $db->row('SELECT email FROM user WHERE email = ?', array($this->email));
+        $is_email_existing = $db->row('SELECT email FROM user WHERE BINARY email = ?', array($this->email));
 
         return (!$is_email_existing); //return true
+    }
+
+    public function isPasswordMatched()
+    {
+        $db = DB::conn();
+        $original_password = $db->value('SELECT password FROM user WHERE id = ?', array($_SESSION['userid']));
+
+        return ($this->old_password == $original_password);
     }
 
     public function login()
     {
         $db = DB::conn();
         $row = $db->row('SELECT id, firstname, usertype FROM user 
-            WHERE username = :username AND password = :password AND status = "active" || 
-            email = :username AND password = :password AND status = "active"', 
+            WHERE BINARY username = :username AND BINARY password = :password AND status = "active" || 
+            BINARY email = :username AND BINARY password = :password AND status = "active"', 
             array('username' => $this->username, 'password' => $this->password));
 
         if (!$row) {
@@ -210,13 +221,32 @@ class User extends AppModel
         try {
             $db->begin();
 
-            if ($this->current_status == 'active') {    
-                //$update = $db->update('user', array('status' => 'banned'), array('id' => $this->user_id));
+            if ($this->current_status == 'active') {
                 $update = $db->query('UPDATE user SET status= "banned" WHERE id=:id', array('id' => $this->user_id));
-            } else {//elseif ($thiscurrent_status == 'banned') {
-                //$update = $db->update('user', array('status' => 'active'), array('id' => $this->user_id));
+            } else {
                 $update = $db->query('UPDATE user SET status= "active" WHERE id=:id', array('id' => $this->user_id));
             }
+
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
+
+    public function changePassword()
+    {
+        $this->validate();
+
+        if ($this->hasError()) {
+                throw new ValidationException('Error in Changing Password');
+        }
+
+        $db = DB::conn();
+
+        try {
+            $db->begin();
+
+            $update = $db->query('UPDATE user SET password= ? WHERE id=?', array($this->password, $_SESSION['userid']));
 
             $db->commit();
         } catch (Exception $e) {

@@ -109,23 +109,23 @@ class UserController extends AppController
         $member_since = $user->memberSince();
 
         switch ($page) {
-        case 'profile':
-            break;
-        case 'success_update':
-            $user->firstname = Param::get('firstname');
-            $user->lastname = Param::get('lastname');
-            $user->username = Param::get('username');
-            $user->email = Param::get('email');
-                    
-            try {
-                $user->edit();
-            } catch (ValidationException $e) {
-                $page = 'profile';
-            }    
-            break;
-        default:
-            throw new NotFoundException("{$page} not found");
-            break;
+            case 'profile':
+                break;
+            case 'success_update':
+                $user->firstname = Param::get('firstname');
+                $user->lastname = Param::get('lastname');
+                $user->username = Param::get('username');
+                $user->email = Param::get('email');
+                        
+                try {
+                    $user->edit();
+                } catch (ValidationException $e) {
+                    $page = 'profile';
+                }    
+                break;
+            default:
+                throw new NotFoundException("{$page} not found");
+                break;
         }
 
         $this->set(get_defined_vars());
@@ -147,16 +147,38 @@ class UserController extends AppController
         $user = User::get($user_id);
         $users->current_status = $user['status'];
         
-//$page = Param::get('page_next', 'edit');
-
-        
-        
-
         $update = $users->editStatus();
 
-        
         $this->set(get_defined_vars());
         redirect('/user/status');
-        //$this->render($page);
+    }
+
+    public function change_password()
+    {
+        $users = new User();
+        $page = Param::get('page_next', 'change_password');
+
+        switch ($page) {
+            case 'change_password':
+                break;
+            case 'edit_success':
+                $users->old_password = Param::get('old_password');
+                $users->password = Param::get('password');
+                $users->confirm_password = Param::get('confirm_password');
+                        
+                try {
+                    $change_password = $users->changePassword();
+                    redirect('/user/profile');
+
+                } catch (ValidationException $e) {
+                    $page = 'change_password';
+                }    
+                break;
+            default:
+                throw new NotFoundException("{$page} not found");
+                break;
+        }
+
+        $this->set(get_defined_vars());
     }
 }

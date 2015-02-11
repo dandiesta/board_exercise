@@ -1,4 +1,4 @@
-<h1><?php enquote_string($thread->title) ?></h1>
+<h1><?php enquote_string($thread->title) ?><small> By: <?php enquote_string($user['username']) ?></small></h1>
 <hr />
 <?php if (empty($comments)): ?>
     <div class="alert alert-block">

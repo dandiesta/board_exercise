@@ -17,7 +17,8 @@
                                 Posted by: <?php enquote_string($v['username']); ?>
                                 <a href="<?php enquote_string(url('thread/edit', array('thread_id'=>$v['id'])))?>">
                                     <i class="icon-pencil"></i></a> &nbsp;
-                                <a href="<?php enquote_string(url('thread/delete', array('thread_id'=>$v['id'])))?>">
+                                <a href="<?php enquote_string(url('thread/delete', array('thread_id'=>$v['id'])))?>"
+                                    onclick="return confirm('Are you sure you want to delete this thread?')">
                                     <i class="icon-trash"></i></a>
                                 <div style="color:#66CCFF"><?php getElapsedTime($v['created']); ?> ago</div>
                             </small>

@@ -7,27 +7,14 @@ class CommentController extends AppController
 
     public function view()
     {
-
-//$comment_id = Param::get('comment_id');
         $thread = Thread::get(Param::get('thread_id'));
+        $user = User::get($thread->user_id);
         $comment = new Comment();
 
         $_SESSION['thread_id'] = $thread->id;
         $comments = $comment->getComments($_SESSION['thread_id']);
-        
-//$likes = $comment->countLikes(96);
-//$comments_with_likes = array($comments, $likes);
-        // if ($comments) {
-        //     $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
-        //     $chunk_page = array_chunk($comments, self::MAX_ITEMS_PER_PAGE);
-        //     $count_chunks = count($chunk_page); 
 
-        //     $pagination = new SimplePagination($current_page);
-        //     $display = $pagination->commentLinks($chunk_page, $current_page);
-        //     $pagination->checkLastPage($count_chunks);
-        // }
-
-if ($comments) {
+        if ($comments) {
             $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
             $chunk_page = array_chunk($comments, self::MAX_ITEMS_PER_PAGE);
             $count_chunks = count($chunk_page); 

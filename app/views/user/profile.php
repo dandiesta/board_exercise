@@ -14,6 +14,7 @@
     <br/>
      <input type="hidden" name="page_next" value="success_update">
     <button type="submit" class="btn btn-danger">Save</button>
+    <a href="<?php enquote_string(url('user/change_password'))?>" class="btn btn-danger">Change Password</a>
 </form>
 
 <form class="offset1 span3 well">
