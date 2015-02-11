@@ -135,6 +135,13 @@ class UserController extends AppController
     {
         $user = User::getAll();        
 
+        $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+        $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
+        $other_threads = array_slice($user, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+        $pagination->checkLastPage($other_threads);
+        $page_links = createPageLinks(count($user), $current_page, $pagination->count);
+        $user = array_slice($user, $pagination->start_index - 1, $pagination->count);
+
         $this->set(get_defined_vars());
     }
 
@@ -149,7 +156,7 @@ class UserController extends AppController
         $update = $users->editStatus();
 
         $this->set(get_defined_vars());
-        redirect('/user/status');
+        redirect("/user/status?page={$_SESSION['current_page']}");
     }
 
     public function change_password()
@@ -176,6 +183,15 @@ class UserController extends AppController
                 throw new NotFoundException("{$page} not found");
                 break;
         }
+
+        $this->set(get_defined_vars());
+    }
+
+    public function top_likers()
+    {
+        $users = new User();
+
+        $top_likers = $users->topLikers();
 
         $this->set(get_defined_vars());
     }

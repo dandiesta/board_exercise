@@ -253,4 +253,23 @@ class User extends AppModel
             $db->rollback();
         }
     }
+
+    public function topLikers()
+    {
+        //$users = array();
+        $db = DB::conn();
+
+            $rows = $db->rows('SELECT l.comment_id, c.body, u.username AS Liker, COUNT(l.user_id) as Number_of_likes 
+                FROM like_monitor l 
+                INNER JOIN comment c on c.id = l.comment_id 
+                INNER JOIN user u on l.user_id = u.id 
+                WHERE c.user_id=? GROUP BY Liker ORDER BY Number_of_likes DESC LIMIT 5', 
+            array($_SESSION['userid']));
+
+        // foreach ($rows as $row) {
+        //     $users[] = new User($row);
+        // }
+    
+        return $rows;
+    }
 }

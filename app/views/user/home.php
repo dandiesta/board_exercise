@@ -3,6 +3,9 @@
 <?php if ($_SESSION['usertype'] == 'admin'): ?>
 	<a class="btn btn-danger" href ="<?php enquote_string(url('user/status')) ?>">Edit User Status</a>
 <?php endif ?>
+<a class="btn btn-danger" href ="<?php enquote_string(url('user/top_likers')) ?>">Your Top 5 Likers</a>
+<a class="btn btn-danger" href ="<?php enquote_string(url('user/top_commentors  ')) ?>">Your Top 5 Commentors</a>
+
 <hr />
 <h3>
 	Want to know the talk of the town?

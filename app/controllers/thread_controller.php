@@ -41,8 +41,8 @@ class ThreadController extends AppController
         if ($my_thread) {
             $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
-            $other_threads = array_slice($my_thread, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
-            $pagination->checkLastPage($other_threads);
+            $other_my_thread = array_slice($my_thread, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $pagination->checkLastPage($other_my_thread);
             $page_links = createPageLinks(count($my_thread), $current_page, $pagination->count);
             $my_thread = array_slice($my_thread, $pagination->start_index - 1, $pagination->count);
 

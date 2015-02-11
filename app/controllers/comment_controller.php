@@ -17,8 +17,8 @@ class CommentController extends AppController
         if ($comments) {
             $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
-            $other_threads = array_slice($comments, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
-            $pagination->checkLastPage($other_threads);
+            $other_comments = array_slice($comments, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $pagination->checkLastPage($other_comments);
             $page_links = createPageLinks(count($comments), $current_page, $pagination->count, 'thread_id='.$thread->id);
             $comments = array_slice($comments, $pagination->start_index - 1, $pagination->count);
         }
@@ -161,8 +161,8 @@ class CommentController extends AppController
         if ($comments) {
             $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
-            $other_threads = array_slice($comments, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
-            $pagination->checkLastPage($other_threads);
+            $other_comments = array_slice($comments, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $pagination->checkLastPage($other_comments);
             $page_links = createPageLinks(count($comments), $current_page, $pagination->count);
             $comments = array_slice($comments, $pagination->start_index - 1, $pagination->count);
         }

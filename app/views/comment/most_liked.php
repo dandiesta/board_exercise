@@ -9,7 +9,7 @@
         <ul class="nav">
             <?php foreach ($comments as $v): ?>
                 <div class="well span11">
-                    <div class="span10">
+                    <div class="span9">
                         <div style="font-size:20px;"><?php echo readable_text($v->body) ?></div>
                         
                         <div class="meta">
@@ -22,9 +22,10 @@
                         </div>
                         <div style="color:#FF9999;"><small><?php getElapsedTime($v->created) ?> ago</small></div>
                     </div>
-                    <a href="<?php enquote_string(url('comment/liked', array('comment_id'=>$v->id)))?>"><i class="icon-thumbs-up"></i></a> &nbsp;
-                    <a href="<?php enquote_string(url('comment/disliked', array('comment_id'=>$v->id)))?>"><i class="icon-thumbs-down"></i></a><br />
-                    <?php echo $v->liked ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $v->disliked ?>
+                    <p style="color:#669999">
+                    Like: <?php echo $v->liked ?><br />
+                    Dislike: <?php echo $v->disliked ?>
+                    </p>                 
                 </div>
             <?php endforeach ?>
         </ul>

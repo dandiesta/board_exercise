@@ -19,19 +19,14 @@
     </ul>
 </form>
 
-    <!--pagination-->
-<!--<?php if($pagination->current_page > 1): ?>
-        <a class="btn btn-danger" href='?page=<?php echo $pagination->prev ?>'>Previous</a>
+<form class="span12">
+    <?php if($pagination->current > 1): ?>
+        &nbsp;<a class='btn btn-danger' href='?page=<?php enquote_string($pagination->prev) ?>'>Previous</a>
     <?php endif ?>
 
-    <?php for ($i=1; $i <= $count_chunks; $i++): 
-        if ($pagination->current_page == $i):?>
-            <a class="btn btn-default disabled" href="?page=<?php echo $i ?>"><?php echo $i; ?></a>      
-        <?php else:?>
-            <a class="btn btn-danger" href="?page=<?php echo $i ?>"><?php echo $i; ?></a>&nbsp;
-        <?php endif ?>
-    <?php endfor ?>  
-
+    &nbsp; <?php echo $page_links; ?> &nbsp;
+    
     <?php if(!$pagination->is_last_page): ?>
-        <a class="btn btn-danger" href='?page=<?php echo $pagination->next ?>'>Next</a>
-    <?php endif ?>-->
+        <a class='btn btn-danger' href='?page=<?php enquote_string($pagination->next) ?>'>Next</a>
+    <?php endif ?>
+</form>
