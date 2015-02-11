@@ -1,11 +1,13 @@
 <h2><?php echo "Welcome, ". $firstname . "!";  ?></h2>
+<!--<script>alert('Welcome, ". $firstname . "!')</script>";-->
 <?php if ($_SESSION['usertype'] == 'admin'): ?>
 	<a class="btn btn-danger" href ="<?php enquote_string(url('user/status')) ?>">Edit User Status</a>
 <?php endif ?>
 <hr />
 <h3>
 	Want to know the talk of the town?
-	<small>Ordered by comment counts</small>
+	<small>Ordered by comment counts
+    <a href="<?php enquote_string(url('comment/most_liked')) ?>">View Top Comments with Most Likes</a></small>
 </h3>
 
 <?php if (empty($threads)): ?>

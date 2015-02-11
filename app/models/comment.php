@@ -122,21 +122,6 @@ class Comment extends AppModel
         return $threads;
     }
 
-    public function countLikes($comment_id)
-    {
-        $db = DB::conn();
-        $count = $db->value('SELECT liked FROM comment WHERE id = ?', array($comment_id));
-
-        return $count;
-    }
-    public function countDislikes($comment_id)
-    {
-        $db = DB::conn();
-        $count = $db->value('SELECT disliked FROM comment WHERE id = ?', array($comment_id));
-
-        return $count;
-    }
-
     public function likeChecker($comment_id)
     {
         $db = DB::conn();
@@ -217,7 +202,6 @@ class Comment extends AppModel
     public function updateLikedCount($comment_id)
     {
         $comment = new Comment();
-        $likes_count = $comment->countLikes();
 
         $db = DB::conn();
         
@@ -235,7 +219,6 @@ class Comment extends AppModel
     public function updateDislikedCount($comment_id)
     {
         $comment = new Comment();
-        $dislikes_count = $comment->countDislikes();
 
         $db = DB::conn();
         
@@ -252,7 +235,6 @@ class Comment extends AppModel
     public function subtractLikedCount($comment_id)
     {
         $comment = new Comment();
-        $likes_count = $comment->countLikes();
 
         $db = DB::conn();
         
@@ -269,7 +251,6 @@ class Comment extends AppModel
     public function subtractDislikedCount($comment_id)
     {
         $comment = new Comment();
-        $dislikes_count = $comment->countDislikes();
 
         $db = DB::conn();
         
@@ -281,5 +262,20 @@ class Comment extends AppModel
         } catch (Exception $e) {
             $db->rollback();
         }
+    }
+
+    public function getTopComments()
+    {
+       $comments = array();
+        $db= DB::conn();
+
+        $rows = $db->rows('SELECT u.username, c.body, c.created, c.liked, c.disliked FROM comment c 
+            INNER JOIN user u ON c.user_id=u.id WHERE c.liked != 0 ORDER BY c.liked DESC');
+
+        foreach ($rows as $row) {
+            $comments[] = new Comment($row);
+        }
+    
+        return $comments;
     }
 }

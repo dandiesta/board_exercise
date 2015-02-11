@@ -112,12 +112,6 @@ class CommentController extends AppController
         $like_checker = $comment->likeChecker($comment_id); //only matches like but not dislike
         $dislike_checker = $comment->dislikeChecker($comment_id);
 
-        // if (!$like_checker) {
-        //     $comment->deleteExisting($comment_id); //existing id that has a dislike
-        //     $comment->addLike($comment_id);
-        //     $comment->updateLikedCount($comment_id);
-        // }
-
         if (!$like_checker) {
             if (!$dislike_checker) {
                 $comment->addLike($comment_id);
@@ -142,11 +136,6 @@ class CommentController extends AppController
         $like_checker = $comment->likeChecker($comment_id);
         $dislike_checker = $comment->dislikeChecker($comment_id);
 
-        // if (!$dislike_checker) {
-        //     $comment->deleteExisting($comment_id);//existing id that has a like
-        //     $comment->addDislike($comment_id);
-        // }
-
         if (!$dislike_checker) {
             if (!$like_checker) {
                 $comment->addDislike($comment_id);
@@ -162,5 +151,24 @@ class CommentController extends AppController
 
         $this->set(get_defined_vars());
         redirect("/comment/view?thread_id={$_SESSION['thread_id']}");
+    }
+
+    public function most_liked()
+    {
+        $comment = new Comment();
+
+        $comments = $comment->getTopComments();
+
+        if ($comments) {
+            $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
+            $chunk_page = array_chunk($comments, self::MAX_ITEMS_PER_PAGE);
+            $count_chunks = count($chunk_page); 
+
+            $pagination = new SimplePagination($current_page);
+            $display = $pagination->topCommentLinks($chunk_page, $current_page);
+            $pagination->checkLastPage($count_chunks);
+        }
+
+        $this->set(get_defined_vars());
     }
 }

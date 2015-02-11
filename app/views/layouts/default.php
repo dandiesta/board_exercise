@@ -30,6 +30,7 @@
           <div class="container-fluid">
             <div>
               <ul class="nav navbar-nav">
+                <li><a href="<?php enquote_string(url('user/home')) ?>">Home</a></li>
                 <li><a href="<?php enquote_string(url('thread/index')) ?>">All Threads</a></li>
                 <li><a href="<?php enquote_string(url('thread/my_thread')) ?>">My Threads</a></li>
                 <li><a href="<?php enquote_string(url('thread/create')) ?>">Create New Thread</a></li>

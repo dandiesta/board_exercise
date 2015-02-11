@@ -169,7 +169,6 @@ class UserController extends AppController
                 try {
                     $change_password = $users->changePassword();
                     redirect('/user/profile');
-
                 } catch (ValidationException $e) {
                     $page = 'change_password';
                 }    

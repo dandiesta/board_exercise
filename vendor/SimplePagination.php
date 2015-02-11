@@ -119,4 +119,27 @@ class SimplePagination
 
         return $per_chunk;
     }
+
+    public function topCommentLinks($chunk_comment, $i)
+    {
+        $chunks = $chunk_comment[$i-1];
+
+        foreach ($chunks as $chunk) {
+            $body = $chunk->body;
+            $created = $chunk->created;
+            $username = $chunk->username;
+            $liked = $chunk->liked;
+            $disliked = $chunk->disliked;
+
+            $per_chunk[] = array(
+                'body'     => $body,
+                'created'  => $created, 
+                'username' => $username,
+                'liked'    => $liked,
+                'disliked' => $disliked
+            );
+        }
+
+        return $per_chunk;
+    }
 }
