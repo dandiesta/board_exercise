@@ -84,13 +84,12 @@ class UserController extends AppController
         $firstname = $user['firstname'];
 
         if ($threads) {
-            $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
-            $chunk_page = array_chunk($threads, self::MAX_ITEMS_PER_PAGE);
-            $count_chunks = count($chunk_page);
-                    
-            $pagination = new SimplePagination($current_page);
-            $display = $pagination->topThreadLinks($chunk_page, $current_page);
-            $pagination->checkLastPage($count_chunks);
+            $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+            $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
+            $other_threads = array_slice($threads, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $pagination->checkLastPage($other_threads);
+            $page_links = createPageLinks(count($threads), $current_page, $pagination->count);
+            $threads = array_slice($threads, $pagination->start_index - 1, $pagination->count);
         }
 
         $this->set(get_defined_vars());

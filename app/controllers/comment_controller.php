@@ -15,13 +15,12 @@ class CommentController extends AppController
         $comments = $comment->getComments($_SESSION['thread_id']);
 
         if ($comments) {
-            $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
-            $chunk_page = array_chunk($comments, self::MAX_ITEMS_PER_PAGE);
-            $count_chunks = count($chunk_page); 
-
-            $pagination = new SimplePagination($current_page);
-            $display = $pagination->commentLinks($chunk_page, $current_page);
-            $pagination->checkLastPage($count_chunks);
+            $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+            $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
+            $other_threads = array_slice($comments, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $pagination->checkLastPage($other_threads);
+            $page_links = createPageLinks(count($comments), $current_page, $pagination->count, 'thread_id='.$thread->id);
+            $comments = array_slice($comments, $pagination->start_index - 1, $pagination->count);
         }
 
         $this->set(get_defined_vars());
@@ -125,7 +124,7 @@ class CommentController extends AppController
             }
         }
         $this->set(get_defined_vars());
-        redirect("/comment/view?thread_id={$_SESSION['thread_id']}");
+        redirect("/comment/view?page={$_SESSION['current_page']}&thread_id={$_SESSION['thread_id']}");
     }
 
     public function disliked()
@@ -150,7 +149,7 @@ class CommentController extends AppController
         }
 
         $this->set(get_defined_vars());
-        redirect("/comment/view?thread_id={$_SESSION['thread_id']}");
+        redirect("/comment/view?page={$_SESSION['current_page']}&thread_id={$_SESSION['thread_id']}");
     }
 
     public function most_liked()
@@ -160,13 +159,12 @@ class CommentController extends AppController
         $comments = $comment->getTopComments();
 
         if ($comments) {
-            $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
-            $chunk_page = array_chunk($comments, self::MAX_ITEMS_PER_PAGE);
-            $count_chunks = count($chunk_page); 
-
-            $pagination = new SimplePagination($current_page);
-            $display = $pagination->topCommentLinks($chunk_page, $current_page);
-            $pagination->checkLastPage($count_chunks);
+            $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+            $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
+            $other_threads = array_slice($comments, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $pagination->checkLastPage($other_threads);
+            $page_links = createPageLinks(count($comments), $current_page, $pagination->count);
+            $comments = array_slice($comments, $pagination->start_index - 1, $pagination->count);
         }
 
         $this->set(get_defined_vars());

@@ -9,17 +9,29 @@ class ThreadController extends AppController
     {
         $threads = Thread::getAll();
 
-        if ($threads) {
-            $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
-            $chunk_page = array_chunk($threads, self::MAX_ITEMS_PER_PAGE);
-            $count_chunks = count($chunk_page);
+        // if ($threads) {
+        //     $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
+        //     $chunk_page = array_chunk($threads, self::MAX_ITEMS_PER_PAGE);
+        //     $count_chunks = count($chunk_page);
                     
-            $pagination = new SimplePagination($current_page);
-            $display = $pagination->threadLinks($chunk_page, $current_page);
-            $pagination->checkLastPage($count_chunks);
+        //     $pagination = new SimplePagination($current_page);
+        //     $display = $pagination->threadLinks($chunk_page, $current_page);
+        //     $pagination->checkLastPage($count_chunks);
+
+        //     $this->set(get_defined_vars());
+        // }
+
+        if ($threads) {
+            $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+            $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
+            $other_threads = array_slice($threads, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $pagination->checkLastPage($other_threads);
+            $page_links = createPageLinks(count($threads), $current_page, $pagination->count);
+            $threads = array_slice($threads, $pagination->start_index - 1, $pagination->count);
 
             $this->set(get_defined_vars());
         }
+
     }
 
     public function my_thread()
@@ -27,13 +39,12 @@ class ThreadController extends AppController
         $my_thread = Thread::getAll($_SESSION['userid']);
             
         if ($my_thread) {
-            $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
-            $chunk_page = array_chunk($my_thread, self::MAX_ITEMS_PER_PAGE);
-            $count_chunks = count($chunk_page);
-
-            $pagination = new SimplePagination($current_page);
-            $display = $pagination->threadLinks($chunk_page, $current_page);
-            $pagination->checkLastPage($count_chunks);
+            $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+            $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
+            $other_threads = array_slice($my_thread, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $pagination->checkLastPage($other_threads);
+            $page_links = createPageLinks(count($my_thread), $current_page, $pagination->count);
+            $my_thread = array_slice($my_thread, $pagination->start_index - 1, $pagination->count);
 
             $this->set(get_defined_vars());
         }
@@ -109,10 +120,5 @@ class ThreadController extends AppController
         $comments->deleteThread($thread_id);
 
         redirect('/thread/index');
-    }
-
-    public function liked()
-    {
-        
     }
 }

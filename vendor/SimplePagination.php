@@ -11,18 +11,34 @@
  */
 class SimplePagination
 {
+    const MIN_PAGE_NUM = 1;
+
     public $current_page;        // 現在のページ番号
+
     public $prev;           // ひとつ前のページ番号
     public $next;           // ひとつ次のページ番号
     public $is_last_page;   // 最終ページかどうか
 
-    public function __construct($current_page)
-    {
-        $this->current_page = $current_page;
-        $this->prev = max($current_page - 1, 0);
-        $this->next = $current_page + 1;
-    }
+    public $count; // 1ページに何件表示するか
+    public $start_index; // 何件目から表示するか（1オリジン）
 
+    // public function __construct($current_page)
+    // {
+    //     $this->current_page = $current_page;
+    //     $this->prev = max($current_page - 1, 0);
+    //     $this->next = $current_page + 1;
+    // }
+
+    public function __construct($current, $count)
+    {
+        $this->current = $current;
+        $_SESSION['current_page'] = $current;
+        $this->count = $count;
+        $this->prev = max($current - 1, 0);
+        $this->next = $current + 1;
+        $this->start_index = ($current - 1) * $count + 1;
+
+    }
     /**
      * 最終ページかどうか判定する
      *
@@ -35,7 +51,18 @@ class SimplePagination
      * @param array &$items 取得できたアイテムの数から最終ページかどうか判断する。
      * @return void
      */
-    public function checkLastPage($item)
+
+     public function checkLastPage(array &$items)
+    {
+        if (count($items) <= $this->count) {
+            $this->is_last_page = true;
+        } else {
+            $this->is_last_page = false;
+            array_pop($items);
+        }
+    }
+    /*
+     public function checkLastPage($item)
     {
         $this->is_last_page = ($item <= $this->current_page) ? true : false;
     }
@@ -141,5 +168,5 @@ class SimplePagination
         }
 
         return $per_chunk;
-    }
+    } */
 }

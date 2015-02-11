@@ -27,7 +27,7 @@ class Comment extends AppModel
         $comments = array();
         $db= DB::conn();
 
-        $rows = $db->rows('SELECT c.id, u.username, c.user_id, c.body, c.created, c.liked, c.disliked FROM comment c 
+        $rows = $db->rows('SELECT c.thread_id, c.id, u.username, c.user_id, c.body, c.created, c.liked, c.disliked FROM comment c 
             INNER JOIN user u ON c.user_id=u.id WHERE c.thread_id = ? ORDER BY c.created DESC', array($id));
 
         foreach ($rows as $row) {
@@ -270,7 +270,7 @@ class Comment extends AppModel
         $db= DB::conn();
 
         $rows = $db->rows('SELECT u.username, c.body, c.created, c.liked, c.disliked FROM comment c 
-            INNER JOIN user u ON c.user_id=u.id WHERE c.liked != 0 ORDER BY c.liked DESC');
+            INNER JOIN user u ON c.user_id=u.id WHERE c.liked != 0 ORDER BY c.liked DESC, c.disliked ASC');
 
         foreach ($rows as $row) {
             $comments[] = new Comment($row);
