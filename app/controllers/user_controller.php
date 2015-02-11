@@ -187,12 +187,13 @@ class UserController extends AppController
         $this->set(get_defined_vars());
     }
 
-    public function top_likers()
+    public function top_five()
     {
         $users = new User();
 
         $top_likers = $users->topLikers();
-
+        $top_commentors = $users->topCommentors();
+        
         $this->set(get_defined_vars());
     }
 }

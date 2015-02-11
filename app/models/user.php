@@ -259,17 +259,31 @@ class User extends AppModel
         //$users = array();
         $db = DB::conn();
 
-            $rows = $db->rows('SELECT l.comment_id, c.body, u.username AS Liker, COUNT(l.user_id) as Number_of_likes 
-                FROM like_monitor l 
-                INNER JOIN comment c on c.id = l.comment_id 
-                INNER JOIN user u on l.user_id = u.id 
-                WHERE c.user_id=? GROUP BY Liker ORDER BY Number_of_likes DESC LIMIT 5', 
+        $rows = $db->rows('SELECT u.username AS Liker, COUNT(l.user_id) as Number_of_likes 
+            FROM like_monitor l 
+            INNER JOIN comment c on c.id = l.comment_id 
+            INNER JOIN user u on l.user_id = u.id 
+            WHERE c.user_id=? GROUP BY Liker ORDER BY Number_of_likes DESC LIMIT 5', 
             array($_SESSION['userid']));
 
         // foreach ($rows as $row) {
         //     $users[] = new User($row);
         // }
     
+        return $rows;
+    }
+
+    public function topCommentors()
+    {
+        $db = DB::conn();
+
+        $rows = $db->rows('SELECT a.username AS Commentor, COUNT(c.id) AS Number_of_comments FROM comment c 
+            INNER join thread t on t.id=c.thread_id 
+            INNER join user u on u.id=t.user_id 
+            INNER JOIN user a on a.id=c.user_id
+            WHERE u.id = ? GROUP BY c.user_id ORDER BY Number_of_comments DESC LIMIT 5',
+            array($_SESSION['userid']));
+
         return $rows;
     }
 }
