@@ -8,11 +8,11 @@ const MAX_SECONDS_PER_MONTH = 31104000;
 
 function getElapsedTime($created)
 {
-	$started = strtotime($created);
-	$now = time();
+    $started = strtotime($created);
+    $now = time();
     $time_elapsed = $now - $started;
 
-	if ($time_elapsed < MAX_SECONDS) {
+    if ($time_elapsed < MAX_SECONDS) {
         $time_label = ($time_elapsed == 1) ? "second" : "seconds";
     } elseif (MAX_SECONDS <= ($time_elapsed < MAX_SECONDS_PER_MINUTE)) {
         $time_elapsed = floor($time_elapsed/MAX_SECONDS);
