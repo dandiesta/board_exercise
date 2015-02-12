@@ -143,8 +143,14 @@ class User extends AppModel
     public function isNotBanned()
     {
         $db = DB::conn();
-        $is_banned = $db->value('SELECT id FROM user WHERE username = ? AND status = 2 || email = ? AND status = 2', 
-            array($this->username, $this->email));
+
+        $params = array(
+            'username' => $this->username, 
+            'email'    => $this->email
+        );
+
+        $is_banned = $db->value('SELECT id FROM user WHERE username = :username AND status = 2 || 
+            email = :email AND status = 2', $params);
 
         return (!$is_banned); //return true
     }
