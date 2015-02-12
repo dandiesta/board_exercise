@@ -161,19 +161,19 @@ class UserController extends AppController
 
     public function change_password()
     {
-        $users = new User();
+        $user = new User();
         $page = Param::get('page_next', 'change_password');
 
         switch ($page) {
             case 'change_password':
                 break;
             case 'edit_success':
-                $users->old_password = Param::get('old_password');
-                $users->password = Param::get('password');
-                $users->confirm_password = Param::get('confirm_password');
+                $user->old_password = Param::get('old_password');
+                $user->password = Param::get('password');
+                $user->confirm_password = Param::get('confirm_password');
                         
                 try {
-                    $change_password = $users->changePassword();
+                    $change_password = $user->changePassword();
                     redirect('/user/profile');
                 } catch (ValidationException $e) {
                     $page = 'change_password';

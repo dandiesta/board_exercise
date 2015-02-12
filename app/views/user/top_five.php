@@ -9,12 +9,12 @@
             <ol style="font-size: 18px">
                 <?php foreach ($top_likers as $v): ?>
                     <li>
-                        <strong><?php enquote_string($v['Liker']); ?></strong> with
+                        <strong><?php enquote_string($v->Liker); ?></strong> with
                         <small>
-                            <?php if ($v['Number_of_likes'] == 1) : ?>
+                            <?php if ($v->Number_of_likes == 1) : ?>
                                 1 like
                             <?php else: ?>
-                                <?php enquote_string($v['Number_of_likes']) ?> likes
+                                <?php enquote_string($v->Number_of_likes) ?> likes
                             <?php endif ?>
                         </small>
                     </li>
@@ -35,12 +35,12 @@
             <ol style="font-size: 18px">
                 <?php foreach ($top_commentors as $v): ?>
                     <li>
-                        <strong><?php enquote_string($v['Commentor']); ?></strong> with
+                        <strong><?php enquote_string($v->Commentor); ?></strong> with
                         <small>
-                            <?php if ($v['Number_of_comments'] == 1) : ?>
+                            <?php if ($v->Number_of_comments == 1) : ?>
                                 1 comment
                             <?php else: ?>
-                                <?php enquote_string($v['Number_of_comments']) ?> comments
+                                <?php enquote_string($v->Number_of_comments) ?> comments
                             <?php endif ?>
                         </small>
                     </li>

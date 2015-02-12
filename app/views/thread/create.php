@@ -11,6 +11,14 @@
                 <?php enquote_string($thread->validation['title']['length'][2]) ?> characters in length.
             </div>
         <?php endif ?>
+
+        <?php if (($comment->validation_errors['body']['length'])): ?>
+            <div>
+                <em>Body</em> must be between
+                <?php enquote_string($comment->validation['body']['length'][1]) ?> and
+                <?php enquote_string($comment->validation['body']['length'][2]) ?> characters in length.
+            </div>
+        <?php endif ?>
     </div>
 <?php endif ?>
 

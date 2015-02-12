@@ -1,26 +1,26 @@
 <center><h3>Change password</h3></center>
 
-<?php if ($users->hasError()): ?>
+<?php if ($user->hasError()): ?>
     <div class="alert alert-block">
         <h4 class="alert-heading">Validation error!</h4>
 
-        <?php if ($users->validation_errors['password']['password_change']): ?>
+        <?php if ($user->validation_errors['old_password']['password_check']): ?>
             <div>
                 <em>Old password</em> did not match
             </div>
         <?php endif ?>
 
-        <?php if ($users->validation_errors['password']['confirmation']): ?>
+        <?php if ($user->validation_errors['password']['confirmation']): ?>
             <div>
                 <em>New password</em> did not match
             </div>
         <?php endif ?>
 
-        <?php if ($users->validation_errors['password']['length']): ?>
+        <?php if ($user->validation_errors['password']['length']): ?>
             <div>
                 <em>New password</em> must be between
-                <?php enquote_string($users->validation['password']['length'][1]) ?> and
-                <?php enquote_string($users->validation['password']['length'][2]) ?> characters in length.
+                <?php enquote_string($user->validation['password']['length'][1]) ?> and
+                <?php enquote_string($user->validation['password']['length'][2]) ?> characters in length.
             </div>
         <?php endif ?>    
     </div>

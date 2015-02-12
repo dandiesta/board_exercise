@@ -9,18 +9,6 @@ class ThreadController extends AppController
     {
         $threads = Thread::getAll();
 
-        // if ($threads) {
-        //     $current_page = max(Param::get('page'), self::MIN_PAGE_NUMBER);
-        //     $chunk_page = array_chunk($threads, self::MAX_ITEMS_PER_PAGE);
-        //     $count_chunks = count($chunk_page);
-                    
-        //     $pagination = new SimplePagination($current_page);
-        //     $display = $pagination->threadLinks($chunk_page, $current_page);
-        //     $pagination->checkLastPage($count_chunks);
-
-        //     $this->set(get_defined_vars());
-        // }
-
         if ($threads) {
             $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
@@ -28,10 +16,9 @@ class ThreadController extends AppController
             $pagination->checkLastPage($other_threads);
             $page_links = createPageLinks(count($threads), $current_page, $pagination->count);
             $threads = array_slice($threads, $pagination->start_index - 1, $pagination->count);
-
-            $this->set(get_defined_vars());
         }
 
+        $this->set(get_defined_vars());
     }
 
     public function my_thread()
@@ -45,9 +32,9 @@ class ThreadController extends AppController
             $pagination->checkLastPage($other_my_thread);
             $page_links = createPageLinks(count($my_thread), $current_page, $pagination->count);
             $my_thread = array_slice($my_thread, $pagination->start_index - 1, $pagination->count);
-
-            $this->set(get_defined_vars());
         }
+
+        $this->set(get_defined_vars());
     }
 
     public function create()
@@ -117,8 +104,8 @@ class ThreadController extends AppController
         $thread_id = Param::get('thread_id');
 
         $threads->delete($thread_id);
-        $comments->deleteThread($thread_id);
-
+        $comments->deleteComments($thread_id);
+        
         redirect('/thread/index');
     }
 }

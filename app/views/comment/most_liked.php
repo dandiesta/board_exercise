@@ -23,7 +23,7 @@
                         <div style="color:#FF9999;"><small><?php getElapsedTime($v->created) ?> ago</small></div>
                     </div>
                     <p style="color:#669999">
-                    Like: <?php echo $v->liked ?><br />
+                    Like: <?php $v->liked ?><br />
                     Dislike: <?php echo $v->disliked ?>
                     </p>                 
                 </div>

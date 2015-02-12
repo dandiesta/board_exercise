@@ -18,7 +18,7 @@
                     <?php endif ?>
                     <?php if (($_SESSION['userid'] == $v->user_id) || ($_SESSION['usertype'] == 'admin')):?>
                         <a href="<?php enquote_string(url('comment/delete', array('comment_id'=>$v->id)))?>" 
-                            onclick="return confirm('Are you sure you want to delete this thread?')">
+                            onclick="return confirm('Are you sure you want to delete this comment?')">
                                 <i class="icon-trash"></i></a>
                     <?php endif ?>
                 </div>
@@ -26,7 +26,7 @@
             </div>
             <a href="<?php enquote_string(url('comment/liked', array('comment_id'=>$v->id)))?>"><i class="icon-thumbs-up"></i></a> &nbsp;
             <a href="<?php enquote_string(url('comment/disliked', array('comment_id'=>$v->id)))?>"><i class="icon-thumbs-down"></i></a><br />
-            <?php echo $v->liked ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $v->disliked ?>
+            <?php enquote_string($v->liked) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php enquote_string($v->disliked) ?>
         </div>
     <?php endforeach ?>
 

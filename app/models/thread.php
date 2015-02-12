@@ -86,7 +86,12 @@ class Thread extends AppModel
             $db = DB::conn();
             $db->begin();
 
-            $update = $db->query('UPDATE thread SET last_modified=? WHERE id= ?', array($current_time, $thread_id));
+            $params = array(
+                'time'      => $current_time, 
+                'thread_id' => $thread_id
+            );
+
+            $update = $db->query('UPDATE thread SET last_modified = :time WHERE id = :thread_id', $params);
 
             $db->commit();
         } catch (Exception $e) {
@@ -126,5 +131,5 @@ class Thread extends AppModel
         } catch (Exception $e) {
             $db->rollback();
         }
-    }
+    }   
 }

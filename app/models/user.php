@@ -42,7 +42,10 @@ class User extends AppModel
                 'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_USERNAME,
             ),
             'confirmation' => array(
-                'usernameChecker'
+                'usernameChecker',
+            ),
+            'banned_checking' => array(
+                'isNotBanned',
             ),
         ),
 
@@ -51,10 +54,7 @@ class User extends AppModel
                 'validate_between', self::MIN_LENGTH_PASSWORD, self::MAX_LENGTH_PASSWORD,
             ),
             'confirmation' => array(
-                'passwordChecker'
-            ),
-            'password_change' => array(
-                'isPasswordMatched'
+                'passwordChecker',
             ),
         ),
 
@@ -63,15 +63,24 @@ class User extends AppModel
                 'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_EMAIL,
             ),
             'confirmation' => array(
-                'emailChecker'
+                'emailChecker',
+            ),
+            'banned_checking' => array(
+                'isNotBanned',
             ),
         ),
+
+        'old_password' => array(
+            'password_check' => array(
+                'isPasswordMatched',
+            ),
+        )
     );
 
     public static function getAll()
     {
         $db= DB::conn();
-        $rows = $db->rows('SELECT * FROM user WHERE usertype != "admin"');
+        $rows = $db->rows('SELECT * FROM user WHERE usertype != 1');
         
         if (!$rows) {
             $this->login_verification =false;
@@ -98,32 +107,51 @@ class User extends AppModel
         return $row;
     }
 
+    /* CHECKERS FOR REGISTRATION */
+
+    //checks if firstname and lastname contain letters only
     public function nameChecker($name)
     {
         return ctype_alpha($name);
     }
 
+    //checks if password is same as password for confirmation
     public function passwordChecker()
     {
         return ($this->password == $this->confirm_password);
     }
 
+    //checks if username is not yet in use
     public function usernameChecker()
     {
         $db = DB::conn();
-        $is_username_existing = $db->row('SELECT username FROM user WHERE BINARY username = ?', array($this->username));
+        $is_username_existing = $db->row('SELECT username FROM user WHERE BINARY username = ? AND status=1', 
+            array($this->username));
 
         return (!$is_username_existing); //return true
     }
 
+    //checks if email is not yet in use
     public function emailChecker()
     {
         $db = DB::conn();
-        $is_email_existing = $db->row('SELECT email FROM user WHERE BINARY email = ?', array($this->email));
+        $is_email_existing = $db->row('SELECT email FROM user WHERE BINARY email = ? AND status=1', array($this->email));
 
         return (!$is_email_existing); //return true
     }
 
+    public function isNotBanned()
+    {
+        $db = DB::conn();
+        $is_banned = $db->value('SELECT id FROM user WHERE username = ? AND status = 2 || email = ? AND status = 2', 
+            array($this->username, $this->email));
+
+        return (!$is_banned); //return true
+    }
+
+    /* CHECKER FOR CHANGE PASSWORD */
+
+    //checks if password typed for old password is correct
     public function isPasswordMatched()
     {
         $db = DB::conn();
@@ -135,10 +163,15 @@ class User extends AppModel
     public function login()
     {
         $db = DB::conn();
+
+        $params = array(
+            'username' => $this->username, 
+            'password' => $this->password
+        );
+
         $row = $db->row('SELECT id, firstname, usertype FROM user 
-            WHERE BINARY username = :username AND BINARY password = :password AND status = "active" || 
-            BINARY email = :username AND BINARY password = :password AND status = "active"', 
-            array('username' => $this->username, 'password' => $this->password));
+            WHERE BINARY username = :username AND BINARY password = :password AND status = 1 || 
+            BINARY email = :username AND BINARY password = :password AND status = 1', $params);
 
         if (!$row) {
             $this->login_verification =false;
@@ -157,31 +190,47 @@ class User extends AppModel
                 throw new ValidationException('Error in Registration');
         }
         
-        $db = DB::conn();
-        $params = array (
-            'firstname' => ucwords($this->firstname), 
-            'lastname'  => ucwords($this->lastname), 
-            'username'  => $this->username, 
-            'password'  => $this->password,
-            'email'     => $this->email,
-            'usertype'  => 'user',
-            'status'    => 'active',
-            'registration_date' => $current_time
-        );
+        try {
+            $db = DB::conn();
+            $db->begin();
 
-        $db->insert('user', $params);
+            $params = array (
+                'firstname' => ucwords($this->firstname), 
+                'lastname'  => ucwords($this->lastname), 
+                'username'  => $this->username, 
+                'password'  => $this->password,
+                'email'     => $this->email,
+                'usertype'  => 2, //2 for user, 1 for admin
+                'status'    => 1, //1 for active, 2 for banned
+                'registration_date' => $current_time
+            );
+
+            $db->insert('user', $params);
+
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
     }
 
     public function edit()
     {
-        $db = DB::conn();
-        $params = array(
-            'firstname' => ucwords($this->firstname), 
-            'lastname'  => ucwords($this->lastname), 
-            'username' => $this->username
-        );
+        try {
+            $db = DB::conn();
+            $db->begin();
 
-        $update = $db->update('user', $params, array('id' => $_SESSION['userid']));
+            $params = array(
+                'firstname' => ucwords($this->firstname), 
+                'lastname'  => ucwords($this->lastname), 
+                'username' => $this->username
+            );
+
+            $update = $db->update('user', $params, array('id' => $_SESSION['userid']));
+
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
     }
 
     public function memberSince()
@@ -217,14 +266,14 @@ class User extends AppModel
 
     public function editStatus()
     {
-        $db = DB::conn();
         try {
+            $db = DB::conn();
             $db->begin();
 
-            if ($this->current_status == 'active') {
-                $update = $db->query('UPDATE user SET status= "banned" WHERE id=:id', array('id' => $this->user_id));
+            if ($this->current_status == 1) {
+                $update = $db->query('UPDATE user SET status= 2 WHERE id=:id', array('id' => $this->user_id));
             } else {
-                $update = $db->query('UPDATE user SET status= "active" WHERE id=:id', array('id' => $this->user_id));
+                $update = $db->query('UPDATE user SET status= 1 WHERE id=:id', array('id' => $this->user_id));
             }
 
             $db->commit();
@@ -238,15 +287,18 @@ class User extends AppModel
         $this->validate();
 
         if ($this->hasError()) {
-                throw new ValidationException('Error in Changing Password');
+            throw new ValidationException('Error in Changing Password');
         }
 
-        $db = DB::conn();
-
         try {
+            $db = DB::conn();
             $db->begin();
 
-            $update = $db->query('UPDATE user SET password= ? WHERE id=?', array($this->password, $_SESSION['userid']));
+            $params = array(
+                'password' => $this->password, 
+                'id'       => $_SESSION['userid']);
+
+            $update = $db->query('UPDATE user SET password = :password WHERE id = :id', $params);
 
             $db->commit();
         } catch (Exception $e) {
@@ -254,9 +306,10 @@ class User extends AppModel
         }
     }
 
+    //gets the top likers of the user
     public function topLikers()
     {
-        //$users = array();
+        $users = array();
         $db = DB::conn();
 
         $rows = $db->rows('SELECT u.username AS Liker, COUNT(l.user_id) as Number_of_likes 
@@ -266,15 +319,17 @@ class User extends AppModel
             WHERE c.user_id=? GROUP BY Liker ORDER BY Number_of_likes DESC LIMIT 5', 
             array($_SESSION['userid']));
 
-        // foreach ($rows as $row) {
-        //     $users[] = new User($row);
-        // }
+        foreach ($rows as $row) {
+             $users[] = new User($row);
+        }
     
-        return $rows;
+        return $users;
     }
 
+    //gets top commentors of the user
     public function topCommentors()
     {
+        $users = array();
         $db = DB::conn();
 
         $rows = $db->rows('SELECT a.username AS Commentor, COUNT(c.id) AS Number_of_comments FROM comment c 
@@ -284,6 +339,10 @@ class User extends AppModel
             WHERE u.id = ? GROUP BY c.user_id ORDER BY Number_of_comments DESC LIMIT 5',
             array($_SESSION['userid']));
 
-        return $rows;
+        foreach ($rows as $row) {
+             $users[] = new User($row);
+        }
+
+        return $users;
     }
 }

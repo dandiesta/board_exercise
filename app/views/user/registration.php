@@ -63,6 +63,18 @@
                 <em>Email</em> already existing. Please choose another.
             </div>
         <?php endif ?>
+
+        <?php if ($register->validation_errors['username']['banned_checking']): ?>
+            <div>
+                <em>Username</em> cannot be used.
+            </div>
+        <?php endif ?>
+
+        <?php if ($register->validation_errors['email']['banned_checking']): ?>
+            <div>
+                <em>Email</em> cannot be used.
+            </div>
+        <?php endif ?>
     </div>
 <?php endif ?>
 

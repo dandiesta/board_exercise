@@ -13,7 +13,7 @@ class SimplePagination
 {
     const MIN_PAGE_NUM = 1;
 
-    public $current_page;        // 現在のページ番号
+    public $current;        // 現在のページ番号
 
     public $prev;           // ひとつ前のページ番号
     public $next;           // ひとつ次のページ番号
@@ -22,12 +22,6 @@ class SimplePagination
     public $count; // 1ページに何件表示するか
     public $start_index; // 何件目から表示するか（1オリジン）
 
-    // public function __construct($current_page)
-    // {
-    //     $this->current_page = $current_page;
-    //     $this->prev = max($current_page - 1, 0);
-    //     $this->next = $current_page + 1;
-    // }
 
     public function __construct($current, $count)
     {
@@ -54,119 +48,11 @@ class SimplePagination
 
      public function checkLastPage(array &$items)
     {
-        if (count($items) <= $this->count) {
+        if (count($items) < $this->count) {
             $this->is_last_page = true;
         } else {
             $this->is_last_page = false;
             array_pop($items);
         }
     }
-    /*
-     public function checkLastPage($item)
-    {
-        $this->is_last_page = ($item <= $this->current_page) ? true : false;
-    }
-
-    public function threadLinks($chunk_thread, $i)
-    {
-        $chunks = $chunk_thread[$i-1];
-
-        foreach ($chunks as $chunk) {
-            $title = $chunk->title;
-            $id = $chunk->id;
-            $user_id = $chunk->user_id;
-            $username = $chunk->username;
-            $created = $chunk->created;
-            $usertype = $chunk->usertype;
-
-            $per_chunk[] = array(
-                'title'    => $title,
-                'id'       => $id, 
-                'user_id'  => $user_id,
-                'username' => $username,
-                'created'  => $created,
-                'usertype' => $usertype
-            );
-        }
-
-        return $per_chunk;
-    }
-
-    public function topThreadLinks($chunk_thread, $i)
-    {
-        $chunks = $chunk_thread[$i-1];
-
-        foreach ($chunks as $chunk) {
-            $title = $chunk->title;
-            $id = $chunk->id;
-            $user_id = $chunk->user_id;
-            $username = $chunk->username;
-            $created = $chunk->created;
-            $usertype = $chunk->usertype;
-            $thread_count = $chunk->thread_count;
-
-            $per_chunk[] = array(
-                'title'    => $title,
-                'id'       => $id, 
-                'user_id'  => $user_id,
-                'username' => $username,
-                'created'  => $created,
-                'usertype' => $usertype,
-                'thread_count' => $thread_count
-            );
-        }
-
-        return $per_chunk;
-    }
-    
-    public function commentLinks($chunk_comment, $i)
-    {
-        $chunks = $chunk_comment[$i-1];
-
-        foreach ($chunks as $chunk) {
-            $id = $chunk->id; 
-            $body = $chunk->body;
-            $created = $chunk->created;
-            $username = $chunk->username;
-            $user_id = $chunk->user_id;
-            $liked = $chunk->liked;
-            $disliked = $chunk->disliked;
-            //$usertype = $chunk->usertype;
-
-            $per_chunk[] = array(
-                'id'       => $id,
-                'user_id'  => $user_id,
-                'body'     => $body,
-                'created'  => $created, 
-                'username' => $username,
-                'liked'    => $liked,
-                'disliked' => $disliked
-            );
-        }
-
-        return $per_chunk;
-    }
-
-    public function topCommentLinks($chunk_comment, $i)
-    {
-        $chunks = $chunk_comment[$i-1];
-
-        foreach ($chunks as $chunk) {
-            $body = $chunk->body;
-            $created = $chunk->created;
-            $username = $chunk->username;
-            $liked = $chunk->liked;
-            $disliked = $chunk->disliked;
-
-            $per_chunk[] = array(
-                'body'     => $body,
-                'created'  => $created, 
-                'username' => $username,
-                'liked'    => $liked,
-                'disliked' => $disliked
-            );
-        }
-
-        return $per_chunk;
-    } */
 }

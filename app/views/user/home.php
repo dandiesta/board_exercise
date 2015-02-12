@@ -1,6 +1,6 @@
 <h2><?php echo "Welcome, ". $firstname . "!";  ?></h2>
 <!--<script>alert('Welcome, ". $firstname . "!')</script>";-->
-<?php if ($_SESSION['usertype'] == 'admin'): ?>
+<?php if ($_SESSION['usertype'] == 1): ?>
 	<a class="btn btn-danger" href ="<?php enquote_string(url('user/status')) ?>">Edit User Status</a>
 <?php endif ?>
 <a class="btn btn-danger" href ="<?php enquote_string(url('user/top_five')) ?>">Your Top 5 Likers and Commentors</a>
@@ -26,12 +26,16 @@
                                 <strong><?php enquote_string($v->title); ?></strong><br/>
                             </a>
                             <small>
-                                <?php echo $v->thread_count ?> comments
+                                <?php if ($v->thread_count == 1) :?>
+                                    1 comment
+                                <?php else : ?>
+                                    <?php enquote_string($v->thread_count) ?> comments
+                                <?php endif ?>
                                 <?php if ($_SESSION['userid'] == $v->user_id):?>
                                     <a href="<?php enquote_string(url('thread/edit', array('thread_id'=>$v->id)))?>">
                                         <i class="icon-pencil"></i></a> &nbsp;
                                 <?php endif ?>
-                                <?php if (($_SESSION['userid'] == $v->user_id) || ($_SESSION['usertype'] == 'admin')) :?>
+                                <?php if (($_SESSION['userid'] == $v->user_id) || ($_SESSION['usertype'] == 1)) :?>
                                     <a href="<?php enquote_string(url('thread/delete', array('thread_id'=>$v->id)))?>" 
                                         onclick="return confirm('Are you sure you want to delete this thread?')">
                                             <i class="icon-trash"></i></a>
