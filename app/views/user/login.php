@@ -34,3 +34,17 @@
         <center>Don't have an account yet? Click <a href="<?php enquote_string(url('user/registration')) ?>">here</a>.</center>
     </div>
 </form>
+
+
+<form>
+<?php
+// echo '<h1>Rijndael 256-bit CBC Encryption Function</h1>';
+// $data = 'danica';
+// $encrypted_data = $user->mc_encrypt($data, ENCRYPTION_KEY);
+// echo '<h2>Example #1: String Data</h2>';
+//                     echo 'Data to be Encrypted: ' . $data . '<br/>';
+//                     echo 'Encrypted Data: ' . $encrypted_data . '<br/>';
+//                     echo 'Decrypted Data: ' . $user->mc_decrypt($encrypted_data, ENCRYPTION_KEY) . '</br><br />';
+
+?>
+</form>

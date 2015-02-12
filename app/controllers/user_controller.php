@@ -48,14 +48,17 @@ class UserController extends AppController
             case 'login':
                 break;
             case 'home':
-                 $user->username = Param::get('username');
-                 $user->password = Param::get('password');
-                    
+                $user->username = Param::get('username');
+                $user->password = Param::get('password');
+
                 try {
-                     $user = $user->login();
-                     $_SESSION['userid'] = $user['id'];
-                     $_SESSION['usertype'] = $user['usertype'];
-                     redirect('/user/home');
+                    if (!$user->checkPassword()) {
+                        $user = $user->login();
+                        $_SESSION['userid'] = $user['id'];
+                        $_SESSION['usertype'] = $user['usertype'];
+
+                        redirect('/user/home');
+                    }
                 } catch (ValidationException $e) {
                     $page = 'login';
                 }
