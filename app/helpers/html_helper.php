@@ -29,7 +29,6 @@ function createPageLinks($total_rows, $current_page, $max_rows, $extra_params = 
     while ($page_count <= $page_total) {
         if ($page_count == $current_page) {
             $page_links .= "<a class='btn btn-default' href='?page={$page_count}&{$extra_params}' disabled>{$current_page}</a> ";
-
         } else {
             $page_links .=
             "<a class='btn btn-danger' href='?page={$page_count}&{$extra_params}'>{$page_count}</a> ";
