@@ -49,7 +49,7 @@ class SimplePagination
 
      public function checkLastPage(array &$items)
     {
-        if ((count($items)) + 1< $this->count) {
+        if ((count($items)) + 1 < $this->count) {
             $this->is_last_page = true;
         } else {
             $this->is_last_page = false;

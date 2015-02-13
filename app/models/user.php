@@ -86,10 +86,10 @@ class User extends AppModel
         $db= DB::conn();
         $rows = $db->rows('SELECT * FROM user WHERE usertype != ?', array(self::ADMIN));
         
-        if (!$rows) {
-            $this->login_verification =false;
-            throw new RecordNotFoundException('no record found');
-        }
+        // if (!$rows) {
+        //     $this->login_verification =false;
+        //     throw new RecordNotFoundException('no record found');
+        // }
 
         return $rows;   
     }
@@ -180,7 +180,9 @@ class User extends AppModel
         $db = DB::conn();
         $original_password = $db->value('SELECT password FROM user WHERE id = ?', array($_SESSION['userid']));
 
-        return ($this->old_password == $original_password);
+        $decrypted_password = $this->mc_decrypt($original_password, ENCRYPTION_KEY);
+
+        return ($this->old_password == $decrypted_password);
     }
 
     public function login()
@@ -194,8 +196,10 @@ class User extends AppModel
         );
 
         $row = $db->row('SELECT id, firstname, usertype FROM user 
-            WHERE BINARY username = :username AND BINARY password = :password AND status = :status || 
-            BINARY email = :username AND BINARY password = :password AND status = :status', $params);
+            WHERE BINARY username = :username AND status = :status || 
+            BINARY email = :username AND status = :status', $params);
+            'username' => $this->username
+        );
 
         if (!$row) {
             $this->login_verification =false;
@@ -203,6 +207,20 @@ class User extends AppModel
         }
 
         return $row;
+    }
+
+    public function checkPassword()
+    {
+        $db = DB::conn();
+
+        $encrypted_password = $db->value('SELECT password FROM user 
+            WHERE BINARY username = :username || 
+            BINARY email = :username', array('username' => $this->username));
+
+        
+        $decrypted_password = $this->mc_decrypt($encrypted_password, ENCRYPTION_KEY);
+        
+        return ($decrypted_password == $this->password)? true : $this->login_verification =false;
     }
 
     public function add()
@@ -222,7 +240,7 @@ class User extends AppModel
                 'firstname' => ucwords($this->firstname), 
                 'lastname'  => ucwords($this->lastname), 
                 'username'  => $this->username, 
-                'password'  => $this->password,
+                'password'  => $this->mc_encrypt($this->password, ENCRYPTION_KEY),
                 'email'     => $this->email,
                 'usertype'  => self::USER, 
                 'status'    => self::ACTIVE, 
@@ -329,7 +347,7 @@ class User extends AppModel
             $db->begin();
 
             $params = array(
-                'password' => $this->password, 
+                'password' => $this->mc_encrypt($this->password, ENCRYPTION_KEY),
                 'id'       => $_SESSION['userid']);
 
             $update = $db->query('UPDATE user SET password = :password WHERE id = :id', $params);
@@ -379,4 +397,42 @@ class User extends AppModel
 
         return $users;
     }
+
+    // Encrypt Function
+    public function mc_encrypt($encrypt, $key)
+    {
+        $encrypt = serialize($encrypt);
+        $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC), MCRYPT_DEV_URANDOM);
+        $key = pack('H*', str_replace(' ', '', $key[0]));
+        $mac = hash_hmac('sha256', $encrypt, substr(bin2hex($key), -32));
+        $passcrypt = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $encrypt.$mac, MCRYPT_MODE_CBC, $iv);
+        $encoded = base64_encode($passcrypt).'|'.base64_encode($iv);
+        
+        return $encoded;
+    }
+
+    // Decrypt Function
+    public function mc_decrypt($decrypt, $key)
+    {
+        $decrypt = explode('|', $decrypt.'|');
+        $decoded = base64_decode($decrypt[0]);
+        $iv = base64_decode($decrypt[1]);
+        
+        if (strlen($iv) !== mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC)) {
+            return false;
+        }
+        
+        $key = pack('H*', str_replace(' ', '', $key[0]));
+        $decrypted = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $decoded, MCRYPT_MODE_CBC, $iv));
+        $mac = substr($decrypted, -64);
+        $decrypted = substr($decrypted, 0, -64);
+        $calcmac = hash_hmac('sha256', $decrypted, substr(bin2hex($key), -32));
+        
+        if ($calcmac !== $mac) {
+            return false;
+        }
+        
+        $decrypted = unserialize($decrypted);
+        return $decrypted;
+    } 
 }

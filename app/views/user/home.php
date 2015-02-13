@@ -1,9 +1,11 @@
-<div style="font-size:30px"><strong><?php echo "Welcome, ". $firstname . "!";  ?></strong>
-<!--<script>alert('Welcome, ". $firstname . "!')</script>";-->
-<?php if ($_SESSION['usertype'] == 1): ?>
-	<a class="btn btn-danger" href ="<?php enquote_string(url('user/status')) ?>">Edit User Status</a>
-<?php endif ?>
-<a class="btn btn-danger" href ="<?php enquote_string(url('user/top_five')) ?>">Your Top 5 Likers and Commentors</a>
+<div style="font-size:30px">
+    <strong><?php echo "Welcome, ". $firstname . "!";  ?></strong>
+
+    <?php if ($_SESSION['usertype'] == 1): ?>
+    	<a class="btn btn-danger" href ="<?php enquote_string(url('user/status')) ?>">Edit User Status</a>
+    <?php endif ?>
+    
+    <a class="btn btn-danger" href ="<?php enquote_string(url('user/top_five')) ?>">Your Top 5 Likers and Commentors</a>
 </div>
 <hr />
 <h3>
