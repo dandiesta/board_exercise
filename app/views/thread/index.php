@@ -20,7 +20,7 @@
                                     <a href="<?php enquote_string(url('thread/edit', array('thread_id'=>$v->id)))?>">
                                         <i class="icon-pencil"></i></a> &nbsp;
                                 <?php endif ?>
-                                <?php if (($_SESSION['userid'] == $v->user_id) || ($_SESSION['usertype'] == 'admin')) :?>
+                                <?php if (($_SESSION['userid'] == $v->user_id) || ($_SESSION['usertype'] == 1)) :?>
                                     <a href="<?php enquote_string(url('thread/delete', array('thread_id'=>$v->id)))?>" 
                                         onclick="return confirm('Are you sure you want to delete this thread?')">
                                             <i class="icon-trash"></i></a>

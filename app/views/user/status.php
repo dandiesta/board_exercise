@@ -8,7 +8,7 @@
                         <small>
                             <strong><?php echo $v['firstname'] . ' ' . $v['lastname']?></strong><br />
                             Member since: <?php getElapsedTime($v['registration_date']); ?> ago <br />
-                           	STATUS: <strong><?php echo $v['status'] ?></strong>
+                           	STATUS: <strong><?php if ($v['status'] == 1) : enquote_string('Active'); else : enquote_string('Banned'); endif ?></strong>
                         </small>
                     </div>
                     <a href ="<?php enquote_string(url('user/edit_status', array('user_id'=>$v['id'])))?>" class="btn btn-default" onclick="return confirm('Are you sure you want to change this user\'s status?')">

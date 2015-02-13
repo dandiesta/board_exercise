@@ -15,7 +15,11 @@ class User extends AppModel
     const MAX_SECONDS_PER_HOUR = 86400;
     const MAX_SECONDS_PER_DAY = 2592000;
     const MAX_SECONDS_PER_MONTH = 31104000;
-        
+    //for status and usertype
+    const ADMIN = 1;
+    const USER = 2;
+    const ACTIVE = 1;
+    const BANNED = 2;
 
     public $login_verification = true;
     public $validation = array(
@@ -80,7 +84,7 @@ class User extends AppModel
     public static function getAll()
     {
         $db= DB::conn();
-        $rows = $db->rows('SELECT * FROM user WHERE usertype != 1');
+        $rows = $db->rows('SELECT * FROM user WHERE usertype != ?', array(self::ADMIN));
         
         if (!$rows) {
             $this->login_verification =false;
@@ -125,19 +129,31 @@ class User extends AppModel
     public function usernameChecker()
     {
         $db = DB::conn();
-        $is_username_existing = $db->row('SELECT username FROM user WHERE BINARY username = ? AND status=1', 
-            array($this->username));
 
-        return (!$is_username_existing); //return true
+        $params = array(
+            'username' => $this->username, 
+            'status'   => self::ACTIVE
+        );
+
+        $is_username_existing = $db->row('SELECT username FROM user WHERE BINARY username = :username AND status= :status',
+                                 $params);
+
+        return (!$is_username_existing); //return true if the query does not return anything
     }
 
     //checks if email is not yet in use
     public function emailChecker()
     {
         $db = DB::conn();
-        $is_email_existing = $db->row('SELECT email FROM user WHERE BINARY email = ? AND status=1', array($this->email));
 
-        return (!$is_email_existing); //return true
+        $params = array(
+            'email'  => $this->email, 
+            'status' => self::ACTIVE
+        );
+
+        $is_email_existing = $db->row('SELECT email FROM user WHERE BINARY email = email AND status = :status', $params);
+
+        return (!$is_email_existing); //return true if the query does not return anything
     }
 
     public function isNotBanned()
@@ -146,13 +162,14 @@ class User extends AppModel
 
         $params = array(
             'username' => $this->username, 
-            'email'    => $this->email
+            'email'    => $this->email,
+            'status'   => self::BANNED
         );
 
-        $is_banned = $db->value('SELECT id FROM user WHERE username = :username AND status = 2 || 
-            email = :email AND status = 2', $params);
+        $is_banned = $db->value('SELECT id FROM user WHERE username = :username AND status = :status || 
+            email = :email AND status = :status', $params);
 
-        return (!$is_banned); //return true
+        return (!$is_banned); //return true if the query does not return anything
     }
 
     /* CHECKER FOR CHANGE PASSWORD */
@@ -172,12 +189,13 @@ class User extends AppModel
 
         $params = array(
             'username' => $this->username, 
-            'password' => $this->password
+            'password' => $this->password,
+            'status'   => self::ACTIVE
         );
 
         $row = $db->row('SELECT id, firstname, usertype FROM user 
-            WHERE BINARY username = :username AND BINARY password = :password AND status = 1 || 
-            BINARY email = :username AND BINARY password = :password AND status = 1', $params);
+            WHERE BINARY username = :username AND BINARY password = :password AND status = :status || 
+            BINARY email = :username AND BINARY password = :password AND status = :status', $params);
 
         if (!$row) {
             $this->login_verification =false;
@@ -206,8 +224,8 @@ class User extends AppModel
                 'username'  => $this->username, 
                 'password'  => $this->password,
                 'email'     => $this->email,
-                'usertype'  => 2, //2 for user, 1 for admin
-                'status'    => 1, //1 for active, 2 for banned
+                'usertype'  => self::USER, 
+                'status'    => self::ACTIVE, 
                 'registration_date' => $current_time
             );
 
@@ -276,10 +294,20 @@ class User extends AppModel
             $db = DB::conn();
             $db->begin();
 
-            if ($this->current_status == 1) {
-                $update = $db->query('UPDATE user SET status= 2 WHERE id=:id', array('id' => $this->user_id));
+            $params = array(
+                'status' => self::BANNED, 
+                'id' => $this->user_id
+            );
+
+            $param = array(
+                'status' => self::ACTIVE, 
+                'id' => $this->user_id
+            );
+            
+            if ($this->current_status == self::ACTIVE) {
+                $update = $db->query('UPDATE user SET status= :status WHERE id=:id', $params);
             } else {
-                $update = $db->query('UPDATE user SET status= 1 WHERE id=:id', array('id' => $this->user_id));
+                $update = $db->query('UPDATE user SET status= :status WHERE id=:id', $param);
             }
 
             $db->commit();

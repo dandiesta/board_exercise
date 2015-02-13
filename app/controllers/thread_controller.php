@@ -104,8 +104,8 @@ class ThreadController extends AppController
         $thread_id = Param::get('thread_id');
 
         $threads->delete($thread_id);
-        $comments->deleteComments($thread_id);
+        $comments->deleteAll($thread_id);
         
-        redirect('/thread/index');
+        redirect("/thread/index?page={$_SESSION['current_page']}&");
     }
 }

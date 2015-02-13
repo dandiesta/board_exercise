@@ -146,7 +146,7 @@ class Comment extends AppModel
     }
 
     //delete all comments that has the given thread_id
-    public function deleteComments($thread_id)
+    public function deleteAll($thread_id)
     {
         try {
             $db = DB::conn();
@@ -161,7 +161,7 @@ class Comment extends AppModel
     }
 
     //delete one comment
-    public function deleteComment($comment_id)
+    public function delete($comment_id)
     {
         try {
             $db = DB::conn();
@@ -210,6 +210,7 @@ class Comment extends AppModel
             );
 
             $insert = $db->insert('like_monitor', $params);
+            $update = $this->updateLikedCount($comment_id);
 
             $db->commit();
         } catch (Exception $e) {
@@ -232,6 +233,8 @@ class Comment extends AppModel
             );
 
             $insert = $db->insert('like_monitor', $params);
+            $update = $this->updateDislikedCount($comment_id);
+
             $db->commit();
         } catch (Exception $e) {
             $db->rollback();

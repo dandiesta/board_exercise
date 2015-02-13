@@ -196,4 +196,17 @@ class UserController extends AppController
         
         $this->set(get_defined_vars());
     }
+
+    public function delete()
+    {
+        $threads = new Thread();
+        $comments = new Comment();
+
+        $thread_id = Param::get('thread_id');
+
+        $threads->delete($thread_id);
+        $comments->deleteComments($thread_id);
+        
+        redirect("/user/home?page={$_SESSION['current_page']}&");
+    }
 }

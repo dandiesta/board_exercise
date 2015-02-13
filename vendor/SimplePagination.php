@@ -30,6 +30,7 @@ class SimplePagination
         $this->count = $count;
         $this->prev = max($current - 1, 0);
         $this->next = $current + 1;
+        //$this->start_index = max($this->prev, 0) * $count;
         $this->start_index = ($current - 1) * $count + 1;
 
     }
@@ -48,7 +49,7 @@ class SimplePagination
 
      public function checkLastPage(array &$items)
     {
-        if (count($items) < $this->count) {
+        if ((count($items)) + 1< $this->count) {
             $this->is_last_page = true;
         } else {
             $this->is_last_page = false;
