@@ -195,11 +195,8 @@ class User extends AppModel
             'status'   => self::ACTIVE
         );
 
-        $row = $db->row('SELECT id, firstname, usertype FROM user 
-            WHERE BINARY username = :username AND status = :status || 
+        $row = $db->row('SELECT id, firstname, usertype FROM user WHERE BINARY username = :username AND status = :status || 
             BINARY email = :username AND status = :status', $params);
-            'username' => $this->username
-        );
 
         if (!$row) {
             $this->login_verification =false;
