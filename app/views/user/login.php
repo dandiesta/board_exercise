@@ -34,3 +34,5 @@
         <center>Don't have an account yet? Click <a href="<?php enquote_string(url('user/registration')) ?>">here</a>.</center>
     </div>
 </form>
+
+<br>

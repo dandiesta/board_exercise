@@ -16,7 +16,7 @@
                         <a href="<?php enquote_string(url('comment/edit', array('comment_id'=>$v->id)))?>">
                             <i class="icon-pencil"></i></a> &nbsp;
                     <?php endif ?>
-                    <?php if (($_SESSION['userid'] == $v->user_id) || ($_SESSION['usertype'] == 'admin')):?>
+                    <?php if (($_SESSION['userid'] == $v->user_id) || ($_SESSION['usertype'] == 1)):?>
                         <a href="<?php enquote_string(url('comment/delete', array('comment_id'=>$v->id)))?>" 
                             onclick="return confirm('Are you sure you want to delete this comment?')">
                                 <i class="icon-trash"></i></a>

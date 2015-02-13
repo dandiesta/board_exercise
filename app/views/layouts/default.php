@@ -6,7 +6,7 @@
     
     
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
     <style>
       body {
         padding-top: 60px;
@@ -14,7 +14,7 @@
     </style>
   </head>
 
-  <body>
+  <body style="background-image: url('/bootstrap/img/background8.jpg'); background-size:cover;" class="offset2">
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
