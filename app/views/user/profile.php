@@ -18,5 +18,19 @@
 </form>
 
 <form class="offset1 span3 well">
-    Insert avatar here
+    <center><p style="font-size:18px; color: #800000;"><strong>HISTORY</strong></p></center>
+    <?php if (empty($thread_count)): ?>
+        You have not posted any threads.
+    <?php elseif ($thread_count == 1): ?>
+        You have posted 1 thread.
+    <?php else: ?>
+        You have posted <?php enquote_string($thread_count)?> threads.
+    <?php endif ?><br />
+    <?php if (empty($comment_count)): ?>
+        You have not commented on any threads.
+    <?php elseif ($comment_count == 1): ?>
+        You have commented once.
+    <?php else: ?>
+        You have commented <?php enquote_string($comment_count)?> times.
+    <?php endif ?>
 </form>

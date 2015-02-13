@@ -308,4 +308,13 @@ class Comment extends AppModel
             $db->rollback();
         }
     }
+
+    public function count($user_id)
+    {
+        $db = DB::conn();
+
+        $count_comments = $db->value('SELECT COUNT(id) FROM comment WHERE user_id = ?', array($user_id));
+
+        return $count_comments;
+    }
 }

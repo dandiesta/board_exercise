@@ -1,4 +1,4 @@
-<h1><?php enquote_string($thread->title) ?><small> By: <?php enquote_string($user['username']) ?></small></h1>
+<h2><?php enquote_string($thread->title) ?><small> By: <?php enquote_string($user['username']) ?></small></h2>
 <hr />
 <?php if (empty($comments)): ?>
     <div class="alert alert-block">
@@ -8,10 +8,10 @@
     <?php foreach ($comments as $v): ?>
         <div class="well span11">
             <div class="span10">
-                <div style="font-size:20px;"><?php echo readable_text($v->body) ?></div>
+                <blockquote><?php echo readable_text($v->body) ?></blockquote>
                 
                 <div class="meta">
-                    by: <?php enquote_string($v->username) ?>
+                    by: <a href="<?php enquote_string(url('user/others', array('user_id'=>$v->user_id)))?>"><?php enquote_string($v->username);?></a>&nbsp;
                     <?php if ($_SESSION['userid'] == $v->user_id):?>
                         <a href="<?php enquote_string(url('comment/edit', array('comment_id'=>$v->id)))?>">
                             <i class="icon-pencil"></i></a> &nbsp;

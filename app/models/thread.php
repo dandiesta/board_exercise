@@ -131,5 +131,14 @@ class Thread extends AppModel
         } catch (Exception $e) {
             $db->rollback();
         }
-    }   
+    }
+
+    public function count($user_id)
+    {
+        $db = DB::conn();
+
+        $count_threads = $db->value('SELECT COUNT(id) FROM thread WHERE user_id = ?', array($user_id));
+
+        return $count_threads;
+    }
 }

@@ -15,7 +15,7 @@
                                 <strong><?php enquote_string($v->title); ?></strong><br/>
                             </a>
                             <small>
-                                Posted by: <?php enquote_string($v->username);?>&nbsp;
+                                Posted by: <a href="<?php enquote_string(url('user/others', array('user_id'=>$v->user_id)))?>"><?php enquote_string($v->username);?></a>&nbsp;
                                 <?php if ($_SESSION['userid'] == $v->user_id):?>
                                     <a href="<?php enquote_string(url('thread/edit', array('thread_id'=>$v->id)))?>">
                                         <i class="icon-pencil"></i></a> &nbsp;

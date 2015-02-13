@@ -102,6 +102,8 @@ class UserController extends AppController
     public function profile()
     {
         $user = new User();
+        $threads = new Thread();
+        $comments = new Comment();
         $profile = User::get();
         $page = Param::get('page_next', 'profile');
 
@@ -109,7 +111,10 @@ class UserController extends AppController
         $lastname = $profile['lastname'];
         $username = $profile['username'];
         $email = $profile['email'];
+
         $member_since = $user->memberSince();
+        $thread_count = $threads->count($_SESSION['userid']);
+        $comment_count = $comments->count($_SESSION['userid']);
 
         switch ($page) {
             case 'profile':
@@ -214,5 +219,21 @@ class UserController extends AppController
         $comments->deleteComments($thread_id);
         
         redirect("/user/home?page={$_SESSION['current_page']}&");
+    }
+
+    public function others()
+    {
+        $users = new User();
+        $threads = new Thread();
+        $comments = new Comment();
+
+        $user_id = Param::get('user_id');
+
+        $user = User::get($user_id);
+        $thread_count = $threads->count($user_id);
+        $comment_count = $comments->count($user_id);
+        $member_since = $users->memberSince();
+
+        $this->set(get_defined_vars());
     }
 }
