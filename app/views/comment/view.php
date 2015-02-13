@@ -6,7 +6,7 @@
     </div>
 <?php else: ?>
     <?php foreach ($comments as $v): ?>
-        <div class="well span11">
+        <div class="well span11" style="box-shadow: 10px 10px 10px #888888">
             <div class="span10">
                 <blockquote><?php enquote_string($v->body) ?></blockquote>
                 

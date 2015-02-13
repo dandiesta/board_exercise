@@ -36,7 +36,7 @@ class CommentController extends AppController
             case 'write':
                 break;
             case 'write_end':
-                $comment->body = Param::get('body');
+                $comment->body = trim(Param::get('body'));
 
                 try {
                     $comment->write($comment, $thread->id, $_SESSION['userid']);

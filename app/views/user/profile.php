@@ -1,6 +1,6 @@
 <h2>My Profile</h2>
 
-<form class="span6 well" method="POST">
+<form class="span6 well" method="POST" style="box-shadow: 10px 10px 10px #888888">
     <label>First name</label>
     <input class="span6" type="text" value="<?php echo $firstname ?>" name="firstname" required>
     <label>Last name</label>
@@ -17,7 +17,7 @@
     <a href="<?php enquote_string(url('user/change_password'))?>" class="btn btn-danger">Change Password</a>
 </form>
 
-<form class="offset1 span3 well">
+<form class="offset1 span3 well" style="box-shadow: 10px 10px 10px #888888">
     <center><p style="font-size:18px; color: #800000;"><strong>HISTORY</strong></p></center>
     <?php if (empty($thread_count)): ?>
         You have not posted any threads.

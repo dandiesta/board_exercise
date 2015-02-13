@@ -9,7 +9,7 @@
         <ul class="nav">
             <?php foreach ($my_thread as $v): ?>
                 <li>
-                    <div class="well span11">
+                    <div class="well span11" style="box-shadow: 10px 10px 10px #888888">
                         <div class="span10">
                             <a href="<?php enquote_string(url('comment/view', array('thread_id'=>$v->id)))?>" >
                                 <strong><?php enquote_string($v->title); ?></strong><br/>

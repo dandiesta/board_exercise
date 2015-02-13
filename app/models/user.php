@@ -116,13 +116,13 @@ class User extends AppModel
     //checks if firstname and lastname contain letters only
     public function nameChecker($name)
     {
-        return ctype_alpha($name);
+        return preg_match('/^[a-z\s]*$/i', $name);
     }
 
     //checks if password is same as password for confirmation
     public function passwordChecker()
-    {
-        return ($this->password == $this->confirm_password);
+        {
+            return ($this->password == $this->confirm_password);
     }
 
     //checks if username is not yet in use
@@ -151,7 +151,7 @@ class User extends AppModel
             'status' => self::ACTIVE
         );
 
-        $is_email_existing = $db->row('SELECT email FROM user WHERE BINARY email = email AND status = :status', $params);
+        $is_email_existing = $db->row('SELECT email FROM user WHERE BINARY email = :email AND status = :status', $params);
 
         return (!$is_email_existing); //return true if the query does not return anything
     }
@@ -161,13 +161,12 @@ class User extends AppModel
         $db = DB::conn();
 
         $params = array(
-            'username' => $this->username, 
-            'email'    => $this->email,
+            'username' => $this->username,
             'status'   => self::BANNED
         );
 
         $is_banned = $db->value('SELECT id FROM user WHERE username = :username AND status = :status || 
-            email = :email AND status = :status', $params);
+            email = :username AND status = :status', $params);
 
         return (!$is_banned); //return true if the query does not return anything
     }
@@ -187,11 +186,11 @@ class User extends AppModel
 
     public function login()
     {
+        $this->validate();
         $db = DB::conn();
 
         $params = array(
-            'username' => $this->username, 
-            'password' => $this->password,
+            'username' => $this->username,
             'status'   => self::ACTIVE
         );
 
@@ -206,7 +205,7 @@ class User extends AppModel
         return $row;
     }
 
-    public function checkPassword()
+    public function checkPassword($password)
     {
         $db = DB::conn();
 
@@ -217,7 +216,7 @@ class User extends AppModel
         
         $decrypted_password = $this->mc_decrypt($encrypted_password, ENCRYPTION_KEY);
         
-        return ($decrypted_password == $this->password)? true : $this->login_verification =false;
+        return ($decrypted_password == $password)? true : $this->login_verification =false;
     }
 
     public function add()

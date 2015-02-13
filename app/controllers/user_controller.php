@@ -49,10 +49,10 @@ class UserController extends AppController
                 break;
             case 'home':
                 $user->username = Param::get('username');
-                $user->password = Param::get('password');
+                $password = Param::get('password');
 
                 try {
-                    if ($user->checkPassword()) {
+                    if ($user->checkPassword($password)) {
                         $user = $user->login();
                         $_SESSION['userid'] = $user['id'];
                         $_SESSION['usertype'] = $user['usertype'];
@@ -69,7 +69,6 @@ class UserController extends AppController
             }
 
             $this->set(get_defined_vars());
-            $this->render($page);
         }
     }
 

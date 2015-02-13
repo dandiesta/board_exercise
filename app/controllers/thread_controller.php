@@ -47,8 +47,8 @@ class ThreadController extends AppController
         case 'create':
             break;
         case 'create_end':
-            $thread->title = Param::get('title');
-            $comment->body = Param::get('body');
+            $thread->title = trim(Param::get('title'));
+            $comment->body = trim(Param::get('body'));
 
             try {
                 $thread->create($comment);

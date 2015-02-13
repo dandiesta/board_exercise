@@ -8,7 +8,7 @@
     <form method="post" action="<?php enquote_string(url('')) ?>">
         <ul class="nav">
             <?php foreach ($comments as $v): ?>
-                <div class="well span11">
+                <div class="well span11" style="box-shadow: 10px 10px 10px #888888">
                     <div class="span9">
                         <div style="font-size:20px;"><?php echo readable_text($v->body) ?></div>
                         
