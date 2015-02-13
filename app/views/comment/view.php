@@ -8,7 +8,7 @@
     <?php foreach ($comments as $v): ?>
         <div class="well span11">
             <div class="span10">
-                <blockquote><?php echo readable_text($v->body) ?></blockquote>
+                <blockquote><?php enquote_string($v->body) ?></blockquote>
                 
                 <div class="meta">
                     by: <a href="<?php enquote_string(url('user/others', array('user_id'=>$v->user_id)))?>"><?php enquote_string($v->username);?></a>&nbsp;

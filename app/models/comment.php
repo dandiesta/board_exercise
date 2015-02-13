@@ -317,4 +317,22 @@ class Comment extends AppModel
 
         return $count_comments;
     }
+
+    public function deleteLike($thread_id)
+    {
+        try {
+            $db = DB::conn();
+            $db->begin();
+
+            $delete = $db->query('DELETE l FROM like_monitor l 
+                        INNER JOIN comment c ON c.id = l.comment_id 
+                        INNER JOIN thread t ON t.id = c.thread_id 
+                        WHERE t.id=?',
+                        array($thread_id));
+
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+        }
+    }
 }
