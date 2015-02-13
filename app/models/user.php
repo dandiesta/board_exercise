@@ -82,10 +82,10 @@ class User extends AppModel
         $db= DB::conn();
         $rows = $db->rows('SELECT * FROM user WHERE usertype != 1');
         
-        if (!$rows) {
-            $this->login_verification =false;
-            throw new RecordNotFoundException('no record found');
-        }
+        // if (!$rows) {
+        //     $this->login_verification =false;
+        //     throw new RecordNotFoundException('no record found');
+        // }
 
         return $rows;   
     }
@@ -163,7 +163,9 @@ class User extends AppModel
         $db = DB::conn();
         $original_password = $db->value('SELECT password FROM user WHERE id = ?', array($_SESSION['userid']));
 
-        return ($this->old_password == $original_password);
+        $decrypted_password = $this->mc_decrypt($original_password, ENCRYPTION_KEY);
+
+        return ($this->old_password == $decrypted_password);
     }
 
     public function login()
@@ -171,13 +173,12 @@ class User extends AppModel
         $db = DB::conn();
 
         $params = array(
-            'username' => $this->username, 
-            'password' => $this->password
+            'username' => $this->username
         );
 
         $row = $db->row('SELECT id, firstname, usertype FROM user 
-            WHERE BINARY username = :username AND BINARY password = :password AND status = 1 || 
-            BINARY email = :username AND BINARY password = :password AND status = 1', $params);
+            WHERE BINARY username = :username AND status = 1 || 
+            BINARY email = :username AND status = 1', $params);
 
         if (!$row) {
             $this->login_verification =false;
@@ -195,9 +196,10 @@ class User extends AppModel
             WHERE BINARY username = :username || 
             BINARY email = :username', array('username' => $this->username));
 
+        
         $decrypted_password = $this->mc_decrypt($encrypted_password, ENCRYPTION_KEY);
-
-        return ($decrypted_password == $this->password);
+        
+        return ($decrypted_password == $this->password)? true : $this->login_verification =false;
     }
 
     public function add()
@@ -314,7 +316,7 @@ class User extends AppModel
             $db->begin();
 
             $params = array(
-                'password' => $this->password, 
+                'password' => $this->mc_encrypt($this->password, ENCRYPTION_KEY),
                 'id'       => $_SESSION['userid']);
 
             $update = $db->query('UPDATE user SET password = :password WHERE id = :id', $params);

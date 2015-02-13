@@ -1,5 +1,8 @@
 <h2><?php echo "Welcome, ". $firstname . "!";  ?></h2>
-<!--<script>alert('Welcome, ". $firstname . "!')</script>";-->
+
+
+
+
 <?php if ($_SESSION['usertype'] == 1): ?>
 	<a class="btn btn-danger" href ="<?php enquote_string(url('user/status')) ?>">Edit User Status</a>
 <?php endif ?>

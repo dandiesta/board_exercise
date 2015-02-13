@@ -52,13 +52,14 @@ class UserController extends AppController
                 $user->password = Param::get('password');
 
                 try {
-                    if (!$user->checkPassword()) {
+                    if ($user->checkPassword()) {
                         $user = $user->login();
                         $_SESSION['userid'] = $user['id'];
                         $_SESSION['usertype'] = $user['usertype'];
 
-                        redirect('/user/home');
-                    }
+                       redirect('/user/home');
+                        // redirect('/user/login');
+                     }
                 } catch (ValidationException $e) {
                     $page = 'login';
                 }
@@ -69,7 +70,7 @@ class UserController extends AppController
             }
 
             $this->set(get_defined_vars());
-            $this->render($page);
+            //$this->render($page);
         }
     }
 
@@ -85,6 +86,7 @@ class UserController extends AppController
         $comments = new Comment();
         $threads = $comments->getTopThreads();
         $firstname = $user['firstname'];
+        
 
         if ($threads) {
             $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
@@ -138,12 +140,14 @@ class UserController extends AppController
     {
         $user = User::getAll();        
 
-        $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
-        $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
-        $other_threads = array_slice($user, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
-        $pagination->checkLastPage($other_threads);
-        $page_links = createPageLinks(count($user), $current_page, $pagination->count);
-        $user = array_slice($user, $pagination->start_index - 1, $pagination->count);
+        if ($user) {
+            $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+            $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
+            $other_threads = array_slice($user, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $pagination->checkLastPage($other_threads);
+            $page_links = createPageLinks(count($user), $current_page, $pagination->count);
+            $user = array_slice($user, $pagination->start_index - 1, $pagination->count);
+        }
 
         $this->set(get_defined_vars());
     }
