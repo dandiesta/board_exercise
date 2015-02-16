@@ -1,4 +1,4 @@
-<div style="font-size:30px">
+<div style="font-size:30px; text-shadow: 2px 2px #66FFFF;">
     <strong><?php echo "Welcome, ". $firstname . "!";  ?></strong>
 
     <?php if ($_SESSION['usertype'] == 1): ?>

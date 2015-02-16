@@ -6,7 +6,13 @@ class CommentController extends AppController
 
     public function view()
     {
-        $thread = Thread::get(Param::get('thread_id'));
+        $thread_id = Param::get('thread_id');
+
+        if (!$thread_id) {
+            redirect('/thread/index');
+        }
+        
+        $thread = Thread::get($thread_id);
         $user = User::get($thread->user_id);
         $comment = new Comment();
 
@@ -28,6 +34,11 @@ class CommentController extends AppController
     public function write()
     {
         $thread_id = Param::get('thread_id');
+
+        if (!$thread_id) {
+            redirect('/thread/index');
+        }
+
         $thread = Thread::get($thread_id);
         $comment = new Comment();
         $page = Param::get('page_next', 'write');
@@ -94,7 +105,6 @@ class CommentController extends AppController
         $comment_id = Param::get('comment_id');
 
         $comments->delete($comment_id);
-        $comments->deleteExisting($comment_id); //deletes records in like_monitor table when a comment is deleted
 
         $this->set(get_defined_vars());
         redirect("/comment/view?thread_id={$_SESSION['thread_id']}");

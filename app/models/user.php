@@ -15,11 +15,6 @@ class User extends AppModel
     const MAX_SECONDS_PER_HOUR = 86400;
     const MAX_SECONDS_PER_DAY = 2592000;
     const MAX_SECONDS_PER_MONTH = 31104000;
-    //for status and usertype
-    const ADMIN = 1;
-    const USER = 2;
-    const ACTIVE = 1;
-    const BANNED = 2;
 
     public $login_verification = true;
     public $validation = array(
@@ -84,7 +79,7 @@ class User extends AppModel
     public static function getAll()
     {
         $db= DB::conn();
-        $rows = $db->rows('SELECT * FROM user WHERE usertype != ?', array(self::ADMIN));
+        $rows = $db->rows('SELECT * FROM user WHERE usertype != ?', array(ADMIN));
         
         // if (!$rows) {
         //     $this->login_verification =false;
@@ -132,7 +127,7 @@ class User extends AppModel
 
         $params = array(
             'username' => $this->username, 
-            'status'   => self::ACTIVE
+            'status'   => ACTIVE
         );
 
         $is_username_existing = $db->row('SELECT username FROM user WHERE BINARY username = :username AND status= :status',
@@ -148,7 +143,7 @@ class User extends AppModel
 
         $params = array(
             'email'  => $this->email, 
-            'status' => self::ACTIVE
+            'status' => ACTIVE
         );
 
         $is_email_existing = $db->row('SELECT email FROM user WHERE BINARY email = :email AND status = :status', $params);
@@ -162,7 +157,7 @@ class User extends AppModel
 
         $params = array(
             'username' => $this->username,
-            'status'   => self::BANNED
+            'status'   => BANNED
         );
 
         $is_banned = $db->value('SELECT id FROM user WHERE username = :username AND status = :status || 
@@ -177,6 +172,7 @@ class User extends AppModel
     public function isPasswordMatched()
     {
         $db = DB::conn();
+
         $original_password = $db->value('SELECT password FROM user WHERE id = ?', array($_SESSION['userid']));
 
         $decrypted_password = $this->mc_decrypt($original_password, ENCRYPTION_KEY);
@@ -191,7 +187,7 @@ class User extends AppModel
 
         $params = array(
             'username' => $this->username,
-            'status'   => self::ACTIVE
+            'status'   => ACTIVE
         );
 
         $row = $db->row('SELECT id, firstname, usertype FROM user WHERE BINARY username = :username AND status = :status || 
@@ -238,8 +234,8 @@ class User extends AppModel
                 'username'  => $this->username, 
                 'password'  => $this->mc_encrypt($this->password, ENCRYPTION_KEY),
                 'email'     => $this->email,
-                'usertype'  => self::USER, 
-                'status'    => self::ACTIVE, 
+                'usertype'  => USER, 
+                'status'    => ACTIVE, 
                 'registration_date' => $current_time
             );
 
@@ -253,14 +249,19 @@ class User extends AppModel
 
     public function edit()
     {
+        $this->validate();
+
+        if ($this->hasError()) {
+                throw new ValidationException('Error in Edit Profile');
+        }
+        
         try {
             $db = DB::conn();
             $db->begin();
 
             $params = array(
                 'firstname' => ucwords($this->firstname), 
-                'lastname'  => ucwords($this->lastname), 
-                'username' => $this->username
+                'lastname'  => ucwords($this->lastname)
             );
 
             $update = $db->update('user', $params, array('id' => $_SESSION['userid']));
@@ -309,16 +310,16 @@ class User extends AppModel
             $db->begin();
 
             $params = array(
-                'status' => self::BANNED, 
+                'status' => BANNED, 
                 'id' => $this->user_id
             );
 
             $param = array(
-                'status' => self::ACTIVE, 
+                'status' => ACTIVE, 
                 'id' => $this->user_id
             );
             
-            if ($this->current_status == self::ACTIVE) {
+            if ($this->current_status == ACTIVE) {
                 $update = $db->query('UPDATE user SET status= :status WHERE id=:id', $params);
             } else {
                 $update = $db->query('UPDATE user SET status= :status WHERE id=:id', $param);

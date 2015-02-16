@@ -14,7 +14,7 @@
 <?php endif; ?>
 
 
-<form method="POST" action="" class="span5 offset3 well">
+<form method="POST" action="" class="span5 offset3 well" style="box-shadow: 10px 10px 10px #888888">
     <legend>Please Sign In</legend>
     <center>
     <div class="input-prepend">
@@ -41,5 +41,3 @@
         <center>Don't have an account yet? Click <a href="<?php enquote_string(url('user/registration')) ?>">here</a>.</center>
     </div>
 </form>
-
-<br>

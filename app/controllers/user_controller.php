@@ -5,6 +5,8 @@ class UserController extends AppController
     const MAX_ITEMS_PER_PAGE = 5;
     const MIN_PAGE_NUMBER = 1;
 
+    const ADMIN = 1;
+
     public function registration()
     {
         $register = new User();
@@ -14,12 +16,12 @@ class UserController extends AppController
         case 'registration':
             break;
         case 'success':
-            $register->firstname = Param::get('firstname');
-            $register->lastname = Param::get('lastname');
-            $register->username = Param::get('username');
+            $register->firstname = trim(Param::get('firstname'));
+            $register->lastname = trim(Param::get('lastname'));
+            $register->username = trim(Param::get('username'));
             $register->password = Param::get('password');
             $register->confirm_password = Param::get('confirm_password');
-            $register->email = Param::get('email');
+            $register->email = trim(Param::get('email'));
                 
             try {
                 $register->add();
@@ -121,8 +123,6 @@ class UserController extends AppController
             case 'success_update':
                 $user->firstname = Param::get('firstname');
                 $user->lastname = Param::get('lastname');
-                $user->username = Param::get('username');
-                $user->email = Param::get('email');
                         
                 try {
                     $user->edit();
@@ -141,18 +141,22 @@ class UserController extends AppController
 
     public function status()
     {
-        $user = User::getAll();        
+        if ($_SESSION['usertype'] == self::ADMIN) {
+            $user = User::getAll();        
 
-        if ($user) {
-            $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
-            $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
-            $other_threads = array_slice($user, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
-            $pagination->checkLastPage($other_threads);
-            $page_links = createPageLinks(count($user), $current_page, $pagination->count);
-            $user = array_slice($user, $pagination->start_index - 1, $pagination->count);
+            if ($user) {
+                $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+                $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
+                $other_threads = array_slice($user, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+                $pagination->checkLastPage($other_threads);
+                $page_links = createPageLinks(count($user), $current_page, $pagination->count);
+                $user = array_slice($user, $pagination->start_index - 1, $pagination->count);
+            }
+
+            $this->set(get_defined_vars());
+        } else {
+            redirect('/user/home');
         }
-
-        $this->set(get_defined_vars());
     }
 
     public function edit_status()

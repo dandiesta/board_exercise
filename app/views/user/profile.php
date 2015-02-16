@@ -1,14 +1,47 @@
 <h2>My Profile</h2>
 
+<?php if ($user->hasError()): ?>
+    <div class="alert alert-block">
+        <h4 class="alert-heading">Registration failed!</h4>
+
+        <?php if ($user->validation_errors['firstname']['length']): ?>
+            <div>
+                <em>First name</em> must be between
+                <?php enquote_string($user->validation['firstname']['length'][1]) ?> and
+                <?php enquote_string($user->validation['firstname']['length'][2]) ?> characters in length.
+            </div>
+        <?php endif ?>
+
+        <?php if ($user->validation_errors['firstname']['confirmation']): ?>
+            <div>
+                <em>First name</em> should contain letters only.
+            </div>
+        <?php endif ?>
+        
+        <?php if ($user->validation_errors['lastname']['length']): ?>
+            <div>
+                <em>Last name</em> must be between
+                <?php enquote_string($user->validation['lastname']['length'][1]) ?> and
+                <?php enquote_string($user->validation['lastname']['length'][2]) ?> characters in length.
+            </div>
+        <?php endif ?>
+
+        <?php if ($user->validation_errors['lastname']['confirmation']): ?>
+            <div>
+                <em>Last name</em> should contain letters only.
+            </div>
+        <?php endif ?>
+    </div>
+<?php endif ?>
 <form class="span6 well" method="POST" style="box-shadow: 10px 10px 10px #888888">
     <label>First name</label>
     <input class="span6" type="text" value="<?php echo $firstname ?>" name="firstname" required>
     <label>Last name</label>
     <input class="span6" type="text" value="<?php echo $lastname ?>" name="lastname" required>
     <label>Username</label>
-    <input class="span6" type="text" value="<?php echo $username ?>" name="username" required>
+    <input class="span6" type="text" value="<?php echo $username ?>" name="username" disabled   >
     <label>Email</label>
-    <input class="span6" type="email" value="<?php echo $email ?>" name="email" required>
+    <input class="span6" type="email" value="<?php echo $email ?>" name="email" disabled>
     <label>Member since</label>
     <input class="span6" type="text" value="<?php echo $member_since ?> ago" name="member_since" disabled>
     <br/>

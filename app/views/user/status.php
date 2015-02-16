@@ -15,7 +15,8 @@
                     <div class="well well-small span11" style="box-shadow: 10px 10px 10px #888888">
                         <div class="span9">
                             <small>
-                                <strong><?php echo $v['firstname'] . ' ' . $v['lastname']?></strong><br />
+                                <strong><?php enquote_string($v['firstname'] . ' ' . $v['lastname'])?></strong><br />
+                                Username: <strong><?php enquote_string($v['username']) ?></strong> <br />
                                 Member since: <?php getElapsedTime($v['registration_date']); ?> ago <br />
                                	STATUS: <strong><?php if ($v['status'] == 1) : enquote_string('Active'); else : enquote_string('Banned'); endif ?></strong>
                             </small>

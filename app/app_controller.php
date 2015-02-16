@@ -4,18 +4,35 @@ class AppController extends Controller
     public $default_view_class = 'AppLayoutView';
 
     function beforeFilter()
-	{
-		$exclude = array(
-			'user/registration',
-			'user/login',
-			'user/delete',
-			'user/confirmation'
-		);
+    {
+        $exclude = array(
+            'user/registration',
+            'user/login',
+            'user/banned'
+        );
 
-		if (in_array(Param::get(DC_ACTION), $exclude)) return;
+        if (in_array(Param::get(DC_ACTION), $exclude)) return;
 
-		if (!isset($_SESSION['userid'])) {
-		    redirect('/user/login');
-		}
-	}
+        if (!isset($_SESSION['userid'])) {
+            redirect('/user/login');
+        } else {
+            $appmodel = new AppModel();
+            $checker = $appmodel->currentStatusChecker();
+
+            if ($checker == ACTIVE) {
+                return;
+            } else {
+                redirect('/user/banned');
+            }
+        }
+    }
+
+    function banned()
+    {
+        if ($_SESSION['usertype'] != BANNED) {
+            redirect('/user/home');
+        } else {
+            session_destroy();
+        }
+    }
 }

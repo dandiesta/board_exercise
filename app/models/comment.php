@@ -168,6 +168,7 @@ class Comment extends AppModel
             $db->begin();
 
             $delete = $db->query('DELETE FROM comment WHERE id = ?', array($comment_id));
+            $this->deleteExisting($comment_id); //deletes records in like_monitor table when a comment is deleted
 
             $db->commit();
         } catch (Exception $e) {
