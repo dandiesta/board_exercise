@@ -34,7 +34,13 @@
             &nbsp;<a class='btn btn-danger' href='?page=<?php enquote_string($pagination->prev) ?>'>Previous</a>
         <?php endif ?>
 
-        &nbsp; <?php echo $page_links; ?> &nbsp;
+        <?php for ($i=0; $i < count($page_links); $i++): ?>
+            <?php if ($page_links[$i] == $pagination->current): ?>
+                <a class='btn btn-default' disabled><?php echo $page_links[$i]?></a>
+            <?php else: ?>
+                <a class='btn btn-danger' href='?page=<?php enquote_string($page_links[$i]) ?>'><?php echo $page_links[$i]?></a>
+            <?php endif?>
+        <?php endfor ?>
         
         <?php if(!$pagination->is_last_page): ?>
             <a class='btn btn-danger' href='?page=<?php enquote_string($pagination->next) ?>'>Next</a>

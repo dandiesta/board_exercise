@@ -4,8 +4,7 @@ class UserController extends AppController
 {
     const MAX_ITEMS_PER_PAGE = 5;
     const MIN_PAGE_NUMBER = 1;
-
-    const ADMIN = 1;
+    const ADJACENT_TO_CURRENT = 4;
 
     public function registration()
     {
@@ -93,7 +92,7 @@ class UserController extends AppController
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
             $other_threads = array_slice($threads, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
             $pagination->checkLastPage($other_threads);
-            $page_links = createPageLinks(count($threads), $current_page, $pagination->count);
+            $page_links = Pagination(count($threads), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
             $threads = array_slice($threads, $pagination->start_index - 1, $pagination->count);
         }
 
@@ -141,7 +140,7 @@ class UserController extends AppController
 
     public function status()
     {
-        if ($_SESSION['usertype'] == self::ADMIN) {
+        if ($_SESSION['usertype'] == ADMIN) {
             $user = User::getAll();        
 
             if ($user) {
@@ -149,7 +148,7 @@ class UserController extends AppController
                 $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
                 $other_threads = array_slice($user, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
                 $pagination->checkLastPage($other_threads);
-                $page_links = createPageLinks(count($user), $current_page, $pagination->count);
+                $page_links = Pagination(count($user), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
                 $user = array_slice($user, $pagination->start_index - 1, $pagination->count);
             }
 
@@ -207,7 +206,6 @@ class UserController extends AppController
         $comments = new Comment();
 
         $user = $users->getAll();
-        $comment = $comments->getAll();
        
         $top_likers = $users->topLikers();
         $top_commentors = $users->topCommentors();
