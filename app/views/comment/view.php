@@ -42,7 +42,7 @@
             &nbsp;<a class='btn btn-danger' href='?page=<?php enquote_string($pagination->prev) ?>&thread_id=<?php enquote_string($thread->id)?>'>Previous</a>
         <?php endif ?>
         
-        <?php for ($i=0; $i < count($page_links); $i++): ?>
+        <?php for ($i=0; $i < $count; $i++): ?>
             <?php if ($page_links[$i] == $pagination->current): ?>
                 <a class='btn btn-default' disabled><?php echo $page_links[$i]?></a>
             <?php else: ?>

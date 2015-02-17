@@ -31,6 +31,7 @@ class CommentController extends AppController
             $comments = array_slice($comments, $pagination->start_index - 1, $pagination->count);
         }
 
+        $count = count($page_links);
         $this->set(get_defined_vars());
     }
 
@@ -167,13 +168,14 @@ class CommentController extends AppController
 
         if ($comment) {
             $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
-            $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE + 1);
+            $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
             $other_comments = array_slice($comment, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
             $pagination->checkLastPage($other_comments);
-            $page_links = Pagination(count($comments), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
+            $page_links = Pagination(count($comment), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
             $comment = array_slice($comment, $pagination->start_index - 1, $pagination->count);
         }
 
+        $count = count($page_links);
         $this->set(get_defined_vars());
     }
 }

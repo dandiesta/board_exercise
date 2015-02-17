@@ -96,6 +96,7 @@ class UserController extends AppController
             $threads = array_slice($threads, $pagination->start_index - 1, $pagination->count);
         }
 
+        $count = count($page_links);
         $this->set(get_defined_vars());
     }
 
@@ -115,6 +116,8 @@ class UserController extends AppController
         $member_since = $user->memberSince();
         $thread_count = $threads->count($_SESSION['userid']);
         $comment_count = $comments->count($_SESSION['userid']);
+        $like_count = $comments->countLike($_SESSION['userid']);
+        $dislike_count = $comments->countDislike($_SESSION['userid']);
 
         switch ($page) {
             case 'profile':
@@ -152,6 +155,7 @@ class UserController extends AppController
                 $user = array_slice($user, $pagination->start_index - 1, $pagination->count);
             }
 
+            $count = count($page_links);
             $this->set(get_defined_vars());
         } else {
             redirect('/user/home');

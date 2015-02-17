@@ -79,7 +79,6 @@ class User extends AppModel
     public static function getAll()
     {
         $db= DB::conn();
-        // $rows = $db->rows('SELECT * FROM user WHERE usertype != ?', array(ADMIN));
         $rows = $db->rows('SELECT * FROM user');
         if (!$rows) {
             $this->login_verification =false;

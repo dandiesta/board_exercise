@@ -315,6 +315,24 @@ class Comment extends AppModel
         return $count_comments;
     }
 
+    public function countLike($user_id)
+    {
+        $db = DB::conn();
+
+        $count_likes = $db->value('SELECT SUM(liked) FROM like_monitor WHERE user_id = ?', array($user_id));
+
+        return $count_likes;
+    }
+
+    public function countDislike($user_id)
+    {
+        $db = DB::conn();
+
+        $count_likes = $db->value('SELECT SUM(disliked) FROM like_monitor WHERE user_id = ?', array($user_id));
+
+        return $count_likes;
+    }
+
     public function deleteLike($thread_id)
     {
         try {

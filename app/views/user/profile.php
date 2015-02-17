@@ -58,12 +58,35 @@
         You have posted 1 thread.
     <?php else: ?>
         You have posted <?php enquote_string($thread_count)?> threads.
-    <?php endif ?><br />
+    <?php endif ?>
+
+    <br />
+
     <?php if (empty($comment_count)): ?>
         You have not commented on any threads.
     <?php elseif ($comment_count == 1): ?>
         You have commented once.
     <?php else: ?>
         You have commented <?php enquote_string($comment_count)?> times.
+    <?php endif ?>
+
+    <br />
+
+    <?php if (empty($like_count)): ?>
+        You have not liked any comments.
+    <?php elseif ($like_count == 1): ?>
+        You have liked 1 comment.
+    <?php else: ?>
+        You have liked <?php enquote_string($like_count)?> comments.
+    <?php endif ?>
+
+    <br/>
+
+    <?php if (empty($dislike_count)): ?>
+        You have not disliked any comments.
+    <?php elseif ($dislike_count == 1): ?>
+        You have disliked 1 comment.
+    <?php else: ?>
+        You have disliked <?php enquote_string($dislike_count)?> comments.
     <?php endif ?>
 </form>
