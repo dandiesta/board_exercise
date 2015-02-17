@@ -6,30 +6,36 @@
     </div>
 <?php else: ?>
     <?php foreach ($comments as $v): ?>
-        <div class="well span11" style="box-shadow: 10px 10px 10px #888888">
-            <div class="span10">
-                <blockquote><?php enquote_string($v->body) ?></blockquote>
-                
-                <div class="meta">
-                    by: <a href="<?php enquote_string(url('user/others', array('user_id'=>$v->user_id)))?>"><?php enquote_string($v->username);?></a>&nbsp;
-                    <?php if ($_SESSION['userid'] == $v->user_id):?>
-                        <a href="<?php enquote_string(url('comment/edit', array('comment_id'=>$v->id)))?>">
-                            <i class="icon-pencil"></i></a> &nbsp;
-                    <?php endif ?>
-                    <?php if (($_SESSION['userid'] == $v->user_id) || ($_SESSION['usertype'] == 1)):?>
-                        <a href="<?php enquote_string(url('comment/delete', array('comment_id'=>$v->id)))?>" 
-                            onclick="return confirm('Are you sure you want to delete this comment?')">
-                                <i class="icon-trash"></i></a>
-                    <?php endif ?>
+        <?php foreach ($users as $u): ?>
+            <?php if ($v->user_id == $u['id']):?>
+                <div class="well span11" style="box-shadow: 10px 10px 10px #888888">
+                    <div class="span10">
+                        <blockquote><?php enquote_string($v->body) ?></blockquote>
+                        
+                        <div class="meta">
+                            <?php if ($_SESSION['userid'] != $v->user_id): ?>
+                                by: <a href="<?php enquote_string(url('user/others', array('user_id'=>$v->user_id)))?>"><?php enquote_string($u['username']);?></a>&nbsp;
+                            <?php else:?>
+                                by: <a href="<?php enquote_string(url('user/profile'))?>"><?php enquote_string($u['username']);?></a>&nbsp;
+                                <a href="<?php enquote_string(url('comment/edit', array('comment_id'=>$v->id)))?>">
+                                    <i class="icon-pencil"></i></a> &nbsp;
+                            <?php endif ?>
+                            <?php if (($_SESSION['userid'] == $v->user_id) || ($_SESSION['usertype'] == 1)):?>
+                                <a href="<?php enquote_string(url('comment/delete', array('comment_id'=>$v->id)))?>" 
+                                    onclick="return confirm('Are you sure you want to delete this comment?')">
+                                        <i class="icon-trash"></i></a>
+                            <?php endif ?>
+                        </div>
+                        <div style="color:#FF9999;"><small><?php getElapsedTime($v->created) ?> ago</small></div>
+                    </div>
+                    <a href="<?php enquote_string(url('comment/liked', array('comment_id'=>$v->id)))?>"><i class="icon-thumbs-up"></i></a> &nbsp;
+                    <a href="<?php enquote_string(url('comment/disliked', array('comment_id'=>$v->id)))?>"><i class="icon-thumbs-down"></i></a><br />
+                    <?php enquote_string($v->liked) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php enquote_string($v->disliked) ?>
                 </div>
-                <div style="color:#FF9999;"><small><?php getElapsedTime($v->created) ?> ago</small></div>
-            </div>
-            <a href="<?php enquote_string(url('comment/liked', array('comment_id'=>$v->id)))?>"><i class="icon-thumbs-up"></i></a> &nbsp;
-            <a href="<?php enquote_string(url('comment/disliked', array('comment_id'=>$v->id)))?>"><i class="icon-thumbs-down"></i></a><br />
-            <?php enquote_string($v->liked) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php enquote_string($v->disliked) ?>
-        </div>
+            <?php endif?>
+        <?php endforeach ?>
     <?php endforeach ?>
-
+    
     <!--pagination-->
     <form class="span12">
         <?php if($pagination->current > 1): ?>

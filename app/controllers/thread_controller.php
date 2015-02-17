@@ -8,6 +8,8 @@ class ThreadController extends AppController
     public function index()
     {
         $threads = Thread::getAll();
+        $users = new User();
+        $user = $users->getAll();
 
         if ($threads) {
             $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
@@ -24,7 +26,9 @@ class ThreadController extends AppController
     public function my_thread()
     {
         $my_thread = Thread::getAll($_SESSION['userid']);
-            
+        $users = new User();
+        $user = $users->getAll();
+
         if ($my_thread) {
             $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);

@@ -14,10 +14,12 @@ class CommentController extends AppController
         
         $thread = Thread::get($thread_id);
         $user = User::get($thread->user_id);
+        $users = new User();
         $comment = new Comment();
 
         $_SESSION['thread_id'] = $thread->id;
-        $comments = $comment->getComments($_SESSION['thread_id']);
+        $comments = $comment->getAll($_SESSION['thread_id']);
+        $users = $users->getAll();
 
         if ($comments) {
             $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
@@ -156,17 +158,19 @@ class CommentController extends AppController
 
     public function most_liked()
     {
-        $comment = new Comment();
+        $comments = new Comment();
+        $users = new User();
 
-        $comments = $comment->getTopComments();
+        $comment = $comments->getTopComments();
+        $user = $users->getAll();
 
-        if ($comments) {
+        if ($comment) {
             $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
-            $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
-            $other_comments = array_slice($comments, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE + 1);
+            $other_comments = array_slice($comment, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
             $pagination->checkLastPage($other_comments);
-            $page_links = createPageLinks(count($comments), $current_page, $pagination->count);
-            $comments = array_slice($comments, $pagination->start_index - 1, $pagination->count);
+            $page_links = createPageLinks(count($comment), $current_page, $pagination->count);
+            $comment = array_slice($comment, $pagination->start_index - 1, $pagination->count);
         }
 
         $this->set(get_defined_vars());

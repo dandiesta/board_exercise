@@ -204,7 +204,11 @@ class UserController extends AppController
     public function top_five()
     {
         $users = new User();
+        $comments = new Comment();
 
+        $user = $users->getAll();
+        $comment = $comments->getAll();
+       
         $top_likers = $users->topLikers();
         $top_commentors = $users->topCommentors();
         

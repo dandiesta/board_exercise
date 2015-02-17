@@ -79,12 +79,12 @@ class User extends AppModel
     public static function getAll()
     {
         $db= DB::conn();
-        $rows = $db->rows('SELECT * FROM user WHERE usertype != ?', array(ADMIN));
-        
-        // if (!$rows) {
-        //     $this->login_verification =false;
-        //     throw new RecordNotFoundException('no record found');
-        // }
+        // $rows = $db->rows('SELECT * FROM user WHERE usertype != ?', array(ADMIN));
+        $rows = $db->rows('SELECT * FROM user');
+        if (!$rows) {
+            $this->login_verification =false;
+            throw new RecordNotFoundException('no record found');
+        }
 
         return $rows;   
     }
@@ -367,7 +367,7 @@ class User extends AppModel
             INNER JOIN user u on l.user_id = u.id 
             WHERE c.user_id=? GROUP BY Liker ORDER BY Number_of_likes DESC LIMIT 5', 
             array($_SESSION['userid']));
-
+        
         foreach ($rows as $row) {
              $users[] = new User($row);
         }

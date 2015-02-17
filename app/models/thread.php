@@ -19,11 +19,9 @@ class Thread extends AppModel
         $db = DB::conn();
 
         if ($user_id == null) {
-            $rows = $db->rows('SELECT t.id, t.title, t.created, u.username, t.user_id, u.usertype FROM thread t 
-                INNER JOIN user u ON t.user_id=u.id ORDER BY t.last_modified DESC');
+            $rows = $db->rows('SELECT * FROM thread ORDER BY last_modified DESC');
         } else {
-            $rows = $db->rows('SELECT t.id, t.title, t.created, u.username, t.user_id, u.usertype FROM thread t 
-                INNER JOIN user u ON t.user_id=u.id WHERE u.id = ? ORDER BY t.last_modified DESC', array($user_id));
+            $rows = $db->rows('SELECT * FROM thread WHERE user_id = ? ORDER BY last_modified DESC', array($user_id));
         }
             
         foreach ($rows as $row) {

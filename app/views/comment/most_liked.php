@@ -7,26 +7,30 @@
 <?php else: ?>
     <form method="post" action="<?php enquote_string(url('')) ?>">
         <ul class="nav">
-            <?php foreach ($comments as $v): ?>
-                <div class="well span11" style="box-shadow: 10px 10px 10px #888888">
-                    <div class="span9">
-                        <div style="font-size:20px;"><?php echo readable_text($v->body) ?></div>
-                        
-                        <div class="meta">
-                            by: <?php enquote_string($v->username) ?>
-                            <?php if (($_SESSION['usertype'] == 'admin')):?>
-                                <a href="<?php enquote_string(url('comment/delete', array('comment_id'=>$v->id)))?>" 
-                                    onclick="return confirm('Are you sure you want to delete this thread?')">
-                                        <i class="icon-trash"></i></a>
-                            <?php endif ?>
+            <?php foreach ($comment as $v): ?>
+                <?php foreach ($user as $u):?>
+                    <?php if ($v->user_id == $u['id']): ?>
+                        <div class="well span11" style="box-shadow: 10px 10px 10px #888888">
+                            <div class="span9">
+                                <div style="font-size:20px;"><?php echo readable_text($v->body) ?></div>
+                                
+                                <div class="meta">
+                                    by: <?php enquote_string($u['username']) ?>
+                                    <?php if (($_SESSION['usertype'] == 'admin')):?>
+                                        <a href="<?php enquote_string(url('comment/delete', array('comment_id'=>$v->id)))?>" 
+                                            onclick="return confirm('Are you sure you want to delete this thread?')">
+                                                <i class="icon-trash"></i></a>
+                                    <?php endif ?>
+                                </div>
+                                <div style="color:#FF9999;"><small><?php getElapsedTime($v->created) ?> ago</small></div>
+                            </div>
+                            <p style="color:#669999">
+                                Like: <?php enquote_string($v->liked) ?><br />
+                                Dislike: <?php enquote_string($v->disliked) ?>
+                            </p>                 
                         </div>
-                        <div style="color:#FF9999;"><small><?php getElapsedTime($v->created) ?> ago</small></div>
-                    </div>
-                    <p style="color:#669999">
-                    Like: <?php enquote_string($v->liked) ?><br />
-                    Dislike: <?php enquote_string($v->disliked) ?>
-                    </p>                 
-                </div>
+                    <?php endif ?>
+                <?php endforeach ?>
             <?php endforeach ?>
         </ul>
     </form>

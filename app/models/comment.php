@@ -45,6 +45,20 @@ class Comment extends AppModel
         return $row;
     }
 
+    public function getAll($id)
+    {
+        $comments = array();
+        $db= DB::conn();
+
+        $rows = $db->rows('SELECT * FROM comment WHERE thread_id = ? ORDER BY created DESC', array($id));
+
+        foreach ($rows as $row) {
+            $comments[] = new Comment($row);
+        }
+    
+        return $comments;
+    }
+
     public static function get($comment_id)
     {
         $db = DB::conn();
@@ -52,23 +66,6 @@ class Comment extends AppModel
         $row = $db->value('SELECT body FROM comment WHERE id = ?', array($comment_id));
 
         return $row;
-    }
-
-    public function getComments($id)
-    {
-        $comments = array();
-        $db= DB::conn();
-
-        $rows = $db->rows('SELECT c.thread_id, c.id, u.username, c.user_id, c.body, c.created, c.liked, c.disliked
-            FROM comment c INNER JOIN user u ON c.user_id=u.id
-            WHERE c.thread_id = ? ORDER BY c.created DESC', 
-            array($id));
-
-        foreach ($rows as $row) {
-            $comments[] = new Comment($row);
-        }
-    
-        return $comments;
     }
 
     //get top threads based on comment count and last modified
@@ -96,8 +93,7 @@ class Comment extends AppModel
         $comments = array();
         $db= DB::conn();
 
-        $rows = $db->rows('SELECT u.username, c.body, c.created, c.liked, c.disliked FROM comment c 
-            INNER JOIN user u ON c.user_id=u.id WHERE c.liked != 0 ORDER BY c.liked DESC, c.disliked ASC');
+        $rows = $db->rows('SELECT * FROM comment WHERE liked != 0 ORDER BY liked DESC, disliked ASC');
 
         foreach ($rows as $row) {
             $comments[] = new Comment($row);

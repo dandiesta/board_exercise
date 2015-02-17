@@ -5,6 +5,7 @@
             <h4 class="alert-heading">Your comments haven't been liked.</h4>
         </div>
     <?php else: ?>
+        <!--<pre><?php print_r($top_likers)?> </pre>-->
         <form method="post" action="<?php enquote_string(url('')) ?>" class="well" style="box-shadow: 10px 10px 10px #888888">
             <ol style="font-size: 18px">
                 <?php foreach ($top_likers as $v): ?>
@@ -18,7 +19,7 @@
                             <?php endif ?>
                         </small>
                     </li>
-                  <?php endforeach ?>
+                <?php endforeach ?>
             </ol>
         </form>
     <?php endif ?>
