@@ -10,7 +10,7 @@
             <?php if ($v->user_id == $u['id']):?>
                 <div class="well span11" style="box-shadow: 10px 10px 10px #888888">
                     <div class="span10">
-                        <blockquote><?php enquote_string($v->body) ?></blockquote>
+                        <blockquote><?php echo smiley($v->body) ?></blockquote>
                         
                         <div class="meta">
                             <?php if ($_SESSION['userid'] != $v->user_id): ?>

@@ -19,9 +19,10 @@ class ThreadController extends AppController
             $pagination->checkLastPage($other_threads);
             $page_links = Pagination(count($threads), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
             $threads = array_slice($threads, $pagination->start_index - 1, $pagination->count);
+
+            $count = count($page_links);
         }
 
-        $count = count($page_links);
         $this->set(get_defined_vars());
     }
 
@@ -38,9 +39,10 @@ class ThreadController extends AppController
             $pagination->checkLastPage($other_my_thread);
             $page_links = Pagination(count($my_thread), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
             $my_thread = array_slice($my_thread, $pagination->start_index - 1, $pagination->count);
+
+            $count = count($page_links);
         }
 
-        $count = count($page_links);
         $this->set(get_defined_vars());
     }
 
