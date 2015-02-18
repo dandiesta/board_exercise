@@ -44,7 +44,7 @@ class User extends AppModel
                 'usernameChecker',
             ),
             'banned_checking' => array(
-                'isNotBanned',
+                'usernameIsNotBanned',
             ),
         ),
 
@@ -65,7 +65,7 @@ class User extends AppModel
                 'emailChecker',
             ),
             'banned_checking' => array(
-                'isNotBanned',
+                'emailIsNotBanned',
             ),
         ),
 
@@ -150,7 +150,7 @@ class User extends AppModel
         return (!$is_email_existing); //return true if the query does not return anything
     }
 
-    public function isNotBanned()
+    public function usernameIsNotBanned()
     {
         $db = DB::conn();
 
@@ -159,8 +159,21 @@ class User extends AppModel
             'status'   => BANNED
         );
 
-        $is_banned = $db->value('SELECT id FROM user WHERE username = :username AND status = :status || 
-            email = :username AND status = :status', $params);
+        $is_banned = $db->value('SELECT id FROM user WHERE username = :username AND status = :status', $params);
+
+        return (!$is_banned); //return true if the query does not return anything
+    }
+
+    public function emailIsNotBanned()
+    {
+        $db = DB::conn();   
+
+        $params = array(
+            'email' => $this->email,
+            'status'   => BANNED
+        );
+
+        $is_banned = $db->value('SELECT id FROM user WHERE email = :email AND status = :status', $params);
 
         return (!$is_banned); //return true if the query does not return anything
     }

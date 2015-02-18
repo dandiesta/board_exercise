@@ -117,18 +117,19 @@ class CommentController extends AppController
     public function liked()
     {
         $comment = new Comment();
+        $like_monitor = new LikeMonitor();
 
         $comment_id = Param::get('comment_id');
-        $like_checker = $comment->hasLiked($comment_id);
-        $dislike_checker = $comment->hasDisliked($comment_id);
+        $like_checker = $like_monitor->hasLiked($comment_id);
+        $dislike_checker = $like_monitor->hasDisliked($comment_id);
 
         if (!$like_checker) { //comment has not been liked
             if (!$dislike_checker) { //comment has not been disliked
-                $comment->addLike($comment_id); //add 1 liked record in like_monitor table then increment liked column in comment table
+                $like_monitor->addLike($comment_id); //add 1 liked record in like_monitor table then increment liked column in comment table
             } else { //comment has been disliked
                 $comment->subtractDislikedCount($comment_id); //subtract 1 from disliked column in comment table
-                $comment->deleteExisting($comment_id); //deletes disliked record in like_monitor table
-                $comment->addLike($comment_id); //add 1 like record in like_monitor table then increment liked column in comment table
+                $like_monitor->deleteExisting($comment_id); //deletes disliked record in like_monitor table
+                $like_monitor->addLike($comment_id); //add 1 like record in like_monitor table then increment liked column in comment table
             }
         }
 
@@ -139,18 +140,19 @@ class CommentController extends AppController
     public function disliked()
     {
         $comment = new Comment();
+        $like_monitor = new LikeMonitor();
 
         $comment_id = Param::get('comment_id');
-        $like_checker = $comment->hasLiked($comment_id);
-        $dislike_checker = $comment->hasDisliked($comment_id);
+        $like_checker = $like_monitor->hasLiked($comment_id);
+        $dislike_checker = $like_monitor->hasDisliked($comment_id);
 
         if (!$dislike_checker) { //comment has not been disliked
             if (!$like_checker) { //comment has not been liked
-                $comment->addDislike($comment_id); //add 1 disliked record in like_monitor table then increment disliked column in comment table
+                $like_monitor->addDislike($comment_id); //add 1 disliked record in like_monitor table then increment disliked column in comment table
             } else { //comment has been liked
                 $comment->subtractLikedCount($comment_id); //subtract 1 from liked column in comment table
-                $comment->deleteExisting($comment_id);//deletes liked record in like_monitor table
-                $comment->addDislike($comment_id); //add 1 dislike record in like_monitor table then increment disliked column in comment table
+                $like_monitor->deleteExisting($comment_id);//deletes liked record in like_monitor table
+                $like_monitor->addDislike($comment_id); //add 1 dislike record in like_monitor table then increment disliked column in comment table
             }
         }
 

@@ -106,6 +106,7 @@ class UserController extends AppController
         $threads = new Thread();
         $comments = new Comment();
         $profile = User::get();
+        $like_monitor = new LikeMonitor();
         $page = Param::get('page_next', 'profile');
 
         $firstname = $profile['firstname'];
@@ -116,8 +117,8 @@ class UserController extends AppController
         $member_since = $user->memberSince();
         $thread_count = $threads->count($_SESSION['userid']);
         $comment_count = $comments->count($_SESSION['userid']);
-        $like_count = $comments->countLike($_SESSION['userid']);
-        $dislike_count = $comments->countDislike($_SESSION['userid']);
+        $like_count = $like_monitor->countLike($_SESSION['userid']);
+        $dislike_count = $like_monitor->countDislike($_SESSION['userid']);
 
         switch ($page) {
             case 'profile':
@@ -207,7 +208,6 @@ class UserController extends AppController
     public function top_five()
     {
         $users = new User();
-        $comments = new Comment();
 
         $user = $users->getAll();
        

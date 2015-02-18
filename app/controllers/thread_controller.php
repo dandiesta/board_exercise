@@ -112,7 +112,7 @@ class ThreadController extends AppController
 
         $thread_id = Param::get('thread_id');
 
-        $comments->deleteLike($thread_id);
+        $like_monitor->deleteLike($thread_id);
         $threads->delete($thread_id);
         $comments->deleteAll($thread_id);
 
