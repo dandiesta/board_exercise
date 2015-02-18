@@ -54,6 +54,7 @@ function smiley($string)
         'X(' => '<img src="/bootstrap/img/smiley/sorry.png" alt="sorry" height="30px" width="30px"/>',
         '@_@' => '<img src="/bootstrap/img/smiley/dizzy.png" alt="dizzy" height="30px" width="30px"/>',
         'B)' => '<img src="/bootstrap/img/smiley/cool.png" alt="cool" height="30px" width="30px"/>',
+        '<3' => '<img src="/bootstrap/img/smiley/heart.png" alt="heart" height="30px" width="30px"/>',
         '(y)' => '<img src="/bootstrap/img/smiley/like.png" alt="like" height="30px" width="30px"/>',
         '(n)' => '<img src="/bootstrap/img/smiley/no.png" alt="no" height="30px" width="30px"/>',
         '(ezra)' => '<img src="/bootstrap/img/smiley/ezra.jpg" alt="ezra" height="30px" width="30px"/>',
