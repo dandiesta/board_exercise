@@ -23,9 +23,9 @@ class CommentController extends AppController
         $users = $users->getAll();
 
         if ($comments) {
-            $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+            $current_page = max(Param::get('page'), MIN_PAGE_NUM);
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
-            $other_comments = array_slice($comments, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $other_comments = array_slice($comments, $pagination->start_index + MIN_PAGE_NUM);
             $pagination->checkLastPage($other_comments);
             $page_links = Pagination(count($comments), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
             $comments = array_slice($comments, $pagination->start_index - 1, $pagination->count);
@@ -71,7 +71,8 @@ class CommentController extends AppController
 
     public function edit()
     {
-        $thread = Thread::get($_SESSION['thread_id']);
+        $thread_id = $_SESSION['thread_id'];
+        $thread = Thread::get($thread_id);
 
         $comment = new Comment();
         $comment_id = Param::get('comment_id');
@@ -88,7 +89,7 @@ class CommentController extends AppController
 
                 try {
                     $comment->edit($comment_id);
-                    redirect("/comment/view?thread_id={$_SESSION['thread_id']}");
+                    redirect(url('comment/view', array('thread_id' => $thread_id)));
                 } catch (ValidationException $e) {
                     $page = 'edit';
                 }
@@ -105,13 +106,13 @@ class CommentController extends AppController
     public function delete()
     {
         $comments = new Comment();
-
+        $thread_id = $_SESSION['thread_id'];
         $comment_id = Param::get('comment_id');
 
         $comments->delete($comment_id);
 
         $this->set(get_defined_vars());
-        redirect("/comment/view?thread_id={$_SESSION['thread_id']}");
+        redirect(url('comment/view', array('thread_id' => $thread_id)));
     }
 
     public function liked()
@@ -162,22 +163,23 @@ class CommentController extends AppController
 
     public function most_liked()
     {
-        $comments = new Comment();
-        $users = new User();
+        $user = User::getAll();
 
-        $comment = $comments->getTopComments();
-        $user = $users->getAll();
+        // $comments = new Comment();
+        // $comment = $comments->getTopComments();
+        $comment = Comment::getTopComments();
 
         if ($comment) {
-            $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+            $current_page = max(Param::get('page'), MIN_PAGE_NUM);
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
-            $other_comments = array_slice($comment, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $other_comments = array_slice($comment, $pagination->start_index + MIN_PAGE_NUM);
             $pagination->checkLastPage($other_comments);
             $page_links = Pagination(count($comment), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
             $comment = array_slice($comment, $pagination->start_index - 1, $pagination->count);
+
+            $count = count($page_links);
         }
 
-        $count = count($page_links);
         $this->set(get_defined_vars());
     }
 }

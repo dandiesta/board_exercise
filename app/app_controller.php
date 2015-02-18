@@ -16,11 +16,11 @@ class AppController extends Controller
         if (!isset($_SESSION['userid'])) {
             redirect('/user/login');
         } else {
-            $appmodel = new AppModel();
-            $checker = $appmodel->currentStatusChecker();
+            $user = User::get($_SESSION['userid']);
 
-            if ($checker == ACTIVE) {
+            if ($user['status'] == ACTIVE) {
                 return;
+            
             } else {
                 redirect('/user/banned');
             }

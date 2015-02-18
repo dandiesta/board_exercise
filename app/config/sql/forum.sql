@@ -15,8 +15,8 @@ lastname VARCHAR(50) NOT NULL,
 username VARCHAR(30) NOT NULL,
 password VARCHAR(255) NOT NULL,
 email VARCHAR(255) NOT NULL,
-usertype ENUM('superuser', 'admin', 'user') NOT NULL,
-status ENUM('active', 'banned') NOT NULL,
+usertype TINYINT(4) NOT NULL,
+status TINYINT(4) NOT NULL,
 registration_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (id)
 )ENGINE=InnoDB;

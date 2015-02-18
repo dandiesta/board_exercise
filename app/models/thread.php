@@ -64,7 +64,7 @@ class Thread extends AppModel
                 'last_modified' => $current_time,
             );
             
-            $insert = $db->insert('thread', $params);
+            $db->insert('thread', $params);
             $this->id = $db->lastInsertId();
 
             $comments = new Comment;
@@ -89,7 +89,7 @@ class Thread extends AppModel
                 'thread_id' => $thread_id
             );
 
-            $update = $db->query('UPDATE thread SET last_modified = :time WHERE id = :thread_id', $params);
+            $db->query('UPDATE thread SET last_modified = :time WHERE id = :thread_id', $params);
 
             $db->commit();
         } catch (Exception $e) {
@@ -109,7 +109,7 @@ class Thread extends AppModel
             $db = DB::conn();
             $db->begin();
             
-            $update = $db->update('thread', array('title' => $this->title), array('id' => $thread_id));
+            $db->update('thread', array('title' => $this->title), array('id' => $thread_id));
 
             $db->commit();
         } catch (Exception $e) {
@@ -123,7 +123,7 @@ class Thread extends AppModel
             $db = DB::conn();
             $db->begin();
 
-            $delete = $db->query('DELETE FROM thread WHERE id = ?', array($thread_id));
+            $db->query('DELETE FROM thread WHERE id = ?', array($thread_id));
 
             $db->commit();
         } catch (Exception $e) {
@@ -135,8 +135,8 @@ class Thread extends AppModel
     {
         $db = DB::conn();
 
-        $count_threads = $db->value('SELECT COUNT(id) FROM thread WHERE user_id = ?', array($user_id));
+        return $db->value('SELECT COUNT(id) FROM thread WHERE user_id = ?', array($user_id));
 
-        return $count_threads;
+        // return $count_threads;
     }
 }

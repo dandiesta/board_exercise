@@ -11,8 +11,6 @@
  */
 class SimplePagination
 {
-    const MIN_PAGE_NUM = 1;
-
     public $current;        // 現在のページ番号
 
     public $prev;           // ひとつ前のページ番号
@@ -30,7 +28,6 @@ class SimplePagination
         $this->count = $count;
         $this->prev = max($current - 1, 0);
         $this->next = $current + 1;
-        //$this->start_index = max($this->prev, 0) * $count;
         $this->start_index = ($current - 1) * $count + 1;
 
     }

@@ -9,13 +9,12 @@ class ThreadController extends AppController
     public function index()
     {
         $threads = Thread::getAll();
-        $users = new User();
-        $user = $users->getAll();
+        $users = User::getAll();
 
         if ($threads) {
-            $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+            $current_page = max(Param::get('page'), MIN_PAGE_NUM);
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
-            $other_threads = array_slice($threads, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $other_threads = array_slice($threads, $pagination->start_index + MIN_PAGE_NUM);
             $pagination->checkLastPage($other_threads);
             $page_links = Pagination(count($threads), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
             $threads = array_slice($threads, $pagination->start_index - 1, $pagination->count);
@@ -29,13 +28,12 @@ class ThreadController extends AppController
     public function my_thread()
     {
         $my_thread = Thread::getAll($_SESSION['userid']);
-        $users = new User();
-        $user = $users->getAll();
+        $users = User::getAll();
 
         if ($my_thread) {
-            $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+            $current_page = max(Param::get('page'), MIN_PAGE_NUM);
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
-            $other_my_thread = array_slice($my_thread, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $other_my_thread = array_slice($my_thread, $pagination->start_index + MIN_PAGE_NUM);
             $pagination->checkLastPage($other_my_thread);
             $page_links = Pagination(count($my_thread), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
             $my_thread = array_slice($my_thread, $pagination->start_index - 1, $pagination->count);
@@ -91,7 +89,7 @@ class ThreadController extends AppController
 
                 try {
                     $threads->editTitle($thread_id);
-                    redirect("/comment/view?thread_id={$thread_id}");
+                    redirect(url('comment/view', array('thread_id' => $thread_id)));
                 } catch (ValidationException $e) {
                     $page = 'edit';
                 }
@@ -109,6 +107,7 @@ class ThreadController extends AppController
     {
         $threads = new Thread();
         $comments = new Comment();
+        $page_num = $_SESSION['current_page'];
 
         $thread_id = Param::get('thread_id');
 
@@ -116,6 +115,6 @@ class ThreadController extends AppController
         $threads->delete($thread_id);
         $comments->deleteAll($thread_id);
 
-        redirect("/thread/index?page={$_SESSION['current_page']}&");
+        redirect(url('thread/index', array('page' => $page_num)));
     }
 }

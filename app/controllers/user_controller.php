@@ -15,14 +15,23 @@ class UserController extends AppController
         case 'registration':
             break;
         case 'success':
-            $register->firstname = trim(Param::get('firstname'));
-            $register->lastname = trim(Param::get('lastname'));
-            $register->username = trim(Param::get('username'));
-            $register->password = Param::get('password');
-            $register->confirm_password = Param::get('confirm_password');
-            $register->email = trim(Param::get('email'));
+            $params = array(
+                'firstname' => trim(Param::get('firstname')),
+                'lastname' => trim(Param::get('lastname')),
+                'username' => trim(Param::get('username')),
+                'password' => Param::get('password'),
+                'confirm_password' => Param::get('confirm_password'),
+                'email' => trim(Param::get('email'))
+            );
+            // $register->firstname = trim(Param::get('firstname'));
+            // $register->lastname = trim(Param::get('lastname'));
+            // $register->username = trim(Param::get('username'));
+            // $register->password = Param::get('password');
+            // $register->confirm_password = Param::get('confirm_password');
+            // $register->email = trim(Param::get('email'));
                 
             try {
+                $user = new User($params);
                 $register->add();
             } catch (ValidationException $e) {
                 $page = 'registration';
@@ -81,16 +90,16 @@ class UserController extends AppController
 
     public function home()
     {
-        $user = User::get();
+        $user = User::get($_SESSION['userid']);
         $comments = new Comment();
         $threads = $comments->getTopThreads();
         $firstname = $user['firstname'];
         
 
         if ($threads) {
-            $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+            $current_page = max(Param::get('page'), MIN_PAGE_NUM);
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
-            $other_threads = array_slice($threads, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+            $other_threads = array_slice($threads, $pagination->start_index + MIN_PAGE_NUM);
             $pagination->checkLastPage($other_threads);
             $page_links = Pagination(count($threads), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
             $threads = array_slice($threads, $pagination->start_index - 1, $pagination->count);
@@ -105,7 +114,7 @@ class UserController extends AppController
         $user = new User();
         $threads = new Thread();
         $comments = new Comment();
-        $profile = User::get();
+        $profile = User::get($_SESSION['userid']);
         $like_monitor = new LikeMonitor();
         $page = Param::get('page_next', 'profile');
 
@@ -148,9 +157,9 @@ class UserController extends AppController
             $user = User::getAll();        
 
             if ($user) {
-                $current_page = max(Param::get('page'), SimplePagination::MIN_PAGE_NUM);
+                $current_page = max(Param::get('page'), MIN_PAGE_NUM);
                 $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
-                $other_threads = array_slice($user, $pagination->start_index + SimplePagination::MIN_PAGE_NUM);
+                $other_threads = array_slice($user, $pagination->start_index + MIN_PAGE_NUM);
                 $pagination->checkLastPage($other_threads);
                 $page_links = Pagination(count($user), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
                 $user = array_slice($user, $pagination->start_index - 1, $pagination->count);
@@ -165,6 +174,7 @@ class UserController extends AppController
 
     public function edit_status()
     {
+        $page_num = $_SESSION['current_page'];
         $users = new User();
         $user_id = Param::get('user_id');
         $users->user_id = $user_id;
@@ -174,7 +184,7 @@ class UserController extends AppController
         $update = $users->editStatus();
 
         $this->set(get_defined_vars());
-        redirect("/user/status?page={$_SESSION['current_page']}");
+        redirect(url('user/status', array('page' => $page_num)));
     }
 
     public function change_password()

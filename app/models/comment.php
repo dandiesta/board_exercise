@@ -56,7 +56,7 @@ class Comment extends AppModel
     }
 
     //get top comments based on number of likes and dislikes
-    public function getTopComments()
+    public static function getTopComments()
     {
         $comments = array();
         $db= DB::conn();
