@@ -8,31 +8,24 @@ class UserController extends AppController
 
     public function registration()
     {
-        $register = new User();
-        $page = Param::get('page_next', 'registration');
-
-        switch ($page) {
-        case 'registration':
-            break;
-        case 'success':
-            $params = array(
+        $params = array(
                 'firstname' => trim(Param::get('firstname')),
                 'lastname' => trim(Param::get('lastname')),
                 'username' => trim(Param::get('username')),
                 'password' => Param::get('password'),
                 'confirm_password' => Param::get('confirm_password'),
                 'email' => trim(Param::get('email'))
-            );
-            // $register->firstname = trim(Param::get('firstname'));
-            // $register->lastname = trim(Param::get('lastname'));
-            // $register->username = trim(Param::get('username'));
-            // $register->password = Param::get('password');
-            // $register->confirm_password = Param::get('confirm_password');
-            // $register->email = trim(Param::get('email'));
-                
-            try {
-                $user = new User($params);
-                $register->add();
+        );
+
+        $user = new User($params);
+        $page = Param::get('page_next', 'registration');
+
+        switch ($page) {
+        case 'registration':
+            break;
+        case 'success':                
+            try {                
+                $user->add();
             } catch (ValidationException $e) {
                 $page = 'registration';
             }    
@@ -123,7 +116,7 @@ class UserController extends AppController
         $username = $profile['username'];
         $email = $profile['email'];
 
-        $member_since = $user->memberSince();
+        $member_since = $user->memberSince($_SESSION['userid']);
         $thread_count = $threads->count($_SESSION['userid']);
         $comment_count = $comments->count($_SESSION['userid']);
         $like_count = $like_monitor->countLike($_SESSION['userid']);
@@ -201,7 +194,7 @@ class UserController extends AppController
                 $user->confirm_password = Param::get('confirm_password');
                         
                 try {
-                    $change_password = $user->changePassword();
+                    $change_password = $user->changePassword($_SESSION['userid']);
                     redirect('/user/profile');
                 } catch (ValidationException $e) {
                     $page = 'change_password';
@@ -231,13 +224,14 @@ class UserController extends AppController
     {
         $threads = new Thread();
         $comments = new Comment();
+        $page_num = $_SESSION['current_page'];
 
         $thread_id = Param::get('thread_id');
 
         $threads->delete($thread_id);
         $comments->deleteComments($thread_id);
         
-        redirect("/user/home?page={$_SESSION['current_page']}&");
+        redirect(url('user/home', array('page' => $page_num)));
     }
 
     public function others()
@@ -251,7 +245,7 @@ class UserController extends AppController
         $user = User::get($user_id);
         $thread_count = $threads->count($user_id);
         $comment_count = $comments->count($user_id);
-        $member_since = $users->memberSince();
+        $member_since = $users->memberSince($user_id);
 
         $this->set(get_defined_vars());
     }

@@ -26,7 +26,7 @@
     </div>
 <?php endif ?>
 
-<form class="span8 offset2 well" method="post" action="<?php enquote_string(url('')) ?>">
+<form class="span8 offset2 well shadow" method="post" action="<?php enquote_string(url('')) ?>">
     <input type="password" class="span8" name="old_password" placeholder="Enter old password">
     <input type="password" class="span8" name="password" placeholder="Enter new password">
     <input type="password" class="span8" name="confirm_password" placeholder="Confirm new password">

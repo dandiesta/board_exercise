@@ -12,7 +12,7 @@
     </div>
 <?php endif ?>
 
-<form class="well" method="post" action="<?php enquote_string(url('')) ?>">
+<form class="well shadow" method="post" action="<?php enquote_string(url('')) ?>">
     <label>Comment</label>
         <textarea class="span11" name="body"><?php echo $body ?></textarea>
     <br />

@@ -11,7 +11,7 @@
                 <?php foreach ($user as $u):?>
                     <?php if ($v->user_id == $u['id']): ?>
                         <li>
-                            <div class="well span11" style="box-shadow: 10px 10px 10px #888888">
+                            <div class="well span11 shadow">
                                 <div class="span10">
                                     <a href="<?php enquote_string(url('comment/view', array('thread_id'=>$v->id)))?>" >
                                         <strong><?php enquote_string($v->title); ?></strong><br/>

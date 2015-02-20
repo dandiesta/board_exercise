@@ -23,7 +23,7 @@ class User extends AppModel
                 'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_NAME,
             ),
             'confirmation' => array(
-                'nameChecker'
+                'name_checker'
             ),
         ),
  
@@ -32,7 +32,7 @@ class User extends AppModel
                 'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_NAME,
             ),
             'confirmation' => array(
-                'nameChecker'
+                'name_checker'
             ),
         ),
 
@@ -53,7 +53,7 @@ class User extends AppModel
                 'validate_between', self::MIN_LENGTH_PASSWORD, self::MAX_LENGTH_PASSWORD,
             ),
             'confirmation' => array(
-                'passwordChecker', $this->confirm_password,
+                'password_checker', //$this->confirm_password, //error in this part
             ),
         ),
 
@@ -80,6 +80,7 @@ class User extends AppModel
     {
         $db= DB::conn();
         $rows = $db->rows('SELECT * FROM user');
+
         if (!$rows) {
             $this->login_verification =false;
             throw new RecordNotFoundException('no record found');
@@ -104,6 +105,12 @@ class User extends AppModel
 
     /* CHECKERS FOR REGISTRATION */
 
+    //checks if password is same as password for confirmation
+    public function password_checker()
+    {
+        return ($this->password == $this->confirm_password);
+    }
+    
     //checks if username is not yet in use
     public function usernameChecker()
     {
@@ -206,7 +213,6 @@ class User extends AppModel
             WHERE BINARY username = :username || 
             BINARY email = :username', array('username' => $this->username));
 
-        
         $decrypted_password = mc_decrypt($encrypted_password, ENCRYPTION_KEY);
         
         return ($decrypted_password == $password)? true : $this->login_verification =false;
@@ -226,7 +232,7 @@ class User extends AppModel
             $db->begin();
 
             $params = array (
-                'firstname' => ucwords($this->firstname), 
+                'firstname' => ucwords($this->firstname),
                 'lastname'  => ucwords($this->lastname), 
                 'username'  => $this->username, 
                 'password'  => mc_encrypt($this->password, ENCRYPTION_KEY),
@@ -269,13 +275,13 @@ class User extends AppModel
         }
     }
 
-    public function memberSince()
+    public function memberSince($user_id)
     {
         $db = DB::conn();
 
         $row = $db->row('SELECT unix_timestamp(now()) - unix_timestamp(registration_date) AS member_since 
             FROM user WHERE id= :id', 
-            array('id' => $_SESSION['userid']));
+            array('id' => $user_id));
 
         $registration_date = $row['member_since'];
 
@@ -306,21 +312,9 @@ class User extends AppModel
             $db = DB::conn();
             $db->begin();
 
-            $params = array(
-                'status' => BANNED, 
-                'id' => $this->user_id
-            );
-
-            $param = array(
-                'status' => ACTIVE, 
-                'id' => $this->user_id
-            );
-            
-            if ($this->current_status == ACTIVE) {
-                $update = $db->query('UPDATE user SET status= :status WHERE id=:id', $params);
-            } else {
-                $update = $db->query('UPDATE user SET status= :status WHERE id=:id', $param);
-            }
+            $params['id'] = $this->user_id;
+            $params['status'] = ($this->current_status == ACTIVE) ? BANNED : ACTIVE;
+            $db->query('UPDATE user SET status= :status WHERE id=:id', $params);
 
             $db->commit();
         } catch (Exception $e) {
@@ -328,7 +322,7 @@ class User extends AppModel
         }
     }
 
-    public function changePassword()
+    public function changePassword($user_id)
     {
         $this->validate();
 
@@ -342,7 +336,7 @@ class User extends AppModel
 
             $params = array(
                 'password' => mc_encrypt($this->password, ENCRYPTION_KEY),
-                'id'       => $_SESSION['userid']);
+                'id'       => $user_id);
 
             $update = $db->query('UPDATE user SET password = :password WHERE id = :id', $params);
 

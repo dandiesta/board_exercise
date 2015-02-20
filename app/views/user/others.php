@@ -1,6 +1,6 @@
 <h2><?php enquote_string($user['username'])?>'s profile</h2>
 
-<form class="span6 well" method="POST">
+<form class="span6 well shadow" method="POST">
     <label>First name</label>
     <input class="span6" type="text" value="<?php enquote_string($user['firstname']) ?>" name="firstname" disabled>
     <label>Last name</label>
@@ -15,7 +15,7 @@
     
 </form>
 
-<form class="offset1 span3 well">
+<form class="offset1 span3 well shadow">
 <center><p style="font-size:18px; color: #800000;"><strong>HISTORY</strong></p></center>
 	<?php if (empty($thread_count)): ?>
 		User has not posted any threads.

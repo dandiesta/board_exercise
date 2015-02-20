@@ -22,7 +22,7 @@
     </div>
 <?php endif ?>
 
-<form class="span8 offset2 well" method="post" action="<?php enquote_string(url('')) ?>" style="box-shadow: 10px 10px 10px #888888">
+<form class="span8 offset2 well shadow" method="post" action="<?php enquote_string(url('')) ?>" >
     <label>Title</label>
         <input type="text" class="span8" name="title" value="<?php enquote_string(Param::get('title')) ?>">
     <label>Comment</label>

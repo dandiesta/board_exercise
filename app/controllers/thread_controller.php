@@ -9,7 +9,7 @@ class ThreadController extends AppController
     public function index()
     {
         $threads = Thread::getAll();
-        $users = User::getAll();
+        $user = User::getAll();
 
         if ($threads) {
             $current_page = max(Param::get('page'), MIN_PAGE_NUM);
@@ -28,7 +28,7 @@ class ThreadController extends AppController
     public function my_thread()
     {
         $my_thread = Thread::getAll($_SESSION['userid']);
-        $users = User::getAll();
+        $user = User::getAll();
 
         if ($my_thread) {
             $current_page = max(Param::get('page'), MIN_PAGE_NUM);
@@ -74,12 +74,26 @@ class ThreadController extends AppController
 
     public function edit()
     {
-        $threads = new Thread();
         $thread_id = Param::get('thread_id');
+        
+        if (!$thread_id) {
+            redirect('/thread/index');
+        }
+
         $thread = Thread::get($thread_id);
 
+        if (!$thread) {
+            redirect('/thread/index');
+        }
+
+        $threads = new Thread();
         $page = Param::get('page_next', 'edit');
-        $title = $thread->title;
+
+        if ($thread->user_id == $_SESSION['userid']) {
+            $title = $thread->title;
+        } else { 
+            redirect('/thread/index');
+        }
 
         switch ($page) {
             case 'edit':
@@ -105,15 +119,19 @@ class ThreadController extends AppController
 
     public function delete()
     {
-        $threads = new Thread();
-        $comments = new Comment();
+        $like_monitor = new LikeMonitor();
         $page_num = $_SESSION['current_page'];
-
         $thread_id = Param::get('thread_id');
 
-        $like_monitor->deleteLike($thread_id);
-        $threads->delete($thread_id);
-        $comments->deleteAll($thread_id);
+        try {
+            $thread = Thread::get($thread_id);
+
+            if ($thread->user_id == $_SESSION['userid']) {
+                $like_monitor->delete($thread_id);
+            }
+        } catch (ValidationException $e) {
+            throw new  NotFoundException('Comment not found');
+        }
 
         redirect(url('thread/index', array('page' => $page_num)));
     }

@@ -14,7 +14,7 @@ class CommentController extends AppController
         }
         
         $thread = Thread::get($thread_id);
-        $user = User::get($thread->user_id);
+        $user = $thread->getUser();
         $users = new User();
         $comment = new Comment();
 
@@ -29,9 +29,10 @@ class CommentController extends AppController
             $pagination->checkLastPage($other_comments);
             $page_links = Pagination(count($comments), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
             $comments = array_slice($comments, $pagination->start_index - 1, $pagination->count);
-        }
 
-        $count = count($page_links);
+            $count = count($page_links);
+           $this->set(get_defined_vars());
+        }
         $this->set(get_defined_vars());
     }
 
@@ -73,13 +74,26 @@ class CommentController extends AppController
     {
         $thread_id = $_SESSION['thread_id'];
         $thread = Thread::get($thread_id);
-
+        $page = Param::get('page_next', 'edit');
         $comment = new Comment();
         $comment_id = Param::get('comment_id');
-        $body = Comment::get($comment_id);
+
+        if (!$comment_id) {
+            redirect('/thread/index');
+        }
         
-        $title = $thread->title;
-        $page = Param::get('page_next', 'edit');
+        $comments = Comment::get($comment_id);
+
+        if (!$comments) {
+            redirect('/thread/index');
+        }
+
+        if ($comments->user_id == $_SESSION['userid']) {
+            $title = $thread->title;
+            $body = $comments->body;
+        } else { 
+            redirect('/thread/index');
+        }        
 
         switch ($page) {
             case 'edit':
@@ -109,7 +123,19 @@ class CommentController extends AppController
         $thread_id = $_SESSION['thread_id'];
         $comment_id = Param::get('comment_id');
 
-        $comments->delete($comment_id);
+        if (!$comment_id) {
+            redirect('/thread/index');
+        }
+
+        try {
+            $comment = Comment::get($comment_id);
+
+            if ($comment->user_id == $_SESSION['userid']) {
+               $comments->delete($comment_id);
+            }
+        } catch (ValidationException $e) {
+            throw new  NotFoundException('Comment not found');
+        }
 
         $this->set(get_defined_vars());
         redirect(url('comment/view', array('thread_id' => $thread_id)));
@@ -119,6 +145,8 @@ class CommentController extends AppController
     {
         $comment = new Comment();
         $like_monitor = new LikeMonitor();
+        $page_num = $_SESSION['current_page'];
+        $thread_id = $_SESSION['thread_id'];
 
         $comment_id = Param::get('comment_id');
         $like_checker = $like_monitor->hasLiked($comment_id);
@@ -135,13 +163,15 @@ class CommentController extends AppController
         }
 
         $this->set(get_defined_vars());
-        redirect("/comment/view?page={$_SESSION['current_page']}&thread_id={$_SESSION['thread_id']}");
+        redirect(url('comment/view', array('page' => $page_num, 'thread_id' => $thread_id)));
     }
 
     public function disliked()
     {
         $comment = new Comment();
         $like_monitor = new LikeMonitor();
+        $page_num = $_SESSION['current_page'];
+        $thread_id = $_SESSION['thread_id'];
 
         $comment_id = Param::get('comment_id');
         $like_checker = $like_monitor->hasLiked($comment_id);
@@ -158,16 +188,14 @@ class CommentController extends AppController
         }
 
         $this->set(get_defined_vars());
-        redirect("/comment/view?page={$_SESSION['current_page']}&thread_id={$_SESSION['thread_id']}");
+        redirect(url('comment/view', array('page' => $page_num, 'thread_id' => $thread_id)));
     }
 
     public function most_liked()
     {
         $user = User::getAll();
-
-        // $comments = new Comment();
-        // $comment = $comments->getTopComments();
-        $comment = Comment::getTopComments();
+        $comments = new Comment();
+        $comment = $comments->getTopComments();
 
         if ($comment) {
             $current_page = max(Param::get('page'), MIN_PAGE_NUM);

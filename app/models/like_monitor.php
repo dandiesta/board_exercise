@@ -122,16 +122,21 @@ class LikeMonitor extends AppModel
 
     public function delete($thread_id)
     {
+        $thread = new Thread();
+        $comment = new Comment();
         try {
             $db = DB::conn();
             $db->begin();
 
-            $delete = $db->query('DELETE l FROM like_monitor l 
+            $db->query('DELETE l FROM like_monitor l 
                         INNER JOIN comment c ON c.id = l.comment_id 
                         INNER JOIN thread t ON t.id = c.thread_id 
                         WHERE t.id=?',
                         array($thread_id));
 
+            $comment->deleteAll($thread_id);
+            $thread->delete($thread_id);
+            
             $db->commit();
         } catch (Exception $e) {
             $db->rollback();

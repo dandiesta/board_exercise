@@ -1,4 +1,14 @@
-<h2><?php enquote_string($thread->title) ?><small> By: <?php enquote_string($user['username']) ?></small></h2>
+<h2><?php enquote_string($thread->title) ?>
+    <small>
+        <?php if ($_SESSION['userid'] != $thread->user_id): ?>
+            By: <a href="<?php enquote_string(url('user/others', array('user_id'=>$thread->user_id)))?>">
+                <?php enquote_string($user['username']) ?></a>
+        <?php else:?>
+            By: <a href="<?php enquote_string(url('user/profile'))?>">
+                You </a>
+        <?php endif ?>
+    </small>
+</h2>
 <hr />
 <?php if (empty($comments)): ?>
     <div class="alert alert-block">
@@ -8,7 +18,7 @@
     <?php foreach ($comments as $v): ?>
         <?php foreach ($users as $u): ?>
             <?php if ($v->user_id == $u['id']):?>
-                <div class="well span11" style="box-shadow: 10px 10px 10px #888888">
+                <div class="well span11 shadow">
                     <div class="span10">
                         <blockquote><?php echo smiley($v->body) ?></blockquote>
                         

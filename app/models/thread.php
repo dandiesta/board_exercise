@@ -41,6 +41,12 @@ class Thread extends AppModel
         }
 
         return new self($row);
+
+    }
+
+    public function getUser()
+    {
+       return User::get($this->user_id);
     }
 
     public function create(Comment $comment)
@@ -137,6 +143,5 @@ class Thread extends AppModel
 
         return $db->value('SELECT COUNT(id) FROM thread WHERE user_id = ?', array($user_id));
 
-        // return $count_threads;
     }
 }

@@ -16,7 +16,7 @@ hasError() is a functin in Model Parent class that checks the value of the array
     </div>
 <?php endif ?>
 
-<form class="well" method="post" action="<?php enquote_string(url('comment/write'))?>" style="box-shadow: 10px 10px 10px #888888">
+<form class="well shadow" method="post" action="<?php enquote_string(url('comment/write'))?>" style="box-shadow: 10px 10px 10px #888888">
     <label>Comment</label>
         <textarea class="span11" name="body"><?php enquote_string(Param::get('body')) ?></textarea>
     

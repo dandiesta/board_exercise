@@ -5,8 +5,7 @@
             <h4 class="alert-heading">Your comments haven't been liked.</h4>
         </div>
     <?php else: ?>
-        <!--<pre><?php print_r($top_likers)?> </pre>-->
-        <form method="post" action="<?php enquote_string(url('')) ?>" class="well" style="box-shadow: 10px 10px 10px #888888">
+        <form method="post" action="<?php enquote_string(url('')) ?>" class="well shadow">
             <ol style="font-size: 18px">
                 <?php foreach ($top_likers as $v): ?>
                     <li>
@@ -32,7 +31,7 @@
             <h4 class="alert-heading">Your threads don't have comments.</h4>
         </div>
     <?php else: ?>
-        <form method="post" action="<?php enquote_string(url('')) ?>" class="well" style="box-shadow: 10px 10px 10px #888888">
+        <form method="post" action="<?php enquote_string(url('')) ?>" class="well shadow">
             <ol style="font-size: 18px">
                 <?php foreach ($top_commentors as $v): ?>
                     <li>

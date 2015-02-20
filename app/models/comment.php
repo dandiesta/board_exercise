@@ -23,7 +23,7 @@ class Comment extends AppModel
         foreach ($rows as $row) {
             $comments[] = new Comment($row);
         }
-    
+
         return $comments;
     }
 
@@ -31,9 +31,13 @@ class Comment extends AppModel
     {
         $db = DB::conn();
 
-        $row = $db->value('SELECT body FROM comment WHERE id = ?', array($comment_id));
+        $row = $db->row('SELECT * FROM comment WHERE id = ?', array($comment_id));
 
-        return $row;
+        if (!$row) {
+            throw new RecordNotFoundException('No Record Found');
+        }
+
+        return new self($row);
     }
 
     //get top threads based on comment count and last modified
@@ -56,7 +60,7 @@ class Comment extends AppModel
     }
 
     //get top comments based on number of likes and dislikes
-    public static function getTopComments()
+    public function getTopComments()
     {
         $comments = array();
         $db= DB::conn();
@@ -127,12 +131,14 @@ class Comment extends AppModel
     //delete one comment
     public function delete($comment_id)
     {
+        $like_monitor = new LikeMonitor();
+
         try {
             $db = DB::conn();
             $db->begin();
 
             $delete = $db->query('DELETE FROM comment WHERE id = ?', array($comment_id));
-            $this->deleteExisting($comment_id); //deletes records in like_monitor table when a comment is deleted
+            $like_monitor->deleteExisting($comment_id); //deletes records in like_monitor table when a comment is deleted
 
             $db->commit();
         } catch (Exception $e) {

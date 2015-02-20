@@ -14,7 +14,7 @@
 <?php endif; ?>
 
 
-<form method="POST" action="" class="span5 offset3 well" style="box-shadow: 10px 10px 10px #888888">
+<form method="POST" action="" class="span5 offset3 well shadow">
     <legend>Please Sign In</legend>
     <center>
     <div class="input-prepend">

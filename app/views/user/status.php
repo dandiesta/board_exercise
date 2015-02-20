@@ -12,7 +12,7 @@
         <ul class="nav">
             <?php foreach ($user as $v): ?>
                 <li>
-                    <div class="well well-small span11" style="box-shadow: 10px 10px 10px #888888">
+                    <div class="well well-small span11 shadow">
                         <div class="span9">
                             <small>
                                 <strong><?php enquote_string($v['firstname'] . ' ' . $v['lastname'])?></strong><br />
