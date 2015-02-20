@@ -1,13 +1,20 @@
 <?php if (!$user->login_verification): ?>
     <div class="alert alert-block">
         <h4 class="alert-heading">Login failed!</h4>
-        <div>
-            Incorrect username/password.
-        </div>
+        <?php if (($user->validation_errors['username']['banned_checking'])): ?>
+            <div>
+                Unauthorized user. You can no longer login.
+            </div>
+        <?php else: ?>
+            <div>
+                Incorrect username/password.
+            </div>
+        <?php endif ?>
     </div>
 <?php endif; ?>
 
-<form method="POST" action="" class="span5 offset3 well">
+
+<form method="POST" action="" class="span5 offset3 well shadow">
     <legend>Please Sign In</legend>
     <center>
     <div class="input-prepend">

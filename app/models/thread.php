@@ -19,11 +19,9 @@ class Thread extends AppModel
         $db = DB::conn();
 
         if ($user_id == null) {
-            $rows = $db->rows('SELECT t.id, t.title, t.created, u.username, t.user_id, u.usertype FROM thread t 
-                INNER JOIN user u ON t.user_id=u.id ORDER BY t.last_modified DESC');
+            $rows = $db->rows('SELECT * FROM thread ORDER BY last_modified DESC');
         } else {
-            $rows = $db->rows('SELECT t.id, t.title, t.created, u.username, t.user_id, u.usertype FROM thread t 
-                INNER JOIN user u ON t.user_id=u.id WHERE u.id = ? ORDER BY t.last_modified DESC', array($user_id));
+            $rows = $db->rows('SELECT * FROM thread WHERE user_id = ? ORDER BY last_modified DESC', array($user_id));
         }
             
         foreach ($rows as $row) {
@@ -43,13 +41,18 @@ class Thread extends AppModel
         }
 
         return new self($row);
+
+    }
+
+    public function getUser()
+    {
+       return User::get($this->user_id);
     }
 
     public function create(Comment $comment)
     {
         $this->validate();
         $comment->validate();
-        $current_time = date("Y-m-d h:i:s");
 
         if ($this->hasError() || $comment->hasError()){
             throw new ValidationException('Invalid Thread or Comment');
@@ -60,13 +63,13 @@ class Thread extends AppModel
             $db->begin();
 
             $params = array(
-                'title' => $this->title,
+                'title'   => $this->title,
                 'user_id' => $_SESSION['userid'],
-                'created' => $current_time,
-                'last_modified' => $current_time,
+                'created' => NOW,
+                'last_modified' => NOW,
             );
             
-            $insert = $db->insert('thread', $params);
+            $db->insert('thread', $params);
             $this->id = $db->lastInsertId();
 
             $comments = new Comment;
@@ -80,12 +83,16 @@ class Thread extends AppModel
 
     public function updateLastModifiedThread($thread_id)
     {
-        //get value of column latest then add 1 so that it will be on top
         try {
             $db = DB::conn();
             $db->begin();
 
-            $update = $db->query('UPDATE thread SET last_modified=now() WHERE id= ?', array($thread_id));
+            $params = array(
+                'time'      => NOW,
+                'thread_id' => $thread_id
+            );
+
+            $db->query('UPDATE thread SET last_modified = :time WHERE id = :thread_id', $params);
 
             $db->commit();
         } catch (Exception $e) {
@@ -105,7 +112,7 @@ class Thread extends AppModel
             $db = DB::conn();
             $db->begin();
             
-            $update = $db->update('thread', array('title' => $this->title), array('id' => $thread_id));
+            $db->update('thread', array('title' => $this->title), array('id' => $thread_id));
 
             $db->commit();
         } catch (Exception $e) {
@@ -119,11 +126,18 @@ class Thread extends AppModel
             $db = DB::conn();
             $db->begin();
 
-            $delete = $db->query('DELETE FROM thread WHERE id = ?', array($thread_id));
+            $db->query('DELETE FROM thread WHERE id = ?', array($thread_id));
 
             $db->commit();
         } catch (Exception $e) {
             $db->rollback();
         }
+    }
+
+    public function count($user_id)
+    {
+        $db = DB::conn();
+
+        return $db->value('SELECT COUNT(id) FROM thread WHERE user_id = ?', array($user_id));
     }
 }

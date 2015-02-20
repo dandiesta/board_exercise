@@ -7,49 +7,54 @@
 <?php else: ?>
     <form method="post" action="<?php enquote_string(url('')) ?>">
         <ul class="nav">
-            <?php foreach ($display as $v): ?>
-                <li>
-                    <div class="well span11">
-                       <div class="span10">
-                            <a href="<?php enquote_string(url('comment/view', array('thread_id'=>$v['id'])))?>" >
-                                <strong><?php enquote_string($v['title']); ?></strong><br/>
-                            </a>
-                            <small>
-                                Posted by: <?php enquote_string($v['username']);?>&nbsp;
-                                <?php if ($_SESSION['userid'] == $v['user_id']) :?>
-                                    <a href="<?php enquote_string(url('thread/edit', array('thread_id'=>$v['id'])))?>">
-                                        <i class="icon-pencil"></i></a>
-                                <?php endif ?> &nbsp;
-                                <?php if (($_SESSION['userid'] == $v['user_id']) || ($_SESSION['usertype'] == 'admin')): ?>
-                                    <a href="<?php enquote_string(url('thread/delete', array('thread_id'=>$v['id'])))?>" 
-                                        onclick="return confirm('Are you sure you want to delete this thread?')">
-                                            <i class="icon-trash"></i></a>
-                                <?php endif ?>
-                                <div style="color:#66CCFF"><?php getElapsedTime($v['created']); ?> ago</div>
-                            </small>
-                        </div>
-                        <a href="<?php enquote_string(url(''))?>"><i class="icon-thumbs-up"></i></a> &nbsp;
-                        <a href="#"><i class="icon-thumbs-down"></i></a>
-                    </div>
-                </li>
-              <?php endforeach ?>
+            <?php foreach ($threads as $v): ?>
+                <?php foreach ($user as $u):?>
+                    <?php if ($v->user_id == $u['id']): ?>
+                        <li>
+                            <div class="well span11 shadow">
+                                <div class="span10">
+                                    <a href="<?php enquote_string(url('comment/view', array('thread_id'=>$v->id)))?>" >
+                                        <strong><?php enquote_string($v->title); ?></strong><br/>
+                                    </a>
+                                    <small>
+                                        <?php if ($_SESSION['userid'] != $v->user_id): ?>
+                                        Posted by: <a href="<?php enquote_string(url('user/others', array('user_id'=>$v->user_id)))?>"><?php enquote_string($u['username']);?></a>&nbsp;
+                                        <?php else:?>
+                                        Posted by: <a href="<?php enquote_string(url('user/profile'))?>"><?php enquote_string($u['username']);?></a>&nbsp;
+                                            <a href="<?php enquote_string(url('thread/edit', array('thread_id'=>$v->id)))?>">
+                                                <i class="icon-pencil"></i></a> &nbsp;
+                                        <?php endif ?>
+                                        <?php if (($_SESSION['userid'] == $v->user_id) || ($_SESSION['usertype'] == 1)) :?>
+                                            <a href="<?php enquote_string(url('thread/delete', array('thread_id'=>$v->id)))?>" 
+                                                onclick="return confirm('Are you sure you want to delete this thread?')">
+                                                    <i class="icon-trash"></i></a>
+                                        <?php endif ?>
+                                        <div style="color:#66CCFF"><?php getElapsedTime($v->created); ?> ago</div>
+                                    </small>
+                                </div>
+                            </div>
+                        </li>
+                    <?php endif ?>
+                <?php endforeach ?>
+            <?php endforeach ?>
         </ul>
     </form>
 
-    <!--pagination-->
-    <?php if($pagination->current_page > 1): ?>
-        <a class="btn btn-danger" href='?page=<?php echo $pagination->prev ?>'>Previous</a>
-    <?php endif ?>
-
-    <?php for ($i=1; $i <= $count_chunks; $i++): 
-        if ($pagination->current_page == $i):?>
-            <a class="btn btn-default disabled" href="?page=<?php echo $i ?>"><?php echo $i; ?></a>      
-        <?php else:?>
-            <a class="btn btn-danger" href="?page=<?php echo $i ?>"><?php echo $i; ?></a>&nbsp;
+    <form class="span12">
+        <?php if($pagination->current > 1): ?>
+            &nbsp;<a class='btn btn-danger' href='?page=<?php enquote_string($pagination->prev) ?>'>Previous</a>
         <?php endif ?>
-    <?php endfor ?>  
-
-    <?php if(!$pagination->is_last_page): ?>
-        <a class="btn btn-danger" href='?page=<?php echo $pagination->next ?>'>Next</a>
-    <?php endif ?>
+        
+        <?php for ($i=0; $i < $count; $i++): ?>
+            <?php if ($page_links[$i] == $pagination->current): ?>
+                <a class='btn btn-default' disabled><?php echo $page_links[$i]?></a>
+            <?php else: ?>
+                <a class='btn btn-danger' href='?page=<?php enquote_string($page_links[$i]) ?>'><?php echo $page_links[$i]?></a>
+            <?php endif?>
+        <?php endfor ?>
+        
+        <?php if(!$pagination->is_last_page): ?>
+            <a class='btn btn-danger' href='?page=<?php enquote_string($pagination->next) ?>'>Next</a>
+        <?php endif ?>
+    </form>
 <?php endif ?>
