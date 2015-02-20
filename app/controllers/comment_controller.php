@@ -77,17 +77,17 @@ class CommentController extends AppController
         $comment = new Comment();
         $comment_id = Param::get('comment_id');
 
-        if (!$comment_id) {
+        if (!$comment_id) { //no comment_id is specified
             redirect('/thread/index');
         }
         
         $comments = Comment::get($comment_id);
 
-        if (!$comments) {
+        if (!$comments) { //no comment existing
             redirect('/thread/index');
         }
 
-        if ($comments->user_id == $_SESSION['userid']) {
+        if ($comments->user_id == $_SESSION['userid']) { //checks if user is the comment's author
             $title = $thread->title;
             $body = $comments->body;
         } else { 
