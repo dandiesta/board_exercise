@@ -9,12 +9,6 @@ class User extends AppModel
     const MAX_LENGTH_USERNAME = 20;
     const MAX_LENGTH_PASSWORD = 20;
     const MAX_LENGTH_EMAIL = 254;
-    //for computation of date
-    const MAX_SECONDS = 60;
-    const MAX_SECONDS_PER_MINUTE = 3600;
-    const MAX_SECONDS_PER_HOUR = 86400;
-    const MAX_SECONDS_PER_DAY = 2592000;
-    const MAX_SECONDS_PER_MONTH = 31104000;
 
     public $login_verification = true;
     public $validation = array(
@@ -23,7 +17,7 @@ class User extends AppModel
                 'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_NAME,
             ),
             'confirmation' => array(
-                'name_checker'
+                'isNameValid'
             ),
         ),
  
@@ -32,7 +26,7 @@ class User extends AppModel
                 'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_NAME,
             ),
             'confirmation' => array(
-                'name_checker'
+                'isNameValid'
             ),
         ),
 
@@ -41,10 +35,10 @@ class User extends AppModel
                 'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_USERNAME,
             ),
             'confirmation' => array(
-                'usernameChecker',
+                'isUsernameExisting',
             ),
             'banned_checking' => array(
-                'usernameIsNotBanned',
+                'isUsernameNotBanned',
             ),
         ),
 
@@ -53,7 +47,7 @@ class User extends AppModel
                 'validate_between', self::MIN_LENGTH_PASSWORD, self::MAX_LENGTH_PASSWORD,
             ),
             'confirmation' => array(
-                'password_checker', //$this->confirm_password, //error in this part
+                'isConfirmedPasswordMatch',
             ),
         ),
 
@@ -62,10 +56,10 @@ class User extends AppModel
                 'validate_between', self::MIN_LENGTH, self::MAX_LENGTH_EMAIL,
             ),
             'confirmation' => array(
-                'emailChecker',
+                'isEmailExisting',
             ),
             'banned_checking' => array(
-                'emailIsNotBanned',
+                'isEmailNotBanned',
             ),
         ),
 
@@ -106,13 +100,13 @@ class User extends AppModel
     /* CHECKERS FOR REGISTRATION */
 
     //checks if password is same as password for confirmation
-    public function password_checker()
+    public function isConfirmedPasswordMatch()
     {
         return ($this->password == $this->confirm_password);
     }
     
     //checks if username is not yet in use
-    public function usernameChecker()
+    public function isUsernameExisting()
     {
         $db = DB::conn();
 
@@ -128,7 +122,7 @@ class User extends AppModel
     }
 
     //checks if email is not yet in use
-    public function emailChecker()
+    public function isEmailExisting()
     {
         $db = DB::conn();
 
@@ -142,7 +136,7 @@ class User extends AppModel
         return (!$is_email_existing); //return true if the query does not return anything
     }
 
-    public function usernameIsNotBanned()
+    public function isUsernameNotBanned()
     {
         $db = DB::conn();
 
@@ -156,7 +150,7 @@ class User extends AppModel
         return (!$is_banned); //return true if the query does not return anything
     }
 
-    public function emailIsNotBanned()
+    public function isEmailNotBanned()
     {
         $db = DB::conn();   
 
@@ -205,7 +199,7 @@ class User extends AppModel
         return $row;
     }
 
-    public function checkPassword($password)
+    public function isPasswordCorrect($password)
     {
         $db = DB::conn();
 
@@ -221,7 +215,6 @@ class User extends AppModel
     public function add()
     {
         $this->validate();
-        $current_time = date("Y-m-d H:i:s");
 
         if ($this->hasError()) {
                 throw new ValidationException('Error in Registration');
@@ -239,7 +232,7 @@ class User extends AppModel
                 'email'     => $this->email,
                 'usertype'  => USER, 
                 'status'    => ACTIVE, 
-                'registration_date' => $current_time
+                'registration_date' => NOW
             );
 
             $db->insert('user', $params);
@@ -250,7 +243,7 @@ class User extends AppModel
         }
     }
 
-    public function edit()
+    public function edit($user_id)
     {
         $this->validate();
 
@@ -267,43 +260,12 @@ class User extends AppModel
                 'lastname'  => ucwords($this->lastname)
             );
 
-            $update = $db->update('user', $params, array('id' => $_SESSION['userid']));
+            $update = $db->update('user', $params, array('id' => $user_id));
 
             $db->commit();
         } catch (Exception $e) {
             $db->rollback();
         }
-    }
-
-    public function memberSince($user_id)
-    {
-        $db = DB::conn();
-
-        $row = $db->row('SELECT unix_timestamp(now()) - unix_timestamp(registration_date) AS member_since 
-            FROM user WHERE id= :id', 
-            array('id' => $user_id));
-
-        $registration_date = $row['member_since'];
-
-        if ($registration_date < self::MAX_SECONDS) {
-            $time_label = ($registration_date == 1) ? "second" : "seconds";
-        } elseif (self::MAX_SECONDS <= ($registration_date < self::MAX_SECONDS_PER_MINUTE)) {
-            $registration_date = floor($registration_date/self::MAX_SECONDS);
-            $time_label = ($registration_date == 1) ? "minute" : "minutes";
-        } elseif (self::MAX_SECONDS_PER_MINUTE <= ($registration_date < self::MAX_SECONDS_PER_HOUR)) {
-            $registration_date = floor($registration_date/self::MAX_SECONDS_PER_MINUTE);
-            $time_label = ($registration_date == 1) ? "hour" : "hours";
-        } elseif (self::MAX_SECONDS_PER_HOUR <= ($registration_date < self::MAX_SECONDS_PER_DAY)) {
-            $registration_date = floor($registration_date/self::MAX_SECONDS_PER_HOUR);
-            $time_label = ($registration_date == 1) ? "day" : "days";
-        } elseif (self::MAX_SECONDS_PER_DAY <= ($registration_date < self::MAX_SECONDS_PER_MONTH)) {
-            $registration_date = floor($registration_date/self::MAX_SECONDS_PER_DAY);
-            $time_label = ($registration_date == 1) ? "month" : "months";
-        } else {
-            $registration_date = floor($registration_date/self::MAX_SECONDS_PER_MONTH);
-            $time_label = ($registration_date == 1) ? "year" : "years";
-        }
-        return "{$registration_date} {$time_label}";
     }
 
     public function editStatus()

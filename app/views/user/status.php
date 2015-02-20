@@ -17,11 +17,12 @@
                             <small>
                                 <strong><?php enquote_string($v['firstname'] . ' ' . $v['lastname'])?></strong><br />
                                 Username: <strong><?php enquote_string($v['username']) ?></strong> <br />
-                                Member since: <?php getElapsedTime($v['registration_date']); ?> ago <br />
-                               	STATUS: <strong><?php if ($v['status'] == 1) : enquote_string('Active'); else : enquote_string('Banned'); endif ?></strong>
+                                Been a member for: <?php getElapsedTime($v['registration_date']); ?><br />
+                               	STATUS: <strong><?php if ($v['status'] == ACTIVE) : enquote_string('Active'); else : enquote_string('Banned'); endif ?></strong>
                             </small>
                         </div>
-                        <a href ="<?php enquote_string(url('user/edit_status', array('user_id'=>$v['id'])))?>" class="btn btn-default" onclick="return confirm('Are you sure you want to change this user\'s status?')">
+                        <a href ="<?php enquote_string(url('user/edit_status', array('user_id'=>$v['id'])))?>" class="btn btn-default" 
+                                onclick="return confirm('Are you sure you want to change this user\'s status?')">
                             Change status</a>
                     </div>
                 </li>

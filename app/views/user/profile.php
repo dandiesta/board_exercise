@@ -43,7 +43,7 @@
     <label>Email</label>
     <input class="span6" type="email" value="<?php echo $email ?>" name="email" disabled>
     <label>Member since</label>
-    <input class="span6" type="text" value="<?php echo $member_since ?> ago" name="member_since" disabled>
+    <input class="span6" type="text" value="<?php getElapsedTime($member_since) ?> ago" name="member_since" disabled>
     <br/>
      <input type="hidden" name="page_next" value="success_update">
     <button type="submit" class="btn btn-danger">Save</button>

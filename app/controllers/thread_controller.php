@@ -3,8 +3,6 @@
 class ThreadController extends AppController
 {
     const MAX_ITEMS_PER_PAGE = 5;
-    const MIN_PAGE_NUMBER = 1;
-    const ADJACENT_TO_CURRENT = 4;
 
     public function index()
     {
@@ -16,7 +14,7 @@ class ThreadController extends AppController
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
             $other_threads = array_slice($threads, $pagination->start_index + MIN_PAGE_NUM);
             $pagination->checkLastPage($other_threads);
-            $page_links = Pagination(count($threads), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
+            $page_links = Pagination(count($threads), self::MAX_ITEMS_PER_PAGE, $current_page, ADJACENT_TO_CURRENT);
             $threads = array_slice($threads, $pagination->start_index - 1, $pagination->count);
 
             $count = count($page_links);
@@ -35,7 +33,7 @@ class ThreadController extends AppController
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
             $other_my_thread = array_slice($my_thread, $pagination->start_index + MIN_PAGE_NUM);
             $pagination->checkLastPage($other_my_thread);
-            $page_links = Pagination(count($my_thread), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
+            $page_links = Pagination(count($my_thread), self::MAX_ITEMS_PER_PAGE, $current_page, ADJACENT_TO_CURRENT);
             $my_thread = array_slice($my_thread, $pagination->start_index - 1, $pagination->count);
 
             $count = count($page_links);

@@ -64,7 +64,7 @@ class Thread extends AppModel
             $db->begin();
 
             $params = array(
-                'title' => $this->title,
+                'title'   => $this->title,
                 'user_id' => $_SESSION['userid'],
                 'created' => $current_time,
                 'last_modified' => $current_time,
@@ -84,14 +84,12 @@ class Thread extends AppModel
 
     public function updateLastModifiedThread($thread_id)
     {
-        $current_time = date("Y-m-d H:i:s");
-
         try {
             $db = DB::conn();
             $db->begin();
 
             $params = array(
-                'time'      => $current_time, 
+                'time'      => NOW,
                 'thread_id' => $thread_id
             );
 
@@ -142,6 +140,5 @@ class Thread extends AppModel
         $db = DB::conn();
 
         return $db->value('SELECT COUNT(id) FROM thread WHERE user_id = ?', array($user_id));
-
     }
 }

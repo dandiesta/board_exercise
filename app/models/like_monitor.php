@@ -124,6 +124,7 @@ class LikeMonitor extends AppModel
     {
         $thread = new Thread();
         $comment = new Comment();
+
         try {
             $db = DB::conn();
             $db->begin();

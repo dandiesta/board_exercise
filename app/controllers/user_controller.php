@@ -2,9 +2,7 @@
 
 class UserController extends AppController
 {
-    const MAX_ITEMS_PER_PAGE = 5;
-    const MIN_PAGE_NUMBER = 1;
-    const ADJACENT_TO_CURRENT = 4;
+    const MAX_ITEMS_PER_PAGE = 5;    
 
     public function registration()
     {
@@ -55,7 +53,7 @@ class UserController extends AppController
                 $password = Param::get('password');
 
                 try {
-                    if ($user->checkPassword($password)) {
+                    if ($user->isPasswordCorrect($password)) {
                         $user = $user->login();
                         $_SESSION['userid'] = $user['id'];
                         $_SESSION['usertype'] = $user['usertype'];
@@ -94,7 +92,7 @@ class UserController extends AppController
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
             $other_threads = array_slice($threads, $pagination->start_index + MIN_PAGE_NUM);
             $pagination->checkLastPage($other_threads);
-            $page_links = Pagination(count($threads), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
+            $page_links = Pagination(count($threads), self::MAX_ITEMS_PER_PAGE, $current_page, ADJACENT_TO_CURRENT);
             $threads = array_slice($threads, $pagination->start_index - 1, $pagination->count);
         }
 
@@ -115,8 +113,8 @@ class UserController extends AppController
         $lastname = $profile['lastname'];
         $username = $profile['username'];
         $email = $profile['email'];
+        $member_since = $profile['registration_date'];
 
-        $member_since = $user->memberSince($_SESSION['userid']);
         $thread_count = $threads->count($_SESSION['userid']);
         $comment_count = $comments->count($_SESSION['userid']);
         $like_count = $like_monitor->countLike($_SESSION['userid']);
@@ -130,7 +128,7 @@ class UserController extends AppController
                 $user->lastname = Param::get('lastname');
                         
                 try {
-                    $user->edit();
+                    $user->edit($_SESSION['userid']);
                 } catch (ValidationException $e) {
                     $page = 'profile';
                 }    
@@ -154,7 +152,7 @@ class UserController extends AppController
                 $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
                 $other_threads = array_slice($user, $pagination->start_index + MIN_PAGE_NUM);
                 $pagination->checkLastPage($other_threads);
-                $page_links = Pagination(count($user), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
+                $page_links = Pagination(count($user), self::MAX_ITEMS_PER_PAGE, $current_page, ADJACENT_TO_CURRENT);
                 $user = array_slice($user, $pagination->start_index - 1, $pagination->count);
             }
 
@@ -245,7 +243,6 @@ class UserController extends AppController
         $user = User::get($user_id);
         $thread_count = $threads->count($user_id);
         $comment_count = $comments->count($user_id);
-        $member_since = $users->memberSince($user_id);
 
         $this->set(get_defined_vars());
     }

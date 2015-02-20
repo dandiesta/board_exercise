@@ -10,7 +10,7 @@
     <label>Email</label>
     <input class="span6" type="email" value="<?php enquote_string($user['email']) ?>" name="email" disabled>
     <label>Member since</label>
-    <input class="span6" type="text" value="<?php enquote_string($member_since) ?> ago" name="member_since" disabled>
+    <input class="span6" type="text" value="<?php getElapsedTime($user['registration_date']) ?> ago" name="member_since" disabled>
     <br/>
     
 </form>

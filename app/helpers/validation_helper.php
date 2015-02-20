@@ -14,7 +14,7 @@ function redirect($url)
 }
 
 //checks if firstname and lastname contain letters only
-function name_checker($name)
+function isNameValid($name)
 {
     return preg_match('/^[a-z\s]*$/i', $name);
 }

@@ -80,14 +80,13 @@ class Comment extends AppModel
             throw new ValidationException('Invalid Comment');
         }
 
-        $current_time = date("Y-m-d H:i:s");
         $db = DB::conn();
 
         $params = array(
             'thread_id' => $thread_id,
             'user_id' => $_SESSION['userid'],
             'body' => $comment->body,
-            'created' => $current_time
+            'created' => NOW
         );
 
         $db->insert('comment', $params);

@@ -3,7 +3,6 @@
 class CommentController extends AppController
 {
     const MAX_ITEMS_PER_PAGE = 4;
-    const ADJACENT_TO_CURRENT = 4;
 
     public function view()
     {
@@ -27,7 +26,7 @@ class CommentController extends AppController
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
             $other_comments = array_slice($comments, $pagination->start_index + MIN_PAGE_NUM);
             $pagination->checkLastPage($other_comments);
-            $page_links = Pagination(count($comments), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
+            $page_links = Pagination(count($comments), self::MAX_ITEMS_PER_PAGE, $current_page, ADJACENT_TO_CURRENT);
             $comments = array_slice($comments, $pagination->start_index - 1, $pagination->count);
 
             $count = count($page_links);
@@ -202,7 +201,7 @@ class CommentController extends AppController
             $pagination = new SimplePagination($current_page, self::MAX_ITEMS_PER_PAGE);
             $other_comments = array_slice($comment, $pagination->start_index + MIN_PAGE_NUM);
             $pagination->checkLastPage($other_comments);
-            $page_links = Pagination(count($comment), self::MAX_ITEMS_PER_PAGE, $current_page, self::ADJACENT_TO_CURRENT);
+            $page_links = Pagination(count($comment), self::MAX_ITEMS_PER_PAGE, $current_page, ADJACENT_TO_CURRENT);
             $comment = array_slice($comment, $pagination->start_index - 1, $pagination->count);
 
             $count = count($page_links);
